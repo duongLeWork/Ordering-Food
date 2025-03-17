@@ -19,8 +19,8 @@ import java.time.LocalDate;
 public class Account {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    String id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    Long id;
 
     String username;
 

@@ -3,6 +3,9 @@ package com.example.foodordering.service;
 import com.example.foodordering.dto.request.AccountCreationRequest;
 import com.example.foodordering.dto.request.AccountUpdateRequest;
 import com.example.foodordering.entity.Account;
+import com.example.foodordering.exception.AppException;
+import com.example.foodordering.exception.ErrorCode;
+import com.example.foodordering.mapper.AccountMapper;
 import com.example.foodordering.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,15 +18,15 @@ public class AccountService {
     @Autowired
     private AccountRepository accountRepository;
 
+    @Autowired
+    private AccountMapper accountMapper;
+
     public Account createAccount(AccountCreationRequest request) {
-        Account account = new Account();
 
         if (accountRepository.existsByUsername(request.getUsername())) {
-            throw new RuntimeException("Username already exists");
+            throw new AppException(ErrorCode.USER_EXISTED);
         }
-
-        account.setUsername(request.getUsername());
-        account.setPassword(request.getPassword());
+        Account account = accountMapper.toAccount(request);
 
         return accountRepository.save(account);
     }
@@ -31,9 +34,7 @@ public class AccountService {
     public Account updateAccount(Long accountId, AccountUpdateRequest request) {
         Account account = getAccount(accountId);
 
-        account.setPassword(request.getPassword());
-        account.setFirstName(request.getFirstName());
-        account.setLastName(request.getLastName());
+        accountMapper.updateAccount(account, request);
 
         return accountRepository.save(account);
 

@@ -2,8 +2,11 @@ package com.example.foodordering.controller;
 
 import com.example.foodordering.dto.request.AccountCreationRequest;
 import com.example.foodordering.dto.request.AccountUpdateRequest;
+import com.example.foodordering.dto.request.ApiResponse;
 import com.example.foodordering.entity.Account;
 import com.example.foodordering.service.AccountService;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AccounController {
 
     @Autowired
@@ -19,8 +23,13 @@ public class AccounController {
 
 
     @PostMapping("/users")
-    public Account createAccount(@RequestBody AccountCreationRequest request) {
-        return accountService.createAccount(request);
+    public ApiResponse<Account> createAccount(@RequestBody @Valid AccountCreationRequest request) {
+        ApiResponse<Account> response = new ApiResponse<>();
+        response.setCode(200);
+        response.setMessage("Success");
+        response.setResults(accountService.createAccount(request));
+
+        return response;
     }
 
     @PutMapping("{id}")

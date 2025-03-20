@@ -5,7 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import org.springframework.boot.autoconfigure.amqp.RabbitConnectionDetails.Address;
+import com.example.foodordering.entity.Address;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
@@ -16,7 +16,7 @@ public class Restaurant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer restaurantId;
-    private String restaurantName; // Lỗi chính tả trong sơ đồ, tôi giữ nguyên hoặc bạn có thể sửa thành restaurantName
+    private String restaurantName;
 
     @ManyToOne
     @JoinColumn(name = "address_id")

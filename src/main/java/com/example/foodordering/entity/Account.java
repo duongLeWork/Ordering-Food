@@ -4,28 +4,24 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.*;
-import lombok.experimental.FieldDefaults;
+import jakarta.persistence.OneToOne;
+import lombok.Data;
 
-import java.time.LocalDate;
-
-@Getter
-@Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@Data
 @Entity
+
 public class Account {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer accountId;
+    private String username;
+    private String password;
+    private String email;
+    private String role;
 
-    String username;
+    @OneToOne(mappedBy = "account")
+    private Manager manager;
 
-    String password;
-    String firstName;
-    LocalDate dob;
-    String lastName;
+    @OneToOne(mappedBy = "account")
+    private Customer customer;
 }

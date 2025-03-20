@@ -5,19 +5,21 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 
 @Entity
 @Data
-public class Manager {
+public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer managerId;
-    private String firstName;
-    private String lastName;
+    private Integer addressId;
+    private String streetNumber;
+    private String city;
+    private String country;
 
-    @OneToOne
-    @JoinColumn(name = "account_id")
-    private Account account;
+    @OneToOne(mappedBy = "address")
+    private Restaurant restaurants;
+
+    @OneToOne(mappedBy = "address")
+    private CustomerAddress customerAddress;
 }

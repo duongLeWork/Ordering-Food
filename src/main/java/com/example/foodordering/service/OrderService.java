@@ -2,6 +2,7 @@ package com.example.foodordering.service;
 
 import com.example.foodordering.dto.request.OrderRequest;
 import com.example.foodordering.dto.request.UpdateOrderStatusRequest;
+import com.example.foodordering.dto.response.ApiResponse;
 import com.example.foodordering.entity.Customer;
 import com.example.foodordering.entity.FoodOrder;
 import com.example.foodordering.entity.OrderStatus;
@@ -29,15 +30,23 @@ public class OrderService {
     /**
      * Tạo đơn hàng mới
      */
-    public String createOrder(OrderRequest orderRequest) {
+    public ApiResponse<FoodOrder> createOrder(OrderRequest orderRequest) {
+        ApiResponse<FoodOrder> response = new ApiResponse<>();
+
         Optional<Customer> customerOpt = customerRepository.findById(orderRequest.getCustomerId());
         if (customerOpt.isEmpty()) {
-            return "Khách hàng không tồn tại!";
+            response.setCode(1404);
+            response.setMessage("Khách hàng không tồn tại!");
+            response.setData(null);
+            return response;
         }
 
         OrderStatus pendingStatus = orderStatusRepository.findByStatusValue("Pending").orElse(null);
         if (pendingStatus == null) {
-            return "Không tìm thấy trạng thái đơn hàng!";
+            response.setCode(1400);
+            response.setMessage("Không tìm thấy trạng thái đơn hàng!");
+            response.setData(null);
+            return response;
         }
 
         FoodOrder newOrder = new FoodOrder();
@@ -46,40 +55,76 @@ public class OrderService {
         newOrder.setTotalAmount(orderRequest.getTotalAmount());
 
         foodOrderRepository.save(newOrder);
-        return "Đơn hàng đã được tạo thành công!";
+
+        response.setCode(1201);
+        response.setMessage("Đơn hàng đã được tạo thành công!");
+        response.setData(newOrder);
+        return response;
     }
 
     /**
      * Cập nhật trạng thái đơn hàng
      */
-    public String updateOrderStatus(UpdateOrderStatusRequest request) {
+    public ApiResponse<FoodOrder> updateOrderStatus(UpdateOrderStatusRequest request) {
+        ApiResponse<FoodOrder> response = new ApiResponse<>();
+
         Optional<FoodOrder> orderOpt = foodOrderRepository.findById(request.getOrderId());
         if (orderOpt.isEmpty()) {
-            return "Không tìm thấy đơn hàng!";
+            response.setCode(1404);
+            response.setMessage("Không tìm thấy đơn hàng!");
+            response.setData(null);
+            return response;
         }
 
         Optional<OrderStatus> statusOpt = orderStatusRepository.findByStatusValue(request.getNewStatus());
         if (statusOpt.isEmpty()) {
-            return "Trạng thái không hợp lệ!";
+            response.setCode(1400);
+            response.setMessage("Trạng thái không hợp lệ!");
+            response.setData(null);
+            return response;
         }
 
         FoodOrder order = orderOpt.get();
         order.setOrderStatus(statusOpt.get());
         foodOrderRepository.save(order);
-        return "Cập nhật trạng thái đơn hàng thành công!";
+
+        response.setCode(1000);
+        response.setMessage("Cập nhật trạng thái đơn hàng thành công!");
+        response.setData(order);
+        return response;
     }
 
     /**
      * Lấy danh sách đơn hàng theo khách hàng
      */
-    public List<FoodOrder> getOrdersByCustomer(Integer customerId) {
-        return foodOrderRepository.findByCustomerId(customerId);
+    public ApiResponse<List<FoodOrder>> getOrdersByCustomer(Integer customerId) {
+        List<FoodOrder> orders = foodOrderRepository.findByCustomerId(customerId);
+
+        ApiResponse<List<FoodOrder>> response = new ApiResponse<>();
+        response.setCode(1000);
+        response.setMessage("Danh sách đơn hàng của khách hàng");
+        response.setData(orders);
+
+        return response;
     }
 
     /**
      * Xem chi tiết đơn hàng
      */
-    public Optional<FoodOrder> getOrderDetails(Integer orderId) {
-        return foodOrderRepository.findById(orderId);
+    public ApiResponse<FoodOrder> getOrderDetails(Integer orderId) {
+        ApiResponse<FoodOrder> response = new ApiResponse<>();
+
+        Optional<FoodOrder> orderOpt = foodOrderRepository.findById(orderId);
+        if (orderOpt.isEmpty()) {
+            response.setCode(1404);
+            response.setMessage("Không tìm thấy đơn hàng!");
+            response.setData(null);
+            return response;
+        }
+
+        response.setCode(1000);
+        response.setMessage("Chi tiết đơn hàng");
+        response.setData(orderOpt.get());
+        return response;
     }
 }

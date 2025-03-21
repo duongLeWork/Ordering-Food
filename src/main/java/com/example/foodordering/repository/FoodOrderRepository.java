@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface FoodOrderRepository extends JpaRepository<FoodOrder, Integer> {
     List<FoodOrder> findByCustomerId(Integer customerId);
-    List<FoodOrder> findByOrderStatusOrderStatusId(Integer orderStatusId);
+    List<FoodOrder> findByOrderStatusId(Integer orderStatusId);
     @Query("SELECT SUM(f.totalAmount) FROM FoodOrder f")
     BigDecimal calculateTotalSales();
 }

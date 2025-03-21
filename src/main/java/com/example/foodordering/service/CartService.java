@@ -1,6 +1,7 @@
 package com.example.foodordering.service;
 
 import com.example.foodordering.dto.request.CartItemRequest;
+import com.example.foodordering.dto.response.ApiResponse;
 import com.example.foodordering.entity.Customer;
 import com.example.foodordering.entity.Food;
 import com.example.foodordering.entity.OrderMenuItem;
@@ -28,55 +29,108 @@ public class CartService {
     /**
      * Lấy giỏ hàng của khách hàng
      */
-    public List<OrderMenuItem> getCart(Integer customerId) {
-        return orderMenuItemRepository.findByCustomerCustomerId(customerId);
+    public ApiResponse<List<OrderMenuItem>> getCart(Integer customerId) {
+        List<OrderMenuItem> cartItems = orderMenuItemRepository.findByFoodOrder_Customer_CustomerId(customerId);
+
+        ApiResponse<List<OrderMenuItem>> response = new ApiResponse<>();
+        response.setCode(1000);
+        response.setMessage("Giỏ hàng của khách hàng");
+        response.setData(cartItems);
+
+        return response;
     }
 
     /**
      * Thêm món vào giỏ hàng
      */
-    public String addItemToCart(CartItemRequest request) {
-        Optional<Customer> customerOpt = customerRepository.findById(request.getCustomerId());
-        Optional<Food> foodOpt = foodRepository.findById(request.getFoodId());
+    public ApiResponse<OrderMenuItem> addItemToCart(CartItemRequest request) {
+        ApiResponse<OrderMenuItem> response = new ApiResponse<>();
 
-        if (customerOpt.isEmpty()) return "Khách hàng không tồn tại!";
-        if (foodOpt.isEmpty()) return "Món ăn không tồn tại!";
+        Optional<Customer> customerOpt = customerRepository.findById(request.getCustomerId());
+        if (customerOpt.isEmpty()) {
+            response.setCode(1404);
+            response.setMessage("Khách hàng không tồn tại!");
+            response.setData(null);
+            return response;
+        }
+
+        Optional<Food> foodOpt = foodRepository.findById(request.getFoodId());
+        if (foodOpt.isEmpty()) {
+            response.setCode(1404);
+            response.setMessage("Món ăn không tồn tại!");
+            response.setData(null);
+            return response;
+        }
 
         OrderMenuItem cartItem = new OrderMenuItem();
         cartItem.setFood(foodOpt.get());
         cartItem.setQuantityOrdered(request.getQuantity());
 
         orderMenuItemRepository.save(cartItem);
-        return "Đã thêm món vào giỏ hàng!";
+
+        response.setCode(1201);
+        response.setMessage("Đã thêm món vào giỏ hàng!");
+        response.setData(cartItem);
+        return response;
     }
 
     /**
      * Cập nhật số lượng món ăn trong giỏ hàng
      */
-    public String updateItemQuantity(Integer cartItemId, Integer newQuantity) {
+    public ApiResponse<OrderMenuItem> updateItemQuantity(Integer cartItemId, Integer newQuantity) {
+        ApiResponse<OrderMenuItem> response = new ApiResponse<>();
+
         Optional<OrderMenuItem> cartItemOpt = orderMenuItemRepository.findById(cartItemId);
-        if (cartItemOpt.isEmpty()) return "Không tìm thấy món trong giỏ hàng!";
+        if (cartItemOpt.isEmpty()) {
+            response.setCode(1404);
+            response.setMessage("Không tìm thấy món trong giỏ hàng!");
+            response.setData(null);
+            return response;
+        }
 
         OrderMenuItem cartItem = cartItemOpt.get();
         cartItem.setQuantityOrdered(newQuantity);
         orderMenuItemRepository.save(cartItem);
-        return "Cập nhật số lượng thành công!";
+
+        response.setCode(1000);
+        response.setMessage("Cập nhật số lượng thành công!");
+        response.setData(cartItem);
+        return response;
     }
 
     /**
      * Xóa món khỏi giỏ hàng
      */
-    public String removeItemFromCart(Integer cartItemId) {
-        if (!orderMenuItemRepository.existsById(cartItemId)) return "Không tìm thấy món ăn trong giỏ hàng!";
+    public ApiResponse<String> removeItemFromCart(Integer cartItemId) {
+        ApiResponse<String> response = new ApiResponse<>();
+
+        if (!orderMenuItemRepository.existsById(cartItemId)) {
+            response.setCode(1404);
+            response.setMessage("Không tìm thấy món ăn trong giỏ hàng!");
+            response.setData(null);
+            return response;
+        }
+
         orderMenuItemRepository.deleteById(cartItemId);
-        return "Đã xóa món khỏi giỏ hàng!";
+
+        response.setCode(1000);
+        response.setMessage("Đã xóa món khỏi giỏ hàng!");
+        response.setData("Success");
+        return response;
     }
 
     /**
      * Xóa toàn bộ giỏ hàng của khách hàng
      */
-    public String clearCart(Integer customerId) {
-        orderMenuItemRepository.deleteByCustomerCustomerId(customerId);
-        return "Đã xóa toàn bộ giỏ hàng!";
+    public ApiResponse<String> clearCart(Integer customerId) {
+        orderMenuItemRepository.deleteByFoodOrder_Customer_CustomerId(customerId);
+
+        ApiResponse<String> response = new ApiResponse<>();
+        response.setCode(1000);
+        response.setMessage("Đã xóa toàn bộ giỏ hàng!");
+        response.setData("Success");
+
+        return response;
     }
+
 }

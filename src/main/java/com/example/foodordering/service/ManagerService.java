@@ -1,6 +1,7 @@
 package com.example.foodordering.service;
 
 import com.example.foodordering.dto.request.FoodRequest;
+import com.example.foodordering.dto.response.ApiResponse;
 import com.example.foodordering.entity.Account;
 import com.example.foodordering.entity.Food;
 import com.example.foodordering.entity.FoodOrder;
@@ -27,24 +28,37 @@ public class ManagerService {
     private FoodRepository foodRepository;
 
     /**
-     * Lấy danh sách tài khoản theo vai trò (CUSTOMER hoặc MANAGER)
-     * TODO: Em chưa thấy cái này cần cho lắm nên chưa thêm, đặt chỗ trước
+     * Lấy danh sách tài khoản theo vai trò
      */
-    public List<Account> getUsersByRole(String role) {
-        return accountRepository.findByRole(role);
+    public ApiResponse<List<Account>> getUsersByRole(String role) {
+        List<Account> users = accountRepository.findByRole(role);
+
+        ApiResponse<List<Account>> response = new ApiResponse<>();
+        response.setCode(1000);
+        response.setMessage("Danh sách người dùng theo vai trò");
+        response.setData(users);
+
+        return response;
     }
 
     /**
-     * Lấy danh sách đơn hàng
+     * Lấy danh sách tất cả đơn hàng
      */
-    public List<FoodOrder> getAllOrders() {
-        return foodOrderRepository.findAll();
+    public ApiResponse<List<FoodOrder>> getAllOrders() {
+        List<FoodOrder> orders = foodOrderRepository.findAll();
+
+        ApiResponse<List<FoodOrder>> response = new ApiResponse<>();
+        response.setCode(1000);
+        response.setMessage("Danh sách tất cả đơn hàng");
+        response.setData(orders);
+
+        return response;
     }
 
     /**
      * Thêm món ăn vào thực đơn
      */
-    public String addFood(FoodRequest foodRequest) {
+    public ApiResponse<Food> addFood(FoodRequest foodRequest) {
         Food food = new Food();
         food.setName(foodRequest.getName());
         food.setPrice(foodRequest.getPrice());
@@ -53,16 +67,26 @@ public class ManagerService {
         food.setIsAvailable(foodRequest.getIsAvailable());
 
         foodRepository.save(food);
-        return "Món ăn đã được thêm thành công!";
+
+        ApiResponse<Food> response = new ApiResponse<>();
+        response.setCode(1201);
+        response.setMessage("Món ăn đã được thêm thành công!");
+        response.setData(food);
+
+        return response;
     }
 
     /**
      * Cập nhật thông tin món ăn
      */
-    public String updateFood(Integer foodId, FoodRequest foodRequest) {
+    public ApiResponse<Food> updateFood(Integer foodId, FoodRequest foodRequest) {
+        ApiResponse<Food> response = new ApiResponse<>();
         Optional<Food> foodOpt = foodRepository.findById(foodId);
         if (foodOpt.isEmpty()) {
-            return "Không tìm thấy món ăn!";
+            response.setCode(1404);
+            response.setMessage("Không tìm thấy món ăn!");
+            response.setData(null);
+            return response;
         }
 
         Food food = foodOpt.get();
@@ -73,25 +97,45 @@ public class ManagerService {
         food.setIsAvailable(foodRequest.getIsAvailable());
 
         foodRepository.save(food);
-        return "Cập nhật món ăn thành công!";
+
+        response.setCode(1000);
+        response.setMessage("Cập nhật món ăn thành công!");
+        response.setData(food);
+        return response;
     }
 
     /**
      * Xóa món ăn
      */
-    public String deleteFood(Integer foodId) {
+    public ApiResponse<String> deleteFood(Integer foodId) {
+        ApiResponse<String> response = new ApiResponse<>();
+
         if (!foodRepository.existsById(foodId)) {
-            return "Không tìm thấy món ăn!";
+            response.setCode(1404);
+            response.setMessage("Không tìm thấy món ăn!");
+            response.setData(null);
+            return response;
         }
+
         foodRepository.deleteById(foodId);
-        return "Món ăn đã bị xóa!";
+
+        response.setCode(1000);
+        response.setMessage("Món ăn đã bị xóa!");
+        response.setData("Success");
+        return response;
     }
 
     /**
      * Xem tổng doanh thu từ đơn hàng
      */
-    public BigDecimal getTotalSales() {
-        return foodOrderRepository.calculateTotalSales();
-    }
+    public ApiResponse<BigDecimal> getTotalSales() {
+        BigDecimal totalSales = foodOrderRepository.calculateTotalSales();
 
+        ApiResponse<BigDecimal> response = new ApiResponse<>();
+        response.setCode(1000);
+        response.setMessage("Tổng doanh thu từ đơn hàng");
+        response.setData(totalSales);
+
+        return response;
+    }
 }

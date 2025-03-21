@@ -9,7 +9,6 @@ import java.util.List;
 
 @Repository
 public interface OrderMenuItemRepository extends JpaRepository<OrderMenuItem, Integer> {
-    List<OrderMenuItem> findByFoodOrderId(Integer foodOrderId);
     /* Truy vấn OrderMenuItem dựa vào FoodOrder → Customer (Để không phải thay đổi cấu trúc của CSDL)
     * Spring Boot sẽ tự động chuyển đổi tên hàm thành SQL:
     * ===========================================================
@@ -19,6 +18,7 @@ public interface OrderMenuItemRepository extends JpaRepository<OrderMenuItem, In
     * ===========================================================
     * Tên Function khá quan trọng =)) Ý kiến cập nhật ping thằng @duy103zxc nhé.
     * */
+    List<OrderMenuItem> findByFoodOrder_FoodOrderId(Integer foodOrderId);
     List<OrderMenuItem> findByFoodOrder_Customer_CustomerId(Integer customerId);
     void deleteByFoodOrder_Customer_CustomerId(Integer customerId);
 

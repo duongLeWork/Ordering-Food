@@ -98,7 +98,7 @@ public class OrderService {
      * Lấy danh sách đơn hàng theo khách hàng
      */
     public ApiResponse<List<FoodOrder>> getOrdersByCustomer(Integer customerId) {
-        List<FoodOrder> orders = foodOrderRepository.findByCustomerId(customerId);
+        List<FoodOrder> orders = foodOrderRepository.findByCustomer_CustomerId(customerId);
 
         ApiResponse<List<FoodOrder>> response = new ApiResponse<>();
         response.setCode(1000);

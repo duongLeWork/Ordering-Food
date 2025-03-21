@@ -1,6 +1,10 @@
-mysql
+# Thêm cơ sở dữ liệu để nghịch
 
-```mysql
+Ở đây cá nhân mình sử dụng **XAMPP** với **phpMyAdmin** nên trong `application.properties` mình đã để mật khẩu của root trống, bạn nếu dùng đồ khác thì tự thêm nha. Dưới đây là phần thêm các Entity tương ứng với sơ đồ ER của anh Dương. 
+
+### Đồ chơi chính
+
+```sql
 -- Tạo database
 CREATE DATABASE IF NOT EXISTS foodapp;
 USE foodapp;
@@ -97,11 +101,9 @@ CREATE TABLE OrderMenuItem (
 
 ```
 
+### Thêm các dữ liệu mẫu
 
-Thêm các dữ liệu khác
-
-
-```mysql
+```sql
 use foodapp;
 
 INSERT INTO Account (username, password, email, role) VALUES

@@ -1,76 +1,14 @@
 # Hướng dẫn cơ bản cách sử dụng API
 
-## Danh sách Endpoint
-Dưới đây là danh sách tất cả các **API Endpoint** của hệ thống **Food Ordering API**, được phân loại theo từng module.  
+## Hướng dẫn chung
 
----
+### Thông tin cơ bản cho API
 
-# **📌 Danh sách Endpoint của Food Ordering API**
+Mô tả: API hỗ trợ khách hàng đặt hàng, quản lý giỏ hàng, tài khoản, quản lý nhà hàng.  
 
-## **1️⃣ Guest API (Người dùng chưa đăng nhập)**
-| Method | Endpoint | Mô tả |
-|--------|---------|-------|
-| **GET** | `/guest/dishes` | Lấy danh sách món ăn có sẵn |
-| **GET** | `/guest/search?keyword={keyword}` | Tìm kiếm món ăn theo từ khóa |
-| **POST** | `/guest/register` | Đăng ký tài khoản |
-
----
-
-## **2️⃣ Auth API (Xác thực & Đăng nhập)**
-| Method | Endpoint | Mô tả |
-|--------|---------|-------|
-| **POST** | `/auth/login` | Đăng nhập vào hệ thống |
-| **POST** | `/auth/reset-password` | Đặt lại mật khẩu qua email |
-
----
-
-## **3️⃣ Customer API (Dành cho khách hàng đã đăng nhập)**
-| Method | Endpoint | Mô tả |
-|--------|---------|-------|
-| **PUT** | `/customer/update-profile/{customerId}` | Cập nhật thông tin cá nhân |
-| **POST** | `/customer/place-order` | Đặt hàng mới |
-| **GET** | `/customer/track-order/{orderId}` | Theo dõi trạng thái đơn hàng |
-| **GET** | `/customer/order-details/{orderId}` | Xem chi tiết đơn hàng |
-
----
-
-## **4️⃣ Cart API (Giỏ hàng)**
-| Method | Endpoint | Mô tả |
-|--------|---------|-------|
-| **GET** | `/cart/{customerId}` | Xem giỏ hàng của khách hàng |
-| **POST** | `/cart/add` | Thêm món vào giỏ hàng |
-| **PUT** | `/cart/update/{cartItemId}?newQuantity={newQuantity}` | Cập nhật số lượng món trong giỏ hàng |
-| **DELETE** | `/cart/remove/{cartItemId}` | Xóa một món khỏi giỏ hàng |
-| **DELETE** | `/cart/clear/{customerId}` | Xóa toàn bộ giỏ hàng của khách hàng |
-
----
-
-## **5️⃣ Order API (Quản lý đơn hàng)**
-| Method | Endpoint | Mô tả |
-|--------|---------|-------|
-| **POST** | `/orders/create` | Tạo đơn hàng mới |
-| **PUT** | `/orders/update-status` | Cập nhật trạng thái đơn hàng |
-| **GET** | `/orders/customer/{customerId}` | Lấy danh sách đơn hàng theo khách hàng |
-| **GET** | `/orders/details/{orderId}` | Xem chi tiết đơn hàng |
-
----
-
-## **6️⃣ Manager API (Quản lý nhà hàng)**
-| Method | Endpoint | Mô tả |
-|--------|---------|-------|
-| **GET** | `/manager/users/{role}` | Lấy danh sách người dùng theo vai trò (MANAGER, CUSTOMER) |
-| **GET** | `/manager/orders` | Lấy danh sách tất cả đơn hàng |
-| **POST** | `/manager/food` | Thêm món ăn vào thực đơn |
-| **PUT** | `/manager/food/{foodId}` | Cập nhật món ăn trong thực đơn |
-| **DELETE** | `/manager/food/{foodId}` | Xóa món ăn khỏi thực đơn |
-| **GET** | `/manager/sales` | Xem tổng doanh thu từ đơn hàng |
+Cấu trúc Response chuẩn: (Khi sử dụng Postman hoặc tương tự). Chuẩn hóa tất cả API theo `ApiResponse<T>` (Giống anh Dương ;-;, có sai chắc do tui nhầm)
 
 
-## 📌 Food Ordering API - Documentation  
-Phiên bản: 1.0  
-
-🔹 Mô tả: API hỗ trợ khách hàng đặt hàng, quản lý giỏ hàng, tài khoản, quản lý nhà hàng.  
-🔹 Cấu trúc Response chuẩn:  
 ```json
 {
     "code": 1000,
@@ -82,9 +20,73 @@ Phiên bản: 1.0
 - `message`: Mô tả kết quả xử lý  
 - `data`: Dữ liệu trả về  
 
----
+Dưới đây là danh sách tất cả các **API Endpoint** của hệ thống **Food Ordering API**, được phân loại theo từng module.  
 
-## 1️⃣ Guest API (Người dùng chưa đăng nhập)
+> **Mẹo không hay**: Có thể chạy `test-api.sh` nếu bạn dùng MacOS hoặc Linux. Lưu ý là mỗi lần chạy nó sẽ xóa sạch cơ sở dữ liệu và khởi tạo các dữ liệu mẫu khác =)) Sẽ sửa cái này trong tương lai gần. 
+
+### 1️. Guest API (Người dùng chưa đăng nhập)
+| Method | Endpoint | Mô tả |
+|--||-|
+| **GET** | `/guest/dishes` | Lấy danh sách món ăn có sẵn |
+| **GET** | `/guest/search?keyword={keyword}` | Tìm kiếm món ăn theo từ khóa |
+| **POST** | `/guest/register` | Đăng ký tài khoản |
+
+
+
+### 2️. Auth API (Xác thực & Đăng nhập)
+| Method | Endpoint | Mô tả |
+|--||-|
+| **POST** | `/auth/login` | Đăng nhập vào hệ thống |
+| **POST** | `/auth/reset-password` | Đặt lại mật khẩu qua email |
+
+
+
+### 3️. Customer API (Dành cho khách hàng đã đăng nhập)
+| Method | Endpoint | Mô tả |
+|--||-|
+| **PUT** | `/customer/update-profile/{customerId}` | Cập nhật thông tin cá nhân |
+| **POST** | `/customer/place-order` | Đặt hàng mới |
+| **GET** | `/customer/track-order/{orderId}` | Theo dõi trạng thái đơn hàng |
+| **GET** | `/customer/order-details/{orderId}` | Xem chi tiết đơn hàng |
+
+
+
+### 4️. Cart API (Giỏ hàng)
+| Method | Endpoint | Mô tả |
+|--||-|
+| **GET** | `/cart/{customerId}` | Xem giỏ hàng của khách hàng |
+| **POST** | `/cart/add` | Thêm món vào giỏ hàng |
+| **PUT** | `/cart/update/{cartItemId}?newQuantity={newQuantity}` | Cập nhật số lượng món trong giỏ hàng |
+| **DELETE** | `/cart/remove/{cartItemId}` | Xóa một món khỏi giỏ hàng |
+| **DELETE** | `/cart/clear/{customerId}` | Xóa toàn bộ giỏ hàng của khách hàng |
+
+
+
+### 5 Order API (Quản lý đơn hàng)
+| Method | Endpoint | Mô tả |
+|--||-|
+| **POST** | `/orders/create` | Tạo đơn hàng mới |
+| **PUT** | `/orders/update-status` | Cập nhật trạng thái đơn hàng |
+| **GET** | `/orders/customer/{customerId}` | Lấy danh sách đơn hàng theo khách hàng |
+| **GET** | `/orders/details/{orderId}` | Xem chi tiết đơn hàng |
+
+
+
+### 6️. Manager API (Quản lý nhà hàng)
+| Method | Endpoint | Mô tả |
+|--||-|
+| **GET** | `/manager/users/{role}` | Lấy danh sách người dùng theo vai trò (MANAGER, CUSTOMER) |
+| **GET** | `/manager/orders` | Lấy danh sách tất cả đơn hàng |
+| **POST** | `/manager/food` | Thêm món ăn vào thực đơn |
+| **PUT** | `/manager/food/{foodId}` | Cập nhật món ăn trong thực đơn |
+| **DELETE** | `/manager/food/{foodId}` | Xóa món ăn khỏi thực đơn |
+| **GET** | `/manager/sales` | Xem tổng doanh thu từ đơn hàng |
+
+
+
+
+
+## 1. Guest API (Người dùng chưa đăng nhập)
 ### Lấy danh sách món ăn có sẵn
 - Endpoint: `GET /guest/dishes`  
 - Mô tả: Trả về danh sách món ăn có sẵn  
@@ -104,6 +106,7 @@ Phiên bản: 1.0
 ### Tìm kiếm món ăn theo từ khóa
 - Endpoint: `GET /guest/search?keyword=pizza`  
 - Response (Nếu tìm thấy món ăn):  
+
 ```json
 {
     "code": 1000,
@@ -112,6 +115,7 @@ Phiên bản: 1.0
 }
 ```
 - Response (Không tìm thấy món ăn):  
+
 ```json
 {
     "code": 1404,
@@ -123,6 +127,7 @@ Phiên bản: 1.0
 ### Đăng ký tài khoản
 - Endpoint: `POST /guest/register`  
 - Body Request:  
+
 ```json
 {
     "username": "newuser",
@@ -132,6 +137,7 @@ Phiên bản: 1.0
 }
 ```
 - Response (Thành công):  
+
 ```json
 {
     "code": 1201,
@@ -140,12 +146,13 @@ Phiên bản: 1.0
 }
 ```
 
----
 
-## 2️⃣ Auth API (Xác thực)
+
+## 2️. Auth API (Xác thực)
 ### Đăng nhập
 - Endpoint: `POST /auth/login`  
 - Body Request:  
+
 ```json
 {
     "username": "testuser",
@@ -153,6 +160,7 @@ Phiên bản: 1.0
 }
 ```
 - Response (Thành công):  
+
 ```json
 {
     "code": 1000,
@@ -164,6 +172,7 @@ Phiên bản: 1.0
 ### Đặt lại mật khẩu
 - Endpoint: `POST /auth/reset-password`  
 - Body Request:  
+
 ```json
 {
     "email": "test@example.com",
@@ -171,6 +180,7 @@ Phiên bản: 1.0
 }
 ```
 - Response (Thành công):  
+
 ```json
 {
     "code": 1200,
@@ -179,12 +189,13 @@ Phiên bản: 1.0
 }
 ```
 
----
 
-## 3️⃣ Customer API (Khách hàng đã đăng nhập)
+
+## 3️. Customer API (Khách hàng đã đăng nhập)
 ### Đặt hàng
 - Endpoint: `POST /customer/place-order`  
 - Body Request:  
+
 ```json
 {
     "customerId": 1,
@@ -192,6 +203,7 @@ Phiên bản: 1.0
 }
 ```
 - Response (Thành công):  
+
 ```json
 {
     "code": 1201,
@@ -212,9 +224,132 @@ Phiên bản: 1.0
 }
 ```
 
----
+## Order API (Quản lý đơn hàng)  
+### Tạo đơn hàng
+- Endpoint: `POST /orders/create`  
+- Body Request:  
 
-## 4️⃣ Cart API (Giỏ hàng)
+```json
+{
+    "customerId": 1,
+    "totalAmount": 25.99
+}
+```
+- Response (Thành công):  
+
+```json
+{
+    "code": 1201,
+    "message": "Đơn hàng đã được tạo thành công!",
+    "data": {
+        "foodOrderId": 10,
+        "customer": { "customerId": 1 },
+        "totalAmount": 25.99,
+        "orderStatus": { "statusValue": "Pending" }
+    }
+}
+```
+- Response (Khách hàng không tồn tại):  
+
+```json
+{
+    "code": 1404,
+    "message": "Khách hàng không tồn tại!",
+    "data": null
+}
+```
+
+
+
+### Cập nhật trạng thái đơn hàng
+- Endpoint: `PUT /orders/update-status`  
+- Body Request:  
+
+```json
+{
+    "orderId": 10,
+    "newStatus": "Completed"
+}
+```
+- Response (Thành công):  
+
+```json
+{
+    "code": 1000,
+    "message": "Cập nhật trạng thái đơn hàng thành công!",
+    "data": {
+        "foodOrderId": 10,
+        "orderStatus": { "statusValue": "Completed" }
+    }
+}
+```
+- Response (Không tìm thấy đơn hàng):  
+
+```json
+{
+    "code": 1404,
+    "message": "Không tìm thấy đơn hàng!",
+    "data": null
+}
+```
+
+
+
+### Lấy danh sách đơn hàng theo khách hàng
+- Endpoint: `GET /orders/customer/{customerId}`  
+- Ví dụ: `GET /orders/customer/1`  
+- Response:  
+
+```json
+{
+    "code": 1000,
+    "message": "Danh sách đơn hàng của khách hàng",
+    "data": [
+        {
+            "foodOrderId": 5,
+            "totalAmount": 19.99,
+            "orderStatus": { "statusValue": "Completed" }
+        },
+        {
+            "foodOrderId": 10,
+            "totalAmount": 25.99,
+            "orderStatus": { "statusValue": "Pending" }
+        }
+    ]
+}
+```
+
+
+
+### Xem chi tiết đơn hàng
+- Endpoint: `GET /orders/details/{orderId}`  
+- Ví dụ: `GET /orders/details/10`  
+- Response (Nếu đơn hàng tồn tại):  
+
+```json
+{
+    "code": 1000,
+    "message": "Chi tiết đơn hàng",
+    "data": {
+        "foodOrderId": 10,
+        "customer": { "customerId": 1 },
+        "totalAmount": 25.99,
+        "orderStatus": { "statusValue": "Pending" }
+    }
+}
+```
+- Response (Không tìm thấy đơn hàng):  
+
+```json
+{
+    "code": 1404,
+    "message": "Không tìm thấy đơn hàng!",
+    "data": null
+}
+```
+
+
+## Cart API (Giỏ hàng)
 ### Xem giỏ hàng
 - Endpoint: `GET /cart/1`  
 - Response:  
@@ -230,6 +365,7 @@ Phiên bản: 1.0
 ### Thêm món vào giỏ hàng
 - Endpoint: `POST /cart/add`  
 - Body Request:  
+
 ```json
 {
     "customerId": 1,
@@ -259,9 +395,9 @@ Phiên bản: 1.0
 }
 ```
 
----
 
-## 5️⃣ Manager API (Quản lý nhà hàng)
+
+## Manager API (Quản lý nhà hàng)
 ### Lấy danh sách đơn hàng
 - Endpoint: `GET /manager/orders`  
 - Response:  
@@ -277,6 +413,7 @@ Phiên bản: 1.0
 ### Thêm món ăn mới
 - Endpoint: `POST /manager/food`  
 - Body Request:  
+
 ```json
 {
     "name": "Spaghetti",
@@ -296,129 +433,5 @@ Phiên bản: 1.0
 }
 ```
 
----
 
-## 📌 Kết luận
-✅ Chuẩn hóa tất cả API theo `ApiResponse<T>`  
-✅ Mã trạng thái API (`code`) giúp dễ kiểm soát lỗi  
-✅ Cấu trúc JSON đơn giản, dễ sử dụng  
-
-Dưới đây là tài liệu API cập nhật thêm OrderService vào danh sách tài liệu API của bạn.  
-
----
-
-# 📌 Order API (Quản lý đơn hàng)  
-### Tạo đơn hàng
-- Endpoint: `POST /orders/create`  
-- Body Request:  
-```json
-{
-    "customerId": 1,
-    "totalAmount": 25.99
-}
-```
-- Response (Thành công):  
-```json
-{
-    "code": 1201,
-    "message": "Đơn hàng đã được tạo thành công!",
-    "data": {
-        "foodOrderId": 10,
-        "customer": { "customerId": 1 },
-        "totalAmount": 25.99,
-        "orderStatus": { "statusValue": "Pending" }
-    }
-}
-```
-- Response (Khách hàng không tồn tại):  
-```json
-{
-    "code": 1404,
-    "message": "Khách hàng không tồn tại!",
-    "data": null
-}
-```
-
----
-
-### Cập nhật trạng thái đơn hàng
-- Endpoint: `PUT /orders/update-status`  
-- Body Request:  
-```json
-{
-    "orderId": 10,
-    "newStatus": "Completed"
-}
-```
-- Response (Thành công):  
-```json
-{
-    "code": 1000,
-    "message": "Cập nhật trạng thái đơn hàng thành công!",
-    "data": {
-        "foodOrderId": 10,
-        "orderStatus": { "statusValue": "Completed" }
-    }
-}
-```
-- Response (Không tìm thấy đơn hàng):  
-```json
-{
-    "code": 1404,
-    "message": "Không tìm thấy đơn hàng!",
-    "data": null
-}
-```
-
----
-
-### Lấy danh sách đơn hàng theo khách hàng
-- Endpoint: `GET /orders/customer/{customerId}`  
-- Ví dụ: `GET /orders/customer/1`  
-- Response:  
-```json
-{
-    "code": 1000,
-    "message": "Danh sách đơn hàng của khách hàng",
-    "data": [
-        {
-            "foodOrderId": 5,
-            "totalAmount": 19.99,
-            "orderStatus": { "statusValue": "Completed" }
-        },
-        {
-            "foodOrderId": 10,
-            "totalAmount": 25.99,
-            "orderStatus": { "statusValue": "Pending" }
-        }
-    ]
-}
-```
-
----
-
-### Xem chi tiết đơn hàng
-- Endpoint: `GET /orders/details/{orderId}`  
-- Ví dụ: `GET /orders/details/10`  
-- Response (Nếu đơn hàng tồn tại):  
-```json
-{
-    "code": 1000,
-    "message": "Chi tiết đơn hàng",
-    "data": {
-        "foodOrderId": 10,
-        "customer": { "customerId": 1 },
-        "totalAmount": 25.99,
-        "orderStatus": { "statusValue": "Pending" }
-    }
-}
-```
-- Response (Không tìm thấy đơn hàng):  
-```json
-{
-    "code": 1404,
-    "message": "Không tìm thấy đơn hàng!",
-    "data": null
-}
-```
 

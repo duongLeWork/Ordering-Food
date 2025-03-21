@@ -5,7 +5,9 @@ import org.springframework.stereotype.Repository;
 
 import com.example.foodordering.entity.OrderMenuItem;
 
+import java.util.List;
+
 @Repository
 public interface OrderMenuItemRepository extends JpaRepository<OrderMenuItem, Integer> {
-    // Các phương thức truy vấn tùy chỉnh có thể được thêm vào đây
+    List<OrderMenuItem> findByFoodOrderFoodOrderId(Integer foodOrderId);
 }

@@ -13,5 +13,5 @@ public class OrderStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer orderStatusId;
-    private Boolean statusValue;
+    private String statusValue;
 }

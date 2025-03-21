@@ -5,7 +5,9 @@ import org.springframework.stereotype.Repository;
 
 import com.example.foodordering.entity.Customer;
 
+import java.util.Optional;
+
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Integer> {
-    // Các phương thức truy vấn tùy chỉnh có thể được thêm vào đây
+    Optional<Customer> findByPhoneNumber(String phoneNumber);
 }

@@ -18,7 +18,7 @@ public class Address {
     private String country;
 
     @OneToOne(mappedBy = "address")
-    private Restaurant restaurants;
+    private Restaurant restaurant;
 
     @OneToOne(mappedBy = "address")
     private CustomerAddress customerAddress;

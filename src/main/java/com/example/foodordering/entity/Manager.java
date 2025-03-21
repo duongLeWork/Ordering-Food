@@ -18,6 +18,7 @@ public class Manager {
     private String lastName;
 
     @OneToOne
-    @JoinColumn(name = "account_id")
+    @JoinColumn(name = "account_id", unique = true, nullable = false)
     private Account account;
+
 }

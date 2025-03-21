@@ -5,9 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import com.example.foodordering.entity.Address;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 
 
 @Entity
@@ -18,21 +17,12 @@ public class Restaurant {
     private Integer restaurantId;
     private String restaurantName;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "address_id")
     private Address address;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "manager_id")
     private Manager manager;
 
-    // Lưu ý: FK Menu Item_ID có vẻ không hợp lý, có lẽ bạn muốn liên kết với Food?
-    // Nếu đúng, bạn có thể thêm quan hệ như sau:
-    // @OneToMany
-    // @JoinColumn(name = "restaurant_id")
-    // private List<Food> foods;
-    // Hoặc nếu là một bảng Menu riêng biệt:
-    // @ManyToOne
-    // @JoinColumn(name = "menu_item_id")
-    // private MenuItem menuItem; // Giả sử bạn có class MenuItem
 }

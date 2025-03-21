@@ -5,7 +5,10 @@ import org.springframework.stereotype.Repository;
 
 import com.example.foodordering.entity.Food;
 
+import java.util.List;
+
 @Repository
 public interface FoodRepository extends JpaRepository<Food, Integer> {
-    // Các phương thức truy vấn tùy chỉnh có thể được thêm vào đây
+    List<Food> findByNameContainingIgnoreCase(String name);
+    List<Food> findByIsAvailableTrue();
 }

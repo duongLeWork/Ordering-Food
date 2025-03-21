@@ -21,4 +21,10 @@ public class OrderMenuItem {
     @ManyToOne
     @JoinColumn(name = "food_id")
     private Food food;
+
+    @ManyToOne
+    @JoinColumn(name = "food_order_id")
+    private FoodOrder foodOrder;
+
+
 }

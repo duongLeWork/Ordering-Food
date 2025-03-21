@@ -1,13 +1,9 @@
 package com.example.foodordering.entity;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.List;
 
 @Entity
 @Data
@@ -20,9 +16,10 @@ public class Customer {
     private String phoneNumber;
 
     @OneToOne
-    @JoinColumn(name = "account_id")
+    @JoinColumn(name = "account_id", unique = true, nullable = false)
     private Account account;
 
-    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
-    private CustomerAddress customerAddress;
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    private List<CustomerAddress> customerAddresses;
+
 }

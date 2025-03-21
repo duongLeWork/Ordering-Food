@@ -18,7 +18,7 @@ public class FoodOrder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer foodOrderId;
     private BigDecimal totalAmount;
-    private BigDecimal price; // Có vẻ trùng lặp với totalAmount, bạn cần xem xét lại ý nghĩa của trường này
+    private BigDecimal price; // Cái này khác gì totalAmount
 
     @ManyToOne
     @JoinColumn(name = "customer_id")

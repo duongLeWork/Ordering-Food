@@ -1,4 +1,4 @@
-package com.example.foodordering.dto.request;
+package com.example.foodordering.dto.response;
 
 
 import lombok.AccessLevel;
@@ -13,6 +13,6 @@ public class ApiResponse<T> {
 
     int code;
     String message;
-    T results;
+    T data;
 
 }

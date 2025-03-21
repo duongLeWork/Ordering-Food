@@ -2,6 +2,7 @@ package com.example.foodordering.dto.request;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.validator.constraints.Email;
 import org.springframework.stereotype.Service;
 
 @Setter
@@ -13,8 +14,5 @@ import org.springframework.stereotype.Service;
 public class AccountUpdateRequest {
 
     String password;
-    String firstName;
-    String lastName;
-
-
+    String email;
 }

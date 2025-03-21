@@ -1,4 +1,4 @@
-package com.example.foodordering.repository;
+package com.example.foodordering.repository.intf;
 
 import com.example.foodordering.entity.Account;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,27 +1,30 @@
 package com.example.foodordering.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Data
 @Entity
-
+@Getter
+@Setter
+@NoArgsConstructor
+@Builder
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@Table(name = "accounts")
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer accountId;
-    private String username;
-    private String password;
-    private String email;
-    private String role;
+    Integer accountId;
 
-    @OneToOne(mappedBy = "account")
-    private Manager manager;
+    String username;
+    String password;
+    String email;
+    String role;
 
-    @OneToOne(mappedBy = "account")
-    private Customer customer;
+    // Mapped by one object in Customer
+    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    Customer customer;
+
 }

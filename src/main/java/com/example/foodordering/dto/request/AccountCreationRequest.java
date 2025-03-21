@@ -11,12 +11,17 @@ import org.springframework.stereotype.Service;
 @Builder
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Service
 public class AccountCreationRequest {
+
+    Integer accountId;
 
     @Size(min = 3, max = 50, message = "USERNAME_INVALID")
     String username;
 
     @Size(min = 8, message = "PASSWORD_INVALID")
     String password;
+
+    String email;
+    String role;
+
 }

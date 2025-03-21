@@ -1,12 +1,16 @@
 package com.example.foodordering.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-
-import java.util.List;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Entity
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@Builder
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,10 +20,9 @@ public class Customer {
     private String phoneNumber;
 
     @OneToOne
-    @JoinColumn(name = "account_id", unique = true, nullable = false)
+    @JoinColumn(name = "account_id")
     private Account account;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-    private List<CustomerAddress> customerAddresses;
-
+    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
+    private CustomerAddress customerAddress;
 }

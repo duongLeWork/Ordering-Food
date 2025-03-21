@@ -7,7 +7,7 @@ import com.example.foodordering.entity.Account;
 import com.example.foodordering.exception.AppException;
 import com.example.foodordering.exception.ErrorCode;
 import com.example.foodordering.mapper.AccountMapper;
-import com.example.foodordering.repository.intf.AccountRepository;
+import com.example.foodordering.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

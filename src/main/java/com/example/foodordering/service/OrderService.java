@@ -73,7 +73,7 @@ public class OrderService {
      * Lấy danh sách đơn hàng theo khách hàng
      */
     public List<FoodOrder> getOrdersByCustomer(Integer customerId) {
-        return foodOrderRepository.findByCustomerCustomerId(customerId);
+        return foodOrderRepository.findByCustomerId(customerId);
     }
 
     /**

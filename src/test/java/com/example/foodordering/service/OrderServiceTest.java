@@ -86,7 +86,7 @@ class OrderServiceTest {
     void testGetOrdersByCustomer() {
         FoodOrder order = new FoodOrder();
         order.setFoodOrderId(1);
-        when(foodOrderRepository.findByCustomerCustomerId(1)).thenReturn(List.of(order));
+        when(foodOrderRepository.findByCustomerId(1)).thenReturn(List.of(order));
 
         List<FoodOrder> orders = orderService.getOrdersByCustomer(1);
 

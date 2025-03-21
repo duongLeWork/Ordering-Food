@@ -24,7 +24,8 @@ Dưới đây là danh sách tất cả các **API Endpoint** của hệ thống
 
 > **Mẹo không hay**: Có thể chạy `test-api.sh` nếu bạn dùng MacOS hoặc Linux. Lưu ý là mỗi lần chạy nó sẽ xóa sạch cơ sở dữ liệu và khởi tạo các dữ liệu mẫu khác =)) Sẽ sửa cái này trong tương lai gần. 
 
-### 1️. Guest API (Người dùng chưa đăng nhập)
+### 1. Guest API (Người dùng chưa đăng nhập)
+
 | Method | Endpoint | Mô tả |
 |--||-|
 | **GET** | `/guest/dishes` | Lấy danh sách món ăn có sẵn |
@@ -33,7 +34,8 @@ Dưới đây là danh sách tất cả các **API Endpoint** của hệ thống
 
 
 
-### 2️. Auth API (Xác thực & Đăng nhập)
+### 2. Auth API (Xác thực & Đăng nhập)
+
 | Method | Endpoint | Mô tả |
 |--||-|
 | **POST** | `/auth/login` | Đăng nhập vào hệ thống |
@@ -41,7 +43,8 @@ Dưới đây là danh sách tất cả các **API Endpoint** của hệ thống
 
 
 
-### 3️. Customer API (Dành cho khách hàng đã đăng nhập)
+### 3. Customer API (Dành cho khách hàng đã đăng nhập)
+
 | Method | Endpoint | Mô tả |
 |--||-|
 | **PUT** | `/customer/update-profile/{customerId}` | Cập nhật thông tin cá nhân |
@@ -51,7 +54,8 @@ Dưới đây là danh sách tất cả các **API Endpoint** của hệ thống
 
 
 
-### 4️. Cart API (Giỏ hàng)
+### 4. Cart API (Giỏ hàng)
+
 | Method | Endpoint | Mô tả |
 |--||-|
 | **GET** | `/cart/{customerId}` | Xem giỏ hàng của khách hàng |
@@ -62,7 +66,8 @@ Dưới đây là danh sách tất cả các **API Endpoint** của hệ thống
 
 
 
-### 5 Order API (Quản lý đơn hàng)
+### 5. Order API (Quản lý đơn hàng)
+
 | Method | Endpoint | Mô tả |
 |--||-|
 | **POST** | `/orders/create` | Tạo đơn hàng mới |
@@ -72,7 +77,8 @@ Dưới đây là danh sách tất cả các **API Endpoint** của hệ thống
 
 
 
-### 6️. Manager API (Quản lý nhà hàng)
+### 6. Manager API (Quản lý nhà hàng)
+
 | Method | Endpoint | Mô tả |
 |--||-|
 | **GET** | `/manager/users/{role}` | Lấy danh sách người dùng theo vai trò (MANAGER, CUSTOMER) |
@@ -81,9 +87,6 @@ Dưới đây là danh sách tất cả các **API Endpoint** của hệ thống
 | **PUT** | `/manager/food/{foodId}` | Cập nhật món ăn trong thực đơn |
 | **DELETE** | `/manager/food/{foodId}` | Xóa món ăn khỏi thực đơn |
 | **GET** | `/manager/sales` | Xem tổng doanh thu từ đơn hàng |
-
-
-
 
 
 ## 1. Guest API (Người dùng chưa đăng nhập)

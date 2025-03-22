@@ -1,84 +1,108 @@
 package com.example.foodordering.service;
 
-import com.example.foodordering.dto.request.AccountCreationRequest;
 import com.example.foodordering.dto.response.ApiResponse;
-import com.example.foodordering.entity.Account;
 import com.example.foodordering.entity.Food;
-import com.example.foodordering.repository.AccountRepository;
 import com.example.foodordering.repository.FoodRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
+/**
+ * Service to handle guest-related operations, such as retrieving available dishes,
+ * searching food items, filtering by category, and providing recommendations.
+ */
 @Service
 public class GuestService {
 
     @Autowired
     private FoodRepository foodRepository;
 
-    @Autowired
-    private AccountRepository accountRepository;
-
     /**
-     * Lấy danh sách món ăn có sẵn
+     * Retrieves the list of available dishes (where isAvailable = true).
+     *
+     * @return ApiResponse containing available dishes or an error if none found.
      */
     public ApiResponse<List<Food>> getAvailableDishes() {
         List<Food> dishes = foodRepository.findByIsAvailableTrue();
-
-        ApiResponse<List<Food>> response = new ApiResponse<>();
-        response.setCode(1000);
-        response.setMessage("Success");
-        response.setData(dishes);
-
-        return response;
+        return dishes.isEmpty()
+                ? ApiResponse.build(1404, "Failed", null)
+                : ApiResponse.build(1000, "Success", dishes);
     }
 
     /**
-     * Tìm kiếm món ăn theo từ khóa (không phân biệt hoa thường)
+     * Searches for food items by name (case-insensitive).
+     *
+     * @param keyword the search term to find matching food names
+     * @return ApiResponse containing matched food items or an error if none found.
      */
     public ApiResponse<List<Food>> searchDishes(String keyword) {
         List<Food> results = foodRepository.findByNameContainingIgnoreCase(keyword);
-
-        ApiResponse<List<Food>> response = new ApiResponse<>();
-        if (results.isEmpty()) {
-            response.setCode(1404);
-            response.setMessage("Không tìm thấy món ăn nào!");
-            response.setData(null);
-        } else {
-            response.setCode(1000);
-            response.setMessage("Success");
-            response.setData(results);
-        }
-
-        return response;
+        return results.isEmpty()
+                ? ApiResponse.build(1404, "Không tìm thấy món ăn nào!", null)
+                : ApiResponse.build(1000, "Success", results);
     }
 
     /**
-     * Đăng ký tài khoản mới
+     * Retrieves a sorted list of available dishes based on sorting criteria.
+     *
+     * @param sortBy sorting criteria (e.g., "price_asc", "price_desc")
+     * @return ApiResponse containing sorted dishes.
      */
-    public ApiResponse<Account> createAccount(AccountCreationRequest accountRequest) {
-        ApiResponse<Account> response = new ApiResponse<>();
+    public ApiResponse<List<Food>> getSortedDishes(String sortBy) {
+        List<Food> dishes = foodRepository.findByIsAvailableTrue();
 
-        if (accountRepository.existsByUsername(accountRequest.getUsername())) {
-            response.setCode(1400);
-            response.setMessage("Tên người dùng đã tồn tại!");
-            response.setData(null);
-            return response;
+        switch (sortBy) {
+            case "price_asc":
+                dishes.sort(Comparator.comparing(Food::getPrice));
+                break;
+            case "price_desc":
+                dishes.sort(Comparator.comparing(Food::getPrice).reversed());
+                break;
+            default:
+                return ApiResponse.build(1400, "Invalid sort option!", null);
         }
 
-        Account newAccount = new Account();
-        newAccount.setUsername(accountRequest.getUsername());
-        newAccount.setPassword(accountRequest.getPassword()); // Không mã hóa mật khẩu
-        newAccount.setEmail(accountRequest.getEmail());
-        newAccount.setRole(accountRequest.getRole());
+        return ApiResponse.build(1000, "Success", dishes);
+    }
 
-        accountRepository.save(newAccount);
+    /**
+     * Retrieves available dishes based on category.
+     *
+     * @param category the category name (e.g., "Pizza", "Drinks")
+     * @return ApiResponse containing filtered dishes.
+     */
+    public ApiResponse<List<Food>> filterDishesByCategory(String category) {
+        List<Food> filteredDishes = foodRepository.findByCategoryAndIsAvailableTrue(category);
+        return filteredDishes.isEmpty()
+                ? ApiResponse.build(1404, "Không có món ăn nào trong danh mục này!", null)
+                : ApiResponse.build(1000, "Success", filteredDishes);
+    }
 
-        response.setCode(1201);
-        response.setMessage("Tài khoản đã được tạo thành công!");
-        response.setData(newAccount);
+    /**
+     * Retrieves details of a specific food item.
+     *
+     * @param foodId the ID of the food item
+     * @return ApiResponse containing food details or an error if not found.
+     */
+    public ApiResponse<Food> getFoodDetails(Integer foodId) {
+        Optional<Food> food = foodRepository.findById(foodId);
+        return food.map(value -> ApiResponse.build(1000, "Success", value))
+                .orElseGet(() -> ApiResponse.build(1404, "Không tìm thấy món ăn!", null));
+    }
 
-        return response;
+    /**
+     * Recommends food items similar to the search keyword.
+     *
+     * @param keyword the food item name to base recommendations on
+     * @return ApiResponse containing recommended dishes.
+     */
+    public ApiResponse<List<Food>> recommendDishes(String keyword) {
+        List<Food> recommendations = foodRepository.findSimilarDishes(keyword);
+        return recommendations.isEmpty()
+                ? ApiResponse.build(1404, "Không có gợi ý món ăn nào", null)
+                : ApiResponse.build(1000, "Success", recommendations);
     }
 }

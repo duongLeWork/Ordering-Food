@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle}">Categories</title>
+</head>
+<body>
+<div th:fragment="categoriesList" th:if="${activePage == 'categories'}">
+    <div class="w-100 d-flex justify-content-between align-items-center" >
+        <!-- Search Box -->
+        <div>
+            <input type="text" class="form-control" placeholder="Search for products..." style="width: 300px;">
+        </div>
+        <!-- Filter Dropdown -->
+        <div class="dropdown me-3">
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                Filter
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="filterDropdown">
+                <!-- Dynamically display filters based on the active page -->
+                <li th:each="filter : ${filters}">
+                    <a class="dropdown-item" href="#" th:text="${filter}"></a>
+                </li>
+            </ul>
+        </div>
+        <!-- Button to Add New Product -->
+        <div>
+            <button class="btn btn-primary">Add New Product</button>
+        </div>
+    </div>
+    <!-- Categories content here -->
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>No</th>
+            <th>Category</th>
+            <th>Variant Price</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="category : ${categories}">
+            <td th:text="${category.id}"></td>
+            <td th:text="${category.name}"></td>
+            <td th:text="${category.variantPrice}"></td>
+            <td>
+                <input type="checkbox" th:checked="${category.status}" />
+            </td>
+            <td>
+                <button class="btn btn-sm btn-secondary">Edit</button>
+                <button class="btn btn-sm btn-danger">Delete</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

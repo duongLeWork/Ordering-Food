@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle}">Settings</title>
+</head>
+<body>
+<div th:fragment="settingsPage" th:if="${activePage == 'settings'}">
+    <!-- Breadcrumbs -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#" th:href="@{/}">Home</a></li>
+            <li class="breadcrumb-item"><a href="#" th:href="@{/settings}">Settings</a></li>
+            <li class="breadcrumb-item active" aria-current="page" th:text="${pageTitle}">Users Account</li>
+        </ol>
+    </nav>
+
+    <!-- Users Account Section -->
+    <h3 th:text="${pageTitle}">Users Account</h3>
+    <p th:text="${pagePath}">Lorem ipsum dolor sit amet, consectetur</p>
+
+    <!-- Users List -->
+    <div class="row">
+        <div class="col-md-4" th:each="user : ${users}">
+            <div class="card mb-3">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div class="d-flex">
+                        <img th:src="@{${user.profileImage}}" alt="User Image" class="rounded-circle" style="width: 60px; height: 60px;">
+                        <div class="ms-3">
+                            <h5 class="card-title" th:text="${user.name}">User Name</h5>
+                            <p class="card-text" th:text="${user.email}">User Email</p>
+                            <span class="badge" th:classappend="${user.role == 'Administrator' ? ' bg-danger' : ' bg-primary'}" th:text="${user.role}">Role</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-light"><i class="fa-solid fa-gear"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <!-- Dynamically set the page title -->
+  <title th:text="${pageTitle}">Title</title> <!-- This will be dynamically set from controller -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+<div th:fragment="header" class="header bg-white shadow-sm">
+  <div class="w-100 d-flex justify-content-between">
+    <!-- Dynamic Page Path and Title -->
+    <div class="path">
+      <h4 th:text="${pageTitle}">Page Title</h4> <!-- Display the dynamic page title -->
+      <p th:text="${pagePath}">path/pagename</p> <!-- Display the dynamic path -->
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="d-flex align-items-center">
+      <!-- Chat Button -->
+      <button class="btn btn-outline-primary rounded-circle me-5">
+        <i class="fa-solid fa-comment"></i> <!-- Chat Icon -->
+      </button>
+
+      <!-- Notification Button -->
+      <button class="btn btn-outline-warning rounded-circle">
+        <i class="fa-solid fa-bell"></i> <!-- Notification Icon -->
+      </button>
+    </div>
+  </div>
+</div>
+</body>
+</html>

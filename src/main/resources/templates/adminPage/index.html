@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle}">Title</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{css/header.css}">
+    <link rel="stylesheet" th:href="@{css/styles.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lobster&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+</head>
+<body>
+
+<div class="d-flex">
+    <!-- Sidebar -->
+    <div th:replace="~{adminPage/fragments/sidebar :: sidebar}"></div>
+
+    <!-- Main Content -->
+    <div class="w-100">
+        <!-- Header -->
+        <div th:replace="~{adminPage/fragments/header :: header}"></div>
+
+        <!-- Body -->
+        <div class="container mt-4">
+            <div th:if="${activePage == 'productList'}" th:replace="~{adminPage/fragments/product-list :: productList}"></div>
+            <div th:if="${activePage == 'categories'}" th:replace="~{adminPage/fragments/categories :: categoriesList}"></div>
+            <div th:if="${activePage == 'settings'}" th:replace="~{adminPage/fragments/settings :: settingsPage}"></div>
+            <div th:if="${activePage == 'dashboard'}" th:replace="~{adminPage/fragments/dashboard :: dashboardPage}"></div>
+            <div th:if="${activePage == 'orders'}" th:replace="~{adminPage/fragments/orders :: orderList}"></div>
+            <div th:if="${activePage == 'customers'}" th:replace="~{adminPage/fragments/customers :: customerList}"></div>
+
+        </div>
+    </div>
+</div>
+
+<script th:src="@{~/js/sidebar.js}"></script>
+
+</body>
+</html>

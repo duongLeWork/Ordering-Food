@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-@Data
 @Entity
 @Getter
 @Setter
@@ -15,13 +14,15 @@ import lombok.experimental.FieldDefaults;
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
-
-    String firstName;
-    String lastName;
-    String phoneNumber;
+    private Integer customerId;
+    private String firstName;
+    private String lastName;
+    private String phoneNumber;
 
     @OneToOne
     @JoinColumn(name = "account_id")
-    Account account;
+    private Account account;
+
+    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
+    private CustomerAddress customerAddress;
 }

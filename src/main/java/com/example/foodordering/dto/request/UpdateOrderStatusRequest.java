@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class UpdateOrderStatusRequest {
-    private Integer orderId;
+    private int orderId;
     private String newStatus;
 }

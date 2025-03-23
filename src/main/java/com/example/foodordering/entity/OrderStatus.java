@@ -12,6 +12,6 @@ import jakarta.persistence.Id;
 public class OrderStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer orderStatusId;
+    private int orderStatusId;
     private String statusValue;
 }

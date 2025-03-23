@@ -14,7 +14,7 @@ import jakarta.persistence.OneToOne;
 public class Restaurant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer restaurantId;
+    private int restaurantId;
     private String restaurantName;
 
     @OneToOne

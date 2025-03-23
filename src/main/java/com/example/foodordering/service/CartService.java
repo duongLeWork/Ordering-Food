@@ -29,7 +29,7 @@ public class CartService {
     /**
      * Lấy giỏ hàng của khách hàng
      */
-    public ApiResponse<List<OrderMenuItem>> getCart(Integer customerId) {
+    public ApiResponse<List<OrderMenuItem>> getCart(int customerId) {
         List<OrderMenuItem> cartItems = orderMenuItemRepository.findByFoodOrder_Customer_CustomerId(customerId);
 
         ApiResponse<List<OrderMenuItem>> response = new ApiResponse<>();
@@ -77,7 +77,7 @@ public class CartService {
     /**
      * Cập nhật số lượng món ăn trong giỏ hàng
      */
-    public ApiResponse<OrderMenuItem> updateItemQuantity(Integer cartItemId, Integer newQuantity) {
+    public ApiResponse<OrderMenuItem> updateItemQuantity(int cartItemId, int newQuantity) {
         ApiResponse<OrderMenuItem> response = new ApiResponse<>();
 
         Optional<OrderMenuItem> cartItemOpt = orderMenuItemRepository.findById(cartItemId);
@@ -101,7 +101,7 @@ public class CartService {
     /**
      * Xóa món khỏi giỏ hàng
      */
-    public ApiResponse<String> removeItemFromCart(Integer cartItemId) {
+    public ApiResponse<String> removeItemFromCart(int cartItemId) {
         ApiResponse<String> response = new ApiResponse<>();
 
         if (!orderMenuItemRepository.existsById(cartItemId)) {
@@ -122,7 +122,7 @@ public class CartService {
     /**
      * Xóa toàn bộ giỏ hàng của khách hàng
      */
-    public ApiResponse<String> clearCart(Integer customerId) {
+    public ApiResponse<String> clearCart(int customerId) {
         orderMenuItemRepository.deleteByFoodOrder_Customer_CustomerId(customerId);
 
         ApiResponse<String> response = new ApiResponse<>();

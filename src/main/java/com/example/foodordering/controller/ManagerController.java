@@ -35,12 +35,12 @@ public class ManagerController {
     }
 
     @PutMapping("/food/{foodId}")
-    public ApiResponse<Food> updateFood(@PathVariable Integer foodId, @RequestBody FoodRequest foodRequest) {
+    public ApiResponse<Food> updateFood(@PathVariable int foodId, @RequestBody FoodRequest foodRequest) {
         return managerService.updateFood(foodId, foodRequest);
     }
 
     @DeleteMapping("/food/{foodId}")
-    public ApiResponse<String> deleteFood(@PathVariable Integer foodId) {
+    public ApiResponse<String> deleteFood(@PathVariable int foodId) {
         return managerService.deleteFood(foodId);
     }
 

@@ -13,7 +13,7 @@ import jakarta.persistence.OneToOne;
 public class Manager {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer managerId;
+    private int managerId;
     private String firstName;
     private String lastName;
 

@@ -16,7 +16,7 @@ public class CustomerController {
     private CustomerService customerService;
 
     @PutMapping("/update-profile/{customerId}")
-    public ApiResponse<Customer> updateProfile(@PathVariable Integer customerId, @RequestBody Customer updatedCustomer) {
+    public ApiResponse<Customer> updateProfile(@PathVariable int customerId, @RequestBody Customer updatedCustomer) {
         return customerService.updateProfile(customerId, updatedCustomer);
     }
 
@@ -26,12 +26,12 @@ public class CustomerController {
     }
 
     @GetMapping("/track-order/{orderId}")
-    public ApiResponse<String> trackOrder(@PathVariable Integer orderId) {
+    public ApiResponse<String> trackOrder(@PathVariable int orderId) {
         return customerService.trackOrder(orderId);
     }
 
     @GetMapping("/order-details/{orderId}")
-    public ApiResponse<FoodOrder> getOrderDetails(@PathVariable Integer orderId) {
+    public ApiResponse<FoodOrder> getOrderDetails(@PathVariable int orderId) {
         return customerService.getOrderDetails(orderId);
     }
 }

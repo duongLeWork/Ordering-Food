@@ -6,6 +6,6 @@ import java.math.BigDecimal;
 
 @Data
 public class OrderRequest {
-    private Integer customerId;
+    private int customerId;
     private BigDecimal totalAmount;
 }

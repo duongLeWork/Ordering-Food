@@ -17,7 +17,7 @@ public class CartController {
     private CartService cartService;
 
     @GetMapping("/{customerId}")
-    public ApiResponse<List<OrderMenuItem>> getCart(@PathVariable Integer customerId) {
+    public ApiResponse<List<OrderMenuItem>> getCart(@PathVariable int customerId) {
         return cartService.getCart(customerId);
     }
 
@@ -27,17 +27,17 @@ public class CartController {
     }
 
     @PutMapping("/update/{cartItemId}")
-    public ApiResponse<OrderMenuItem> updateItemQuantity(@PathVariable Integer cartItemId, @RequestParam Integer newQuantity) {
+    public ApiResponse<OrderMenuItem> updateItemQuantity(@PathVariable int cartItemId, @RequestParam int newQuantity) {
         return cartService.updateItemQuantity(cartItemId, newQuantity);
     }
 
     @DeleteMapping("/remove/{cartItemId}")
-    public ApiResponse<String> removeItemFromCart(@PathVariable Integer cartItemId) {
+    public ApiResponse<String> removeItemFromCart(@PathVariable int cartItemId) {
         return cartService.removeItemFromCart(cartItemId);
     }
 
     @DeleteMapping("/clear/{customerId}")
-    public ApiResponse<String> clearCart(@PathVariable Integer customerId) {
+    public ApiResponse<String> clearCart(@PathVariable int customerId) {
         return cartService.clearCart(customerId);
     }
 }

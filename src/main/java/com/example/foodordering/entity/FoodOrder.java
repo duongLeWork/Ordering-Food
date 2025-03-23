@@ -16,7 +16,7 @@ import java.util.List;
 public class FoodOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer foodOrderId;
+    private int foodOrderId;
     private BigDecimal totalAmount;
     private BigDecimal price; // Cái này khác gì totalAmount
 

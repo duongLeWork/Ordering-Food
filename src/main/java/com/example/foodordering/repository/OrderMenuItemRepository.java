@@ -18,8 +18,8 @@ public interface OrderMenuItemRepository extends JpaRepository<OrderMenuItem, In
     * ===========================================================
     * Tên Function khá quan trọng =)) Ý kiến cập nhật ping thằng @duy103zxc nhé.
     * */
-    List<OrderMenuItem> findByFoodOrder_FoodOrderId(Integer foodOrderId);
-    List<OrderMenuItem> findByFoodOrder_Customer_CustomerId(Integer customerId);
-    void deleteByFoodOrder_Customer_CustomerId(Integer customerId);
+    List<OrderMenuItem> findByFoodOrder_FoodOrderId(int foodOrderId);
+    List<OrderMenuItem> findByFoodOrder_Customer_CustomerId(int customerId);
+    void deleteByFoodOrder_Customer_CustomerId(int customerId);
 
 }

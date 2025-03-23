@@ -97,7 +97,7 @@ public class OrderService {
     /**
      * Lấy danh sách đơn hàng theo khách hàng
      */
-    public ApiResponse<List<FoodOrder>> getOrdersByCustomer(Integer customerId) {
+    public ApiResponse<List<FoodOrder>> getOrdersByCustomer(int customerId) {
         List<FoodOrder> orders = foodOrderRepository.findByCustomer_CustomerId(customerId);
 
         ApiResponse<List<FoodOrder>> response = new ApiResponse<>();
@@ -111,7 +111,7 @@ public class OrderService {
     /**
      * Xem chi tiết đơn hàng
      */
-    public ApiResponse<FoodOrder> getOrderDetails(Integer orderId) {
+    public ApiResponse<FoodOrder> getOrderDetails(int orderId) {
         ApiResponse<FoodOrder> response = new ApiResponse<>();
 
         Optional<FoodOrder> orderOpt = foodOrderRepository.findById(orderId);

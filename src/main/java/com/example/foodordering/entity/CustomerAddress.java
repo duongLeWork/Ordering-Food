@@ -15,7 +15,7 @@ import jakarta.persistence.OneToOne;
 public class CustomerAddress {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer customerAddressId;
+    private int customerAddressId;
 
     @OneToOne
     @JoinColumn(name = "customer_id")

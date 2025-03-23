@@ -29,7 +29,7 @@ public class CustomerService {
     /**
      * Cập nhật thông tin khách hàng
      */
-    public ApiResponse<Customer> updateProfile(Integer customerId, Customer updatedCustomer) {
+    public ApiResponse<Customer> updateProfile(int customerId, Customer updatedCustomer) {
         ApiResponse<Customer> response = new ApiResponse<>();
 
         Optional<Customer> customerOpt = customerRepository.findById(customerId);
@@ -90,7 +90,7 @@ public class CustomerService {
     /**
      * Theo dõi trạng thái đơn hàng
      */
-    public ApiResponse<String> trackOrder(Integer orderId) {
+    public ApiResponse<String> trackOrder(int orderId) {
         ApiResponse<String> response = new ApiResponse<>();
 
         Optional<FoodOrder> orderOpt = foodOrderRepository.findById(orderId);
@@ -110,7 +110,7 @@ public class CustomerService {
     /**
      * Xem chi tiết đơn hàng
      */
-    public ApiResponse<FoodOrder> getOrderDetails(Integer orderId) {
+    public ApiResponse<FoodOrder> getOrderDetails(int orderId) {
         ApiResponse<FoodOrder> response = new ApiResponse<>();
 
         Optional<FoodOrder> orderOpt = foodOrderRepository.findById(orderId);

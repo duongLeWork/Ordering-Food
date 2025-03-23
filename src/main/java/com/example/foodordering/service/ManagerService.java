@@ -79,7 +79,7 @@ public class ManagerService {
     /**
      * Cập nhật thông tin món ăn
      */
-    public ApiResponse<Food> updateFood(Integer foodId, FoodRequest foodRequest) {
+    public ApiResponse<Food> updateFood(int foodId, FoodRequest foodRequest) {
         ApiResponse<Food> response = new ApiResponse<>();
         Optional<Food> foodOpt = foodRepository.findById(foodId);
         if (foodOpt.isEmpty()) {
@@ -107,7 +107,7 @@ public class ManagerService {
     /**
      * Xóa món ăn
      */
-    public ApiResponse<String> deleteFood(Integer foodId) {
+    public ApiResponse<String> deleteFood(int foodId) {
         ApiResponse<String> response = new ApiResponse<>();
 
         if (!foodRepository.existsById(foodId)) {

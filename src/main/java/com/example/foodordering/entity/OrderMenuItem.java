@@ -15,8 +15,8 @@ public class OrderMenuItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_menu_id") 
-    private Integer orderMenuId;
-    private Integer quantityOrdered;
+    private int orderMenuId;
+    private int quantityOrdered;
 
     @ManyToOne
     @JoinColumn(name = "food_id")

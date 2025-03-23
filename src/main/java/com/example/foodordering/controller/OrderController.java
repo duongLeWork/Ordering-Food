@@ -28,12 +28,12 @@ public class OrderController {
     }
 
     @GetMapping("/customer/{customerId}")
-    public ApiResponse<List<FoodOrder>> getOrdersByCustomer(@PathVariable Integer customerId) {
+    public ApiResponse<List<FoodOrder>> getOrdersByCustomer(@PathVariable int customerId) {
         return orderService.getOrdersByCustomer(customerId);
     }
 
     @GetMapping("/details/{orderId}")
-    public ApiResponse<FoodOrder> getOrderDetails(@PathVariable Integer orderId) {
+    public ApiResponse<FoodOrder> getOrderDetails(@PathVariable int orderId) {
         return orderService.getOrderDetails(orderId);
     }
 }

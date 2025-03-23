@@ -12,7 +12,7 @@ import jakarta.persistence.OneToOne;
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer addressId;
+    private int addressId;
     private String streetNumber;
     private String city;
     private String country;

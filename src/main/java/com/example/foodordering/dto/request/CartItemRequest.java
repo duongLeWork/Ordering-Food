@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class CartItemRequest {
-    private Integer customerId;
-    private Integer foodId;
-    private Integer quantity;
+    private int customerId;
+    private int foodId;
+    private int quantity;
 }

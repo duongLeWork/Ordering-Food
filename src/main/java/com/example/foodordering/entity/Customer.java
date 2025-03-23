@@ -14,7 +14,7 @@ import lombok.experimental.FieldDefaults;
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer customerId;
+    private int customerId;
     private String firstName;
     private String lastName;
     private String phoneNumber;

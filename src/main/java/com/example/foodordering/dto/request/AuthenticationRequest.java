@@ -1,23 +1,14 @@
 package com.example.foodordering.dto.request;
 
-
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.springframework.stereotype.Service;
 
-@Setter
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Service
-public class AccountUpdateRequest {
-
-    String firstname;
-    String lastname;
+public class AuthenticationRequest {
+    String username;
     String password;
-    String email;
-    String phoneNumber;
-
-
 }

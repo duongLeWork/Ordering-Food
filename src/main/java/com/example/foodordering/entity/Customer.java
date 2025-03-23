@@ -6,8 +6,6 @@ import lombok.experimental.FieldDefaults;
 
 @Data
 @Entity
-@Getter
-@Setter
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
@@ -17,8 +15,8 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
-    String firstName;
-    String lastName;
+    String firstname;
+    String lastname;
     String phoneNumber;
 
     @OneToOne

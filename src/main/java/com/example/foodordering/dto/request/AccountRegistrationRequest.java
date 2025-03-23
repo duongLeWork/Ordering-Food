@@ -3,7 +3,6 @@ package com.example.foodordering.dto.request;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.springframework.stereotype.Service;
 
 @Getter
 @Setter
@@ -11,9 +10,13 @@ import org.springframework.stereotype.Service;
 @Builder
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AccountCreationRequest {
+public class AccountRegistrationRequest {
 
-    Integer accountId;
+    String firstname;
+    String lastname;
+    String email;
+    String phoneNumber;
+    String role;
 
     @Size(min = 3, max = 50, message = "USERNAME_INVALID")
     String username;
@@ -21,7 +24,5 @@ public class AccountCreationRequest {
     @Size(min = 8, message = "PASSWORD_INVALID")
     String password;
 
-    String email;
-    String role;
 
 }

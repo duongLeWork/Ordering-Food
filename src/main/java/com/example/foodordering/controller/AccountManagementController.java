@@ -1,13 +1,12 @@
 package com.example.foodordering.controller;
 
-import com.example.foodordering.dto.request.AccountCreationRequest;
 import com.example.foodordering.dto.request.AccountUpdateRequest;
-import com.example.foodordering.dto.response.ApiResponse;
 import com.example.foodordering.dto.response.AccountResponse;
-import com.example.foodordering.entity.Account;
-import com.example.foodordering.service.AccountService;
+import com.example.foodordering.dto.response.ApiResponse;
+import com.example.foodordering.service.AccountManagementService;
+import com.example.foodordering.service.AccountRegistrationService;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,27 +16,18 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class AccounController {
+@RequestMapping("/manager/management")
+public class AccountManagementController {
 
     @Autowired
-    private AccountService accountService;
-
-
-    @PostMapping("/users")
-    public ApiResponse<AccountResponse> createAccount(@RequestBody @Valid AccountCreationRequest request) {
-        ApiResponse<AccountResponse> response = new ApiResponse<>();
-        AccountResponse accountResponse = accountService.createAccount(request);
-
-        response.setData(accountResponse);
-        return response;
-    }
+    private AccountManagementService accountManagementService;
 
     @PutMapping("{id}")
     public ApiResponse<AccountResponse> updateAccount(@PathVariable Long id,
                                                       @RequestBody AccountUpdateRequest request) {
         ApiResponse<AccountResponse> response = new ApiResponse<>();
 
-        AccountResponse accountResponse = accountService.updateAccount(id, request);
+        AccountResponse accountResponse = accountManagementService.updateAccount(id, request);
 
         response.setCode(1000);
         response.setMessage("Success");
@@ -49,13 +39,15 @@ public class AccounController {
 
     @DeleteMapping("{id}")
     public void deleteAccount(@PathVariable Long id) {
-        accountService.deleteAccount(id);
+        accountManagementService.deleteAccount(id);
     }
 
     @GetMapping("")
     public ApiResponse<List<AccountResponse>> getAllAccounts() {
         ApiResponse<List<AccountResponse>> response = new ApiResponse<>();
-        List<AccountResponse> accountResponse = accountService.getAllAccounts();
+
+        List<AccountResponse> accountResponse = accountManagementService.getAllAccounts();
+
         response.setCode(1000);
         response.setMessage("Success");
         response.setData(accountResponse);
@@ -68,8 +60,17 @@ public class AccounController {
         ApiResponse<AccountResponse> response = new ApiResponse<>();
         response.setCode(1000);
         response.setMessage("Success");
-        response.setData(accountService.getAccount(accountId));
+        response.setData(accountManagementService.getAccount(accountId));
 
         return response;
+    }
+
+    //    @GetMapping("/csrf-token")
+//    public CsrfToken getCsrfToken(HttpServletRequest request) {
+//        return (CsrfToken) request.getAttribute("_csrf");
+//    }
+    @GetMapping("/tuu")
+    public String greet(HttpServletRequest request) {
+        return "Token: "+request.getSession().getId();
     }
 }

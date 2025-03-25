@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Sub Sidebar</title>
+</head>
+<body>
+
+
+<div th:fragment="subsidebarTab" th:if="${activePage == 'paymentMethod' || activePage == 'userAccount'}" class="menu">
+    <ul>
+        <!-- User Account Link -->
+        <li>
+            <a th:href="@{user-account}"
+               th:classappend="${activePage == 'userAccount' ? ' active' : ''}">
+                User Account
+            </a>
+        </li>
+
+        <!-- Payment Method Link -->
+        <li>
+            <a th:href="@{payment-method}"
+               th:classappend="${activePage == 'paymentMethod' ? ' active' : ''}">
+                Payment Method
+            </a>
+        </li>
+    </ul>
+</div>
+</body>
+</html>

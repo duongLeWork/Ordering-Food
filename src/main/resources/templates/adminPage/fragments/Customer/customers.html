@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${pageTitle}">Customers</title>
+</head>
+<body>
+<div th:fragment="customerList" th:if="${activePage == 'customers'}">
+  //content go here
+</div>
+</body>
+</html>

@@ -6,48 +6,54 @@
 </head>
 <body>
 <div th:fragment="categoriesList" th:if="${activePage == 'categories'}">
-    <div class="w-100 d-flex justify-content-between align-items-center" >
+    <div class="actionBar w-100 d-flex justify-content-between align-items-center" >
         <!-- Search Box -->
-        <div>
-            <input type="text" class="form-control" placeholder="Search for products..." style="width: 300px;">
+        <div class="searchbox position-relative">
+            <input type="text" class="form-control h-100 pl-5" placeholder="Search for products...">
+            <i class="fa-solid fa-magnifying-glass search-icon position-absolute"></i>
         </div>
         <!-- Filter Dropdown -->
-        <div class="dropdown me-3">
-            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                Filter
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="filterDropdown">
-                <!-- Dynamically display filters based on the active page -->
-                <li th:each="filter : ${filters}">
-                    <a class="dropdown-item" href="#" th:text="${filter}"></a>
-                </li>
-            </ul>
+        <div class="filterDrop">
+            <div class="filter dropdown ">
+                <button class="h-100 w-100 btn btn-outline-secondary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    Filter
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="filterDropdown">
+                    <!-- Dynamically display filters based on the active page -->
+                    <li th:each="filter : ${filters}">
+                        <a class="dropdown-item" href="#" th:text="${filter}" th:data-filter="${filter}"></a>
+                    </li>
+                </ul>
+            </div>
         </div>
         <!-- Button to Add New Product -->
-        <div>
-            <button class="btn btn-primary">Add New Product</button>
+        <div class="addNewP">
+            <button class="w-100 h-100 btn">Add New Product</button>
         </div>
     </div>
     <!-- Categories content here -->
     <table class="table table-striped">
         <thead>
-        <tr>
-            <th>No</th>
-            <th>Category</th>
-            <th>Variant Price</th>
-            <th>Status</th>
-            <th>Action</th>
+        <tr class="tblhea">
+            <th class="tblcell">No</th>
+            <th class="tblcell">Category</th>
+            <th class="tblcell">Variant Price</th>
+            <th class="tblcell">Status</th>
+            <th class="tblcell">Action</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="category : ${categories}">
-            <td th:text="${category.id}"></td>
-            <td th:text="${category.name}"></td>
-            <td th:text="${category.variantPrice}"></td>
-            <td>
-                <input type="checkbox" th:checked="${category.status}" />
+        <tr class="tblcont" th:each="category : ${categories}">
+            <td class="tblcell" th:text="${category.id}"></td>
+            <td class="tblcell" th:text="${category.name}"></td>
+            <td class="tblcell" th:text="${category.variantPrice}"></td>
+            <td class="tblcell">
+                <i th:class="${category.isAvailable ? 'fa-solid fa-toggle-on text-success' : 'fa-solid fa-toggle-off text-danger'}"
+                   th:attr="data-category-id=${category.id}"
+                   style="cursor: pointer; font-size: 20px;">
+                </i>
             </td>
-            <td>
+            <td class="tblcell">
                 <button class="btn btn-sm btn-secondary">Edit</button>
                 <button class="btn btn-sm btn-danger">Delete</button>
             </td>

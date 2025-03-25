@@ -23,12 +23,22 @@ import java.util.List;
 public class AdminController {
     @GetMapping("/product-list")
     public String productListPage(Model model) {
+        // Sample category data
+        Category pizzaCategory = new Category(1, "Pizza", "Additional Price");
+        Category drinkCategory = new Category(2, "Drink", "Specific Price");
+        Category pastaCategory = new Category(3, "Pasta", "Specific Price");
+
+        // Sample product data with associated categories
         List<Product> products = Arrays.asList(
-                new Product(1, "Pepperoni Pizza", 5.00, 30, "/images/pizza.jpg", true),
-                new Product(2, "Cheese Pizza", 4.50, 25, "/images/cheese-pizza.jpg", true),
-                new Product(3, "Veggie Pizza", 4.00, 20, "/images/veggie-pizza.jpg", false)
+                new Product(1, "Pepperoni Pizza", 5.00, 30, "/images/pizza.jpg", true, pizzaCategory),
+                new Product(2, "Cheese Pizza", 4.50, 25, "/images/cheese-pizza.jpg", true, pizzaCategory),
+                new Product(3, "Veggie Pizza", 4.00, 20, "/images/veggie-pizza.jpg", false, pizzaCategory)
         );
 
+        // Example filters list
+        List<String> filters = Arrays.asList("Price Range", "Category Type", "Availability");
+
+        model.addAttribute("filters", filters);
         model.addAttribute("products", products);
         model.addAttribute("pageTitle", "Product List");
         model.addAttribute("pagePath", "Master Data / Product / Product List");
@@ -126,11 +136,18 @@ public class AdminController {
     }
     @GetMapping("/customers")
     public String CustomerPage(Model model) {
-        //data go here
+        // Create sample customer data
+        List<Customer> customers = Arrays.asList(
+                new Customer(1L, "John Santos", "(012) 345-6789", "john-santos@mail.om", new BigDecimal(1290), 120),
+                new Customer(2L, "Jane Doe", "(013) 345-6789", "jane.doe@mail.om", new BigDecimal(850), 90),
+                new Customer(3L, "Alex Smith", "(014) 345-6789", "alex.smith@mail.om", new BigDecimal(2200), 150)
+        );
 
+        model.addAttribute("customers", customers);
         model.addAttribute("pageTitle", "Customers");
         model.addAttribute("pagePath", "Main Menu / Customers");
         model.addAttribute("activePage", "customers");
+
         return "adminPage/index";
     }
 

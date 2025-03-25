@@ -5,14 +5,14 @@ public class Category {
     private int id;
     private String name;
     private String variantPrice;  // Price type (e.g., Additional Price, Specific Price)
-    private boolean status;       // Status (active or inactive)
+    private boolean isAvailable;       // Status (active or inactive)
 
     // Constructor
     public Category(int id, String name, String variantPrice) {
         this.id = id;
         this.name = name;
         this.variantPrice = variantPrice;
-        this.status = true; // Default status is active
+        this.isAvailable = true; // Default status is active
     }
 
     // Getters and Setters
@@ -40,11 +40,11 @@ public class Category {
         this.variantPrice = variantPrice;
     }
 
-    public boolean isStatus() {
-        return status;
+    public boolean isAvailable() {
+        return isAvailable;
     }
 
-    public void setStatus(boolean status) {
-        this.status = status;
+    public void setAvailable(boolean isAvailable) {
+        this.isAvailable = isAvailable;
     }
 }

@@ -5,14 +5,14 @@ body {
 }
 
 div.container.body {
-    width: 328px;
+    width: 30%;
     height: 100%;
     margin: 0;
     padding: 0;
     background: #FCF8EF;
 }
 .col-md-3 {
-    width: 328px;
+    width: 100%;
     padding: 30px;
     background: #FCF8EF;
 }

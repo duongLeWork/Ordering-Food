@@ -6,7 +6,68 @@
 </head>
 <body>
 <div th:fragment="customerList" th:if="${activePage == 'customers'}">
-  //content go here
+  <!-- Customers Page Content -->
+  <div class="container mt-4">
+    <h1 th:text="${pageTitle}">Customers</h1>
+
+    <!-- Search and Filter Section -->
+    <div class="d-flex justify-content-between mb-3">
+      <input type="text" class="form-control w-25" placeholder="Search" />
+      <select class="form-select w-25">
+        <option selected>All Status</option>
+        <option value="1">Active</option>
+        <option value="2">Inactive</option>
+      </select>
+      <div>
+        <input type="text" class="form-control" placeholder="10 Jan - 20 Jan" />
+        <button class="btn btn-primary">Export</button>
+      </div>
+    </div>
+
+    <!-- Customers Table -->
+    <table class="table table-bordered">
+      <thead>
+      <tr>
+        <th>No</th>
+        <th>Name</th>
+        <th>Phone No.</th>
+        <th>Total Spent</th>
+        <th>Last Active</th>
+        <th>Action</th>
+      </tr>
+      </thead>
+      <tbody>
+      <!-- Iterate through the customers passed from the controller -->
+      <tr th:each="customer : ${customers}">
+        <td th:text="${customer.id}">1</td>
+        <td th:text="${customer.name}">John Santos</td>
+        <td th:text="${customer.phoneNo}">(012) 345-6789</td>
+        <td th:text="${customer.totalSpent}">$1,290.00</td>
+        <td th:text="${customer.lastActiveOrders}">120 Orders</td>
+        <td>
+          <a href="#" class="btn btn-sm btn-outline-primary">
+            <i class="fa-solid fa-eye"></i> View
+          </a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <div class="d-flex justify-content-between mt-4">
+            <span>Rows per page: <select class="form-select w-auto">
+                <option value="10" selected>10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+            </select></span>
+      <div>
+        <button class="btn btn-outline-secondary">1</button>
+        <button class="btn btn-outline-secondary">2</button>
+        <button class="btn btn-outline-secondary">3</button>
+        <button class="btn btn-outline-secondary">Next</button>
+      </div>
+    </div>
+  </div>
 </div>
 </body>
 </html>

@@ -5,17 +5,9 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "Order_Status")
 public class OrderStatus {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Order_status_ID")
     private Long orderStatusId;
-
-    @Column(name = "Status")
     private String status;
-
-    @OneToMany(mappedBy = "orderStatus")
     private List<FoodOrder> foodOrders;
 
     // Constructor

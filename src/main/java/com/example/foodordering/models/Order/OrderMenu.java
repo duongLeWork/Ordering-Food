@@ -6,17 +6,9 @@ import java.util.List;
 
 
 @Entity
-@Table(name = "Order_Menu")
 public class OrderMenu {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Order_Menu_ID")
     private Long orderMenuId;
-
-    @Column(name = "Menu_Item")
     private String menuItem;
-
-    @OneToMany(mappedBy = "orderMenu")
     private List<FoodOrder> foodOrders;
 
     // Constructor

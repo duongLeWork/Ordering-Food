@@ -1,0 +1,30 @@
+.ccolumn {
+    flex:0 0 auto;
+    width:33%;
+    background: #FCF8EF
+}
+
+.ccolumn.h {
+    height: auto;
+}
+.cusU > li.active > .cusC{
+        background-color: #EF6B27;
+        color: #FCF8EF;
+        height:124px;
+}
+.cusU > li > .cusC{
+        height:124px !important;
+}
+.cusB {
+    height:124px;
+}
+
+.cusU > .cusB > .cusC i {
+    font-size: 30px !important;
+    padding-right: 10px;
+}
+
+.small-text2{
+    font-size:12px;
+    margin-top:5px
+}

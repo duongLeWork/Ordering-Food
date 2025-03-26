@@ -22,7 +22,9 @@ import java.util.List;
 @RequestMapping("/admin")
 public class AdminController {
     @GetMapping("/product-list")
-    public String productListPage(Model model) {
+    public String productListPage(Model model,
+                                  @RequestParam(defaultValue = "1") int page,
+                                  @RequestParam(defaultValue = "5") int rowsPerPage){
         // Sample category data
         Category pizzaCategory = new Category(1, "Pizza", "Additional Price");
         Category drinkCategory = new Category(2, "Drink", "Specific Price");
@@ -32,14 +34,31 @@ public class AdminController {
         List<Product> products = Arrays.asList(
                 new Product(1, "Pepperoni Pizza", 5.00, 30, "/images/pizza.jpg", true, pizzaCategory),
                 new Product(2, "Cheese Pizza", 4.50, 25, "/images/cheese-pizza.jpg", true, pizzaCategory),
-                new Product(3, "Veggie Pizza", 4.00, 20, "/images/veggie-pizza.jpg", false, pizzaCategory)
+                new Product(3, "Veggie Pizza", 4.00, 20, "/images/veggie-pizza.jpg", false, pizzaCategory),
+                new Product(4, "BBQ Pizza", 6.00, 40, "/images/pizza.jpg", true, pizzaCategory),
+                new Product(5, "Margarita Pizza", 5.50, 15, "/images/pizza.jpg", false, pizzaCategory),
+                new Product(6, "Coca Cola", 1.50, 100, "/images/pizza.jpg", true, drinkCategory),
+                new Product(7, "Pepsi", 1.30, 80, "/images/pizza.jpg", true, drinkCategory),
+                new Product(8, "Pasta Carbonara", 7.50, 50, "/images/pizza.jpg", true, pastaCategory),
+                new Product(9, "Spaghetti", 6.00, 30, "/images/pizza.jpg", true, pastaCategory)
         );
+        // Calculate total pages
+        int totalProducts = products.size();
+        int totalPages = (int) Math.ceil((double) totalProducts / rowsPerPage);
 
+        // Handle pagination logic
+        int start = (page - 1) * rowsPerPage;
+        int end = Math.min(start + rowsPerPage, totalProducts);
+        List<Product> pagedProducts = products.subList(start, end);
         // Example filters list
         List<String> filters = Arrays.asList("Price Range", "Category Type", "Availability");
 
+        model.addAttribute("products", pagedProducts);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("rowsPerPage", rowsPerPage);
         model.addAttribute("filters", filters);
-        model.addAttribute("products", products);
+        model.addAttribute("path", "/admin/product-list");
         model.addAttribute("pageTitle", "Product List");
         model.addAttribute("pagePath", "Master Data / Product / Product List");
         model.addAttribute("activePage", "productList");
@@ -47,20 +66,34 @@ public class AdminController {
         return "adminPage/index";  // This corresponds to the Thymeleaf template (product-list.html)
     }
     @GetMapping("/categories")
-    public String categoriesPage(Model model) {
+    public String categoriesPage(Model model,
+                                 @RequestParam(defaultValue = "1") int page,
+                                 @RequestParam(defaultValue = "5") int rowsPerPage) {
         // Sample categories data
         List<Category> categories = Arrays.asList(
                 new Category(1, "Pizza", "Additional Price"),
                 new Category(2, "Drink", "Specific Price"),
                 new Category(3, "Pasta", "Specific Price")
         );
-        model.addAttribute("categories", categories);
+        // Pagination logic
+        int totalCategories = categories.size();
+        int totalPages = (int) Math.ceil((double) totalCategories / rowsPerPage);
+        int start = (page - 1) * rowsPerPage;
+        int end = Math.min(start + rowsPerPage, totalCategories);
+        List<Category> pagedCategories = categories.subList(start, end);
+
+        model.addAttribute("categories", pagedCategories);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("rowsPerPage", rowsPerPage);
+        model.addAttribute("path", "/admin/categories");
         model.addAttribute("pageTitle", "Categories");
         model.addAttribute("activePage", "categories");
         model.addAttribute("pagePath", "Master Data / Product / Categories");
         model.addAttribute("filters", Arrays.asList("Price Range", "Category Type", "Availability"));
         return "adminPage/index";
     }
+
 
     @GetMapping("/settings/user-account")
     public String usersAccountPage(Model model) {

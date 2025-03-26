@@ -25,3 +25,9 @@ tr.tblcont {
     font-size: 14px;
     color: #818181;
 }
+.text-danger {
+    color: #818181 !important;
+}
+.text-success {
+    color: #EF6B27 !important;
+}

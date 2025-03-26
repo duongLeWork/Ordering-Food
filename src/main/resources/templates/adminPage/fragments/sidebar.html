@@ -65,7 +65,7 @@
                       </li>
                     </ul>
                   </li>
-                  <li th:classappend="${activePage == 'settings' ? ' active' : ''}"><a th:href="@{/admin/settings/user-account}"><i class="fa-solid fa-gear"></i> Setting </a></li>
+                  <li th:classappend="${activePage == 'paymentMethod' || activePage == 'userAccount' ? ' active' : ''}"><a th:href="@{/admin/settings/user-account}"><i class="fa-solid fa-gear"></i> Setting </a></li>
                 </ul>
               </div>
             </div>

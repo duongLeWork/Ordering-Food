@@ -24,7 +24,7 @@ public class GuestController {
 
     /**
      * Retrieves all available dishes.
-     *
+     * Danh sách món ăn (Dishes List): GET /api/dishes
      * @return ApiResponse containing the list of available dishes.
      */
     @GetMapping("/dishes")
@@ -34,14 +34,26 @@ public class GuestController {
 
     /**
      * Searches for dishes by keyword (case-insensitive).
-     *
-     * @param request the search term for food names.
+     * Tìm kiếm món ăn (Search Dishes): GET /api/dishes?keyword={keyword}
+     * @param keyword, sortBy, category, maxResults
      * @return ApiResponse containing matching dishes.
      */
-    @PostMapping("/dishes/search")
-    public ApiResponse<List<FoodResponse>> searchDishes(@RequestBody @Valid SearchFoodRequest request) {
+    @GetMapping("/dishes")
+    public ApiResponse<List<FoodResponse>> searchDishes(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) Integer maxResults) {
+
+        SearchFoodRequest request = new SearchFoodRequest();
+        request.setKeyword(keyword);
+        request.setSortBy(sortBy);
+        request.setCategory(category);
+        request.setMaxResults(maxResults);
+
         return guestService.searchDishes(request);
     }
+
     /**
      * Retrieves a sorted list of available dishes based on sorting criteria.
      *
@@ -63,14 +75,5 @@ public class GuestController {
     public ApiResponse<FoodResponse> getFoodDetails(@PathVariable int foodId) {
         return guestService.getFoodDetails(foodId);
     }
-    /**
-     * Recommend similar dishes
-     *
-     * @param request the name of the dish.
-     * @return ApiResponse list of similar foods.
-     */
-    @GetMapping("/dishes/recommendations")
-    public ApiResponse<List<FoodResponse>> recommendDishes(@RequestBody @Valid SearchFoodRequest request) {
-        return guestService.recommendDishes(request);
-    }
+
 }

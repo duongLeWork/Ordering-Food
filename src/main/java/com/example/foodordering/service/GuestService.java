@@ -9,10 +9,7 @@ import com.example.foodordering.repository.FoodRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Service to handle guest-related operations, such as retrieving available dishes,
@@ -89,39 +86,6 @@ public class GuestService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Food not found"));
         return ApiResponse.build(1000, "Success", foodResponseMapper.toFoodResponse(food));
     }
-
-//    /**
-//     * Recommends food items similar to the search keyword.
-//     *
-//     * @param request the food item name to base recommendations on
-//     * @return ApiResponse containing recommended dishes.
-//     */
-//    public ApiResponse<List<FoodResponse>> recommendDishes(SearchFoodRequest request) {
-//        // Validate the keyword
-//        if (request.getKeyword().trim().isEmpty()) {
-//            return ApiResponse.build(1404, "Failed", null);
-//        }
-//
-//        // Find a reference food item
-//        Optional<Food> referenceFood = foodRepository.findFirstByNameContainingIgnoreCase(request.getKeyword());
-//
-//        if (referenceFood.isEmpty()) {
-//            return ApiResponse.build(1404, "Failed", null);
-//        }
-//
-//        BigDecimal minPrice = referenceFood.get().getPrice().multiply(new BigDecimal("0.8"));
-//        BigDecimal maxPrice = referenceFood.get().getPrice().multiply(new BigDecimal("1.2"));
-//
-//        List<FoodResponse> recommendations = foodRepository
-//                .findSimilarDishes(minPrice, maxPrice, referenceFood.get().getFoodId())
-//                .stream()
-//                .map(foodResponseMapper::toFoodResponse)
-//                .toList();
-//
-//        return recommendations.isEmpty()
-//                ? ApiResponse.build(1404, "Failed", null)
-//                : ApiResponse.build(1000, "Success", recommendations);
-//    }
 
 }
 

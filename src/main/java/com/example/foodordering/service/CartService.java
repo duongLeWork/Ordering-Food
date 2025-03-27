@@ -27,6 +27,7 @@ public class CartService {
     private final CustomerRepository customerRepository;
     private final FoodOrderRepository foodOrderRepository; // Inject FoodOrderRepository
     private final OrderStatusRepository orderStatusRepository;
+
     public CartService(OrderMenuItemRepository orderMenuItemRepository, FoodRepository foodRepository,
                        CustomerRepository customerRepository, FoodOrderRepository foodOrderRepository,
                        OrderStatusRepository orderStatusRepository) {
@@ -45,7 +46,7 @@ public class CartService {
      */
     public ApiResponse<List<OrderMenuItem>> getCart(int customerId) {
         Optional<FoodOrder> cartOrder = foodOrderRepository.findByCustomer_IdAndOrderStatus_StatusValue(customerId, false);
-        // Giả sử false là trạng thái giỏ hàng, hàng ở đây là chưa được đặt hàng, mà mới chỉ để vào giỏ hàng
+        // Giả sử statusValue = false là trạng thái giỏ hàng, hàng ở đây là chưa được đặt hàng, mà mới chỉ để vào giỏ hàng
 
         if (cartOrder.isPresent()) {
             List<OrderMenuItem> cartItems = orderMenuItemRepository.findByFoodOrder_Id(cartOrder.get().getId());

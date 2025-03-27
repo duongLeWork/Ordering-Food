@@ -3,10 +3,8 @@ package com.example.foodordering.dto.request;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
-import java.math.BigDecimal;
-
 @Data
-public class FoodRequest {
+public class SearchFoodRequest {
     @NotBlank(message = "Keyword must not be empty")
     private String keyword;
 

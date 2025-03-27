@@ -1,12 +1,11 @@
 package com.example.foodordering.service;
 
-import com.example.foodordering.dto.request.FoodRequest;
+import com.example.foodordering.dto.request.SearchFoodRequest;
 import com.example.foodordering.dto.response.ApiResponse;
 import com.example.foodordering.dto.response.FoodResponse;
 import com.example.foodordering.entity.Food;
-import com.example.foodordering.mapper.FoodMapper;
+import com.example.foodordering.mapper.FoodResponseMapper;
 import com.example.foodordering.repository.FoodRepository;
-import com.example.foodordering.service.GuestService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -27,7 +26,7 @@ class GuestServiceTest {
     private FoodRepository foodRepository;
 
     @Mock
-    private FoodMapper foodMapper;
+    private FoodResponseMapper foodResponseMapper;
 
     @InjectMocks
     private GuestService guestService;
@@ -48,7 +47,7 @@ class GuestServiceTest {
                 new FoodResponse(2, "Burger", new BigDecimal("8.99"), "Beef burger", "burger.jpg")
         );
         when(foodRepository.findByIsAvailableTrue()).thenReturn(mockDishes);
-        when(foodMapper.toFoodResponse(any(Food.class))).thenAnswer(invocation -> {
+        when(foodResponseMapper.toFoodResponse(any(Food.class))).thenAnswer(invocation -> {
             Food food = invocation.getArgument(0);
             return new FoodResponse(food.getFoodId(), food.getName(), food.getPrice(), food.getDescription(), food.getImage());
         });
@@ -62,13 +61,13 @@ class GuestServiceTest {
 
     @Test
     void testSearchDishes_WhenMatchesFound() {
-        FoodRequest request = new FoodRequest();
+        SearchFoodRequest request = new SearchFoodRequest();
         request.setKeyword("Pizza");
         List<Food> mockDishes = List.of(new Food(1, "Pizza", new BigDecimal("10.99"), "Cheese pizza", "pizza.jpg", true));
         List<FoodResponse> mockResponses = List.of(new FoodResponse(1, "Pizza", new BigDecimal("10.99"), "Cheese pizza", "pizza.jpg"));
 
         when(foodRepository.findByNameContainingIgnoreCase("Pizza")).thenReturn(mockDishes);
-        when(foodMapper.toFoodResponse(any(Food.class))).thenAnswer(invocation -> {
+        when(foodResponseMapper.toFoodResponse(any(Food.class))).thenAnswer(invocation -> {
             Food food = invocation.getArgument(0);
             return new FoodResponse(food.getFoodId(), food.getName(), food.getPrice(), food.getDescription(), food.getImage());
         });
@@ -87,7 +86,7 @@ class GuestServiceTest {
         FoodResponse mockResponse = new FoodResponse(1, "Pizza", new BigDecimal("10.99"), "Cheese pizza", "pizza.jpg");
 
         when(foodRepository.findById(1)).thenReturn(Optional.of(mockFood));
-        when(foodMapper.toFoodResponse(mockFood)).thenReturn(mockResponse);
+        when(foodResponseMapper.toFoodResponse(mockFood)).thenReturn(mockResponse);
 
         ApiResponse<FoodResponse> response = guestService.getFoodDetails(1);
 

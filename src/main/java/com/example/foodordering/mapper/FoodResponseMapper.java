@@ -5,6 +5,6 @@ import com.example.foodordering.entity.Food;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
-public interface FoodMapper {
+public interface FoodResponseMapper {
     FoodResponse toFoodResponse(Food food);
 }

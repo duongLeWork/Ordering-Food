@@ -1,9 +1,8 @@
 package com.example.foodordering.controller;
 
-import com.example.foodordering.dto.request.FoodRequest;
+import com.example.foodordering.dto.request.SearchFoodRequest;
 import com.example.foodordering.dto.response.ApiResponse;
 import com.example.foodordering.dto.response.FoodResponse;
-import com.example.foodordering.entity.Food;
 import com.example.foodordering.service.GuestService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -40,7 +39,7 @@ public class GuestController {
      * @return ApiResponse containing matching dishes.
      */
     @PostMapping("/dishes/search")
-    public ApiResponse<List<FoodResponse>> searchDishes(@RequestBody @Valid FoodRequest request) {
+    public ApiResponse<List<FoodResponse>> searchDishes(@RequestBody @Valid SearchFoodRequest request) {
         return guestService.searchDishes(request);
     }
     /**
@@ -50,7 +49,7 @@ public class GuestController {
      * @return ApiResponse containing sorted dishes.
      */
     @GetMapping("/dishes")
-    public ApiResponse<List<FoodResponse>> getDishes(@RequestBody @Valid FoodRequest request) {
+    public ApiResponse<List<FoodResponse>> getDishes(@RequestBody @Valid SearchFoodRequest request) {
         return guestService.getSortedDishes(request);
     }
 
@@ -71,7 +70,7 @@ public class GuestController {
      * @return ApiResponse list of similar foods.
      */
     @GetMapping("/dishes/recommendations")
-    public ApiResponse<List<FoodResponse>> recommendDishes(@RequestBody @Valid FoodRequest request) {
+    public ApiResponse<List<FoodResponse>> recommendDishes(@RequestBody @Valid SearchFoodRequest request) {
         return guestService.recommendDishes(request);
     }
 }

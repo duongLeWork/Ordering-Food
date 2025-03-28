@@ -49,7 +49,7 @@ class GuestServiceTest {
         when(foodRepository.findByIsAvailableTrue()).thenReturn(mockDishes);
         when(foodResponseMapper.toFoodResponse(any(Food.class))).thenAnswer(invocation -> {
             Food food = invocation.getArgument(0);
-            return new FoodResponse(food.getFoodId(), food.getName(), food.getPrice(), food.getDescription(), food.getImage());
+            return new FoodResponse(food.getId(), food.getName(), food.getPrice(), food.getDescription(), food.getImage());
         });
 
         ApiResponse<List<FoodResponse>> response = guestService.getAvailableDishes();
@@ -69,7 +69,7 @@ class GuestServiceTest {
         when(foodRepository.findByNameContainingIgnoreCase("Pizza")).thenReturn(mockDishes);
         when(foodResponseMapper.toFoodResponse(any(Food.class))).thenAnswer(invocation -> {
             Food food = invocation.getArgument(0);
-            return new FoodResponse(food.getFoodId(), food.getName(), food.getPrice(), food.getDescription(), food.getImage());
+            return new FoodResponse(food.getId(), food.getName(), food.getPrice(), food.getDescription(), food.getImage());
         });
 
         ApiResponse<List<FoodResponse>> response = guestService.searchDishes(request);

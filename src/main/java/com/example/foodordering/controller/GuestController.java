@@ -14,6 +14,7 @@ import java.util.List;
  * searching for food, sorting, and filtering by category.
  */
 @RestController
+@RequestMapping("/api") // Thêm @RequestMapping("/api") ở cấp class
 public class GuestController {
 
     private final GuestService guestService;
@@ -38,7 +39,7 @@ public class GuestController {
      * @param keyword, sortBy, category, maxResults
      * @return ApiResponse containing matching dishes.
      */
-    @GetMapping("/dishes")
+    @GetMapping("/dishes/search") // Đổi thành /dishes/search
     public ApiResponse<List<FoodResponse>> searchDishes(
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) String sortBy,
@@ -60,7 +61,7 @@ public class GuestController {
      * @param request sorting option (e.g., "price_asc", "price_desc").
      * @return ApiResponse containing sorted dishes.
      */
-    @GetMapping("/dishes")
+    @GetMapping("/dishes/sort") // Đổi thành /dishes/sorted
     public ApiResponse<List<FoodResponse>> getDishes(@RequestBody @Valid SearchFoodRequest request) {
         return guestService.getSortedDishes(request);
     }
@@ -75,5 +76,4 @@ public class GuestController {
     public ApiResponse<FoodResponse> getFoodDetails(@PathVariable int foodId) {
         return guestService.getFoodDetails(foodId);
     }
-
 }

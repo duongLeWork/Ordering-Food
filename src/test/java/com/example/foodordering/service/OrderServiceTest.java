@@ -119,7 +119,7 @@
 //        when(orderMenuItemRepository.save(any(OrderMenuItem.class))).thenReturn(cartItem1).thenReturn(cartItem2);
 //        when(foodOrderRepository.findById(200)).thenReturn(Optional.of(placedOrder1));
 //        when(foodOrderRepository.findById(201)).thenReturn(Optional.of(placedOrder2));
-//        when(foodOrderRepository.findByCustomer_IdAndOrderStatus_StatusValue(customer.getId(), true))
+//        when(foodOrderRepository.findByCustomer_idAndOrderStatus_StatusValue(customer.getId(), true))
 //                .thenReturn(Arrays.asList(placedOrder1, placedOrder2));
 //        when(cartService.getCart(customer.getId())).thenReturn(ApiResponse.build(1000, "Success", Arrays.asList(cartItem1, cartItem2)));
 //        doNothing().when(cartService).clearCart(customer.getId());
@@ -163,12 +163,12 @@
 //        assertEquals(2, response.getData().size());
 //        assertEquals(placedOrder1.getId(), response.getData().get(0).getId());
 //        assertEquals(placedOrder2.getId(), response.getData().get(1).getId());
-//        verify(foodOrderRepository, times(1)).findByCustomer_IdAndOrderStatus_StatusValue(customer.getId(), true);
+//        verify(foodOrderRepository, times(1)).findByCustomer_idAndOrderStatus_StatusValue(customer.getId(), true);
 //    }
 //
 //    @Test
 //    void getOrderList_WhenNoOrdersExistForCustomer_ReturnsEmptyList() {
-//        when(foodOrderRepository.findByCustomer_IdAndOrderStatus_StatusValue(customer.getId(), true))
+//        when(foodOrderRepository.findByCustomer_idAndOrderStatus_StatusValue(customer.getId(), true))
 //                .thenReturn(Collections.emptyList());
 //
 //        ApiResponse<List<FoodOrder>> response = orderService.getOrderList(customer.getId());
@@ -176,7 +176,7 @@
 //        assertEquals(1000, response.getCode());
 //        assertEquals("Success", response.getMessage());
 //        assertTrue(response.getData().isEmpty());
-//        verify(foodOrderRepository, times(1)).findByCustomer_IdAndOrderStatus_StatusValue(customer.getId(), true);
+//        verify(foodOrderRepository, times(1)).findByCustomer_idAndOrderStatus_StatusValue(customer.getId(), true);
 //    }
 //
 //    @Test

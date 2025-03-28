@@ -16,7 +16,7 @@ import lombok.experimental.FieldDefaults;
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer accountId;
+    long accountId;
 
     String username;
     String password;

@@ -84,7 +84,7 @@ public class OrderService {
      * @return ApiResponse containing a list of FoodOrder.
      */
     public ApiResponse<List<FoodOrder>> getOrderList(int customerId) {
-        List<FoodOrder> orders = foodOrderRepository.findByCustomer_IdAndOrderStatus_StatusValue(customerId, true);
+        List<FoodOrder> orders = foodOrderRepository.findByCustomer_idAndOrderStatus_StatusValue(customerId, true);
         return ApiResponse.build(1000, "Success", orders);
     }
 

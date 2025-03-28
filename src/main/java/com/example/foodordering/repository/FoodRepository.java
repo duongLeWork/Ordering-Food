@@ -43,12 +43,4 @@ public interface FoodRepository extends JpaRepository<Food, Integer> {
      */
     List<Food> findByIsAvailableTrue();
 
-    /**
-     * Tìm các món ăn theo danh mục và đang có sẵn.
-     * SELECT * FROM food f
-     * WHERE f.category = ? AND f.is_available = true;
-     * @param category Danh mục món ăn.
-     * @return Danh sách món ăn phù hợp.
-     */
-    List<Food> findByCategoryAndIsAvailableTrue(String category);
 }

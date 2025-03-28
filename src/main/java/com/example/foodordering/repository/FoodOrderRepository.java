@@ -16,6 +16,6 @@ public interface FoodOrderRepository extends JpaRepository<FoodOrder, Integer> {
      * @param statusValue Giá trị trạng thái của đơn hàng (true: đã đặt hàng, false: trong giỏ hàng).
      * @return Danh sách đơn hàng thỏa mãn điều kiện.
      */
-    List<FoodOrder> findByCustomer_IdAndOrderStatus_StatusValue(int customerId, boolean statusValue);
+    List<FoodOrder> findByCustomer_idAndOrderStatus_StatusValue(int customerId, boolean statusValue);
     List<FoodOrder> findByOrderStatus_StatusValue(boolean statusValue);
 }

@@ -12,8 +12,8 @@ public class FoodOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private int totalItems; // Có thể là tổng giá trị đơn hàng
-    private BigDecimal price;       // Cần làm rõ mục đích sử dụng
+    private int totalItems;
+    private BigDecimal price;
 
     @ManyToOne
     @JoinColumn(name = "customer_id")

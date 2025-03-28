@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Service to handle guest-related operations, such as retrieving available dishes,
@@ -68,13 +69,23 @@ public class GuestService {
      * @return ApiResponse containing sorted dishes.
      */
     public ApiResponse<List<FoodResponse>> getSortedDishes(SearchFoodRequest request) {
-        String order = "price_asc".equals(request.getSortBy()) ? "ASC" : "DESC";
-        List<FoodResponse> sortedDishes = foodRepository.findAvailableDishesSorted(order)
-                .stream()
+        List<Food> sortedDishes;
+        if ("price_asc".equals(request.getSortBy())) {
+            sortedDishes = foodRepository.findByIsAvailableTrueOrderByPriceAsc();
+        } else if ("price_desc".equals(request.getSortBy())) {
+            sortedDishes = foodRepository.findByIsAvailableTrueOrderByPriceDesc();
+        } else {
+            // Mặc định sắp xếp theo giá tăng nếu không có tiêu chí hoặc tiêu chí không hợp lệ
+            sortedDishes = foodRepository.findByIsAvailableTrueOrderByPriceAsc();
+        }
+
+        List<FoodResponse> foodResponses = sortedDishes.stream()
                 .map(foodResponseMapper::toFoodResponse)
-                .toList();
-        return ApiResponse.build(1000, "Success", sortedDishes);
+                .collect(Collectors.toList());
+
+        return ApiResponse.build(1000, "Success", foodResponses);
     }
+
     /**
      * Retrieves details of a specific food item.
      *

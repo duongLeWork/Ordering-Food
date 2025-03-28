@@ -10,6 +10,7 @@ import com.example.foodordering.repository.FoodRepository;
 import com.example.foodordering.repository.OrderMenuItemRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
@@ -20,6 +21,7 @@ import java.util.Optional;
  * Service to manage cart operations including adding, updating, retrieving, and deleting cart items.
  */
 @Service
+@Transactional
 public class CartService {
 
     private final OrderMenuItemRepository orderMenuItemRepository;
@@ -45,14 +47,14 @@ public class CartService {
      * @return ApiResponse containing cart items or an empty list if the cart is empty.
      */
     public ApiResponse<List<OrderMenuItem>> getCart(int customerId) {
-        Optional<FoodOrder> cartOrder = foodOrderRepository.findByCustomer_IdAndOrderStatus_StatusValue(customerId, false);
-        // Giả sử statusValue = false là trạng thái giỏ hàng, hàng ở đây là chưa được đặt hàng, mà mới chỉ để vào giỏ hàng
+        List<FoodOrder> cartOrders = foodOrderRepository.findByCustomer_IdAndOrderStatus_StatusValue(customerId, false);
+        // Giả sử statusValue = false là trạng thái giỏ hàng
 
-        if (cartOrder.isPresent()) {
-            List<OrderMenuItem> cartItems = orderMenuItemRepository.findByFoodOrder_Id(cartOrder.get().getId());
+        if (!cartOrders.isEmpty()) {
+            List<OrderMenuItem> cartItems = orderMenuItemRepository.findByFoodOrder_Id(cartOrders.getFirst().getId());
             return ApiResponse.build(1000, "Success", cartItems);
         } else {
-            return ApiResponse.build(1000, "Success", List.of()); // Trả về danh sách rỗng nếu không có giỏ hàng
+            return ApiResponse.build(1000, "Success", List.of());
         }
     }
 
@@ -71,11 +73,11 @@ public class CartService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Food not found"));
 
         // Tìm giỏ hàng hiện tại của khách hàng
-        Optional<FoodOrder> existingCartOrder = foodOrderRepository.findByCustomer_IdAndOrderStatus_StatusValue(customer.getId(), false);
+        List<FoodOrder> existingCartOrders = foodOrderRepository.findByCustomer_IdAndOrderStatus_StatusValue(customer.getId(), false);
         FoodOrder cartOrder;
 
-        if (existingCartOrder.isPresent()) {
-            cartOrder = existingCartOrder.get();
+        if (!existingCartOrders.isEmpty()) {
+            cartOrder = existingCartOrders.getFirst();
         } else {
             // Tạo một FoodOrder mới nếu chưa có giỏ hàng
             cartOrder = new FoodOrder();
@@ -114,14 +116,7 @@ public class CartService {
         }
 
         // Cập nhật totalItems và price của FoodOrder
-        int totalItems = cartOrder.getOrderMenuItems().stream().mapToInt(OrderMenuItem::getQuantityOrdered).sum();
-        BigDecimal totalPrice = cartOrder.getOrderMenuItems().stream()
-                .map(item -> item.getFood().getPrice().multiply(BigDecimal.valueOf(item.getQuantityOrdered())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        cartOrder.setTotalItems(totalItems);
-        cartOrder.setPrice(totalPrice);
-        foodOrderRepository.save(cartOrder);
+        updateCartTotals(cartOrder);
 
         return ApiResponse.build(1201, "Success", cartItem);
     }
@@ -139,9 +134,9 @@ public class CartService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cart item not found"));
 
         FoodOrder cartOrder = cartItem.getFoodOrder();
-        Optional<FoodOrder> customerCartOrder = foodOrderRepository.findByCustomer_IdAndOrderStatus_StatusValue(cartOrder.getCustomer().getId(), false);
+        List<FoodOrder> customerCartOrders = foodOrderRepository.findByCustomer_IdAndOrderStatus_StatusValue(cartOrder.getCustomer().getId(), false);
 
-        if (customerCartOrder.isEmpty() || !(customerCartOrder.get().getId() == (cartOrder.getId()))) {
+        if (customerCartOrders.isEmpty() || !(customerCartOrders.getFirst().getId() == cartOrder.getId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cart item does not belong to the current customer's cart");
         }
 
@@ -165,9 +160,9 @@ public class CartService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cart item not found"));
 
         FoodOrder cartOrder = cartItem.getFoodOrder();
-        Optional<FoodOrder> customerCartOrder = foodOrderRepository.findByCustomer_IdAndOrderStatus_StatusValue(cartOrder.getCustomer().getId(), false);
+        List<FoodOrder> customerCartOrders = foodOrderRepository.findByCustomer_IdAndOrderStatus_StatusValue(cartOrder.getCustomer().getId(), false);
 
-        if (customerCartOrder.isEmpty() || !(customerCartOrder.get().getId() == cartOrder.getId())) {
+        if (customerCartOrders.isEmpty() || !(customerCartOrders.getFirst().getId() == cartOrder.getId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cart item does not belong to the current customer's cart");
         }
 
@@ -186,10 +181,10 @@ public class CartService {
      * @return ApiResponse indicating success.
      */
     public ApiResponse<String> clearCart(int customerId) {
-        Optional<FoodOrder> cartOrder = foodOrderRepository.findByCustomer_IdAndOrderStatus_StatusValue(customerId, false);
-        if (cartOrder.isPresent()) {
-            orderMenuItemRepository.deleteByFoodOrder_Id(cartOrder.get().getId());
-            FoodOrder order = cartOrder.get();
+        List<FoodOrder> cartOrders = foodOrderRepository.findByCustomer_IdAndOrderStatus_StatusValue(customerId, false);
+        if (!cartOrders.isEmpty()) {
+            orderMenuItemRepository.deleteByFoodOrder_Id(cartOrders.getFirst().getId());
+            FoodOrder order = cartOrders.getFirst();
             order.setTotalItems(0);
             order.setPrice(BigDecimal.ZERO);
             foodOrderRepository.save(order);

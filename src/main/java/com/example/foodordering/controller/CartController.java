@@ -1,20 +1,20 @@
 package com.example.foodordering.controller;
 
 import com.example.foodordering.dto.request.CartItemRequest;
-import com.example.foodordering.dto.response.ApiResponse;
 import com.example.foodordering.entity.OrderMenuItem;
 import com.example.foodordering.service.CartService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 /**
- * REST Controller để quản lý các thao tác liên quan đến giỏ hàng.
+ * Controller for managing cart operations using Thymeleaf.
+ * Supports retrieving cart items, adding, updating, and removing items.
  */
-@RestController
-@RequestMapping("/api/cart")
+@Controller
+@RequestMapping("/cart")
 public class CartController {
 
     private final CartService cartService;
@@ -24,63 +24,69 @@ public class CartController {
     }
 
     /**
-     * Lấy danh sách các món trong giỏ hàng của một khách hàng.
+     * Retrieves the cart items of a specific customer.
      *
-     * @param customerId ID của khách hàng.
-     * @return ResponseEntity chứa danh sách các mục trong giỏ hàng hoặc thông báo lỗi nếu giỏ hàng trống.
+     * @param customerId ID of the customer.
+     * @param model      Model to add cart items.
+     * @return Thymeleaf template for the cart page.
      */
-    @GetMapping("/{customerId}") 
-    public ResponseEntity<ApiResponse<List<OrderMenuItem>>> getCart(@PathVariable int customerId) {
-        ApiResponse<List<OrderMenuItem>> response = cartService.getCart(customerId);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    @GetMapping("/{customerId}")
+    public String getCart(@PathVariable int customerId, Model model) {
+        List<OrderMenuItem> cartItems = cartService.getCart(customerId).getData();
+        model.addAttribute("cartItems", cartItems);
+        return "cart/cart-list"; // Thymeleaf template: cart/cart-list.html
     }
 
     /**
-     * Thêm một món ăn vào giỏ hàng của người dùng.
+     * Adds an item to the cart.
      *
-     * @param request Đối tượng CartItemRequest chứa thông tin món ăn và số lượng.
-     * @return ResponseEntity chứa thông tin của món ăn vừa được thêm vào giỏ hàng.
+     * @param request CartItemRequest containing food item and quantity.
+     * @param model   Model to add the updated cart item.
+     * @return Thymeleaf template for cart item added page.
      */
     @PostMapping("/items")
-    public ResponseEntity<ApiResponse<OrderMenuItem>> addItemToCart(@RequestBody CartItemRequest request) {
-        ApiResponse<OrderMenuItem> response = cartService.addItemToCart(request);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    public String addItemToCart(@ModelAttribute CartItemRequest request, Model model) {
+        OrderMenuItem item = cartService.addItemToCart(request).getData();
+        model.addAttribute("item", item);
+        return "cart/cart-item"; // Thymeleaf template: cart/cart-item.html
     }
 
     /**
-     * Cập nhật số lượng của một món trong giỏ hàng.
+     * Updates the quantity of a cart item.
      *
-     * @param cartItemId ID của món ăn trong giỏ hàng.
-     * @param newQuantity Số lượng mới cần cập nhật.
-     * @return ResponseEntity chứa thông tin cập nhật của món ăn.
+     * @param cartItemId  ID of the cart item.
+     * @param newQuantity New quantity to update.
+     * @param model       Model to add updated cart item.
+     * @return Thymeleaf template for updated cart item.
      */
     @PutMapping("/items/{cartItemId}")
-    public ResponseEntity<ApiResponse<OrderMenuItem>> updateItemQuantity(@PathVariable int cartItemId, @RequestParam int newQuantity) {
-        ApiResponse<OrderMenuItem> response = cartService.updateItemQuantity(cartItemId, newQuantity);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    public String updateItemQuantity(@PathVariable int cartItemId, @RequestParam int newQuantity, Model model) {
+        OrderMenuItem item = cartService.updateItemQuantity(cartItemId, newQuantity).getData();
+        model.addAttribute("item", item);
+        return "cart/cart-item"; // Thymeleaf template: cart/cart-item.html
     }
 
     /**
-     * Xóa một món ăn khỏi giỏ hàng.
+     * Removes an item from the cart.
      *
-     * @param cartItemId ID của món ăn cần xóa.
-     * @return ResponseEntity chứa thông báo xác nhận việc xóa thành công hoặc thất bại.
+     * @param cartItemId ID of the cart item to remove.
+     * @return Redirect to cart page after removal.
      */
     @DeleteMapping("/items/{cartItemId}")
-    public ResponseEntity<ApiResponse<String>> removeItemFromCart(@PathVariable int cartItemId) {
-        ApiResponse<String> response = cartService.removeItemFromCart(cartItemId);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    public String removeItemFromCart(@PathVariable int cartItemId) {
+        cartService.removeItemFromCart(cartItemId);
+        return "redirect:/cart"; // Redirect to cart page
     }
 
     /**
-     * Xóa toàn bộ giỏ hàng của một khách hàng.
+     * Clears the entire cart of a customer.
      *
-     * @param customerId ID của khách hàng có giỏ hàng cần được xóa.
-     * @return ResponseEntity chứa thông báo xác nhận việc xóa giỏ hàng thành công.
+     * @param customerId ID of the customer whose cart will be cleared.
+     * @return Redirect to cart page after clearing.
      */
-    @DeleteMapping("/{customerId}") 
-    public ResponseEntity<ApiResponse<String>> clearCart(@PathVariable int customerId) {
-        ApiResponse<String> response = cartService.clearCart(customerId);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    @DeleteMapping("/{customerId}")
+    public String clearCart(@PathVariable int customerId) {
+        cartService.clearCart(customerId);
+        return "redirect:/cart"; // Redirect to cart page
     }
 }

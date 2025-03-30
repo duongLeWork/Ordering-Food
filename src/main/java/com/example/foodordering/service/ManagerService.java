@@ -102,6 +102,20 @@ public class ManagerService {
     }
 
     /**
+     * Retrieves a food item by its ID.
+     *
+     * @param foodId The ID of the food item to retrieve.
+     * @return ApiResponse containing the Food entity.
+     */
+    public ApiResponse<Food> getFoodById(int foodId) {
+        Optional<Food> foodOptional = foodRepository.findById(foodId);
+        if (foodOptional.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Food item not found with ID: " + foodId);
+        }
+        return ApiResponse.build(1000, "Success", foodOptional.get());
+    }
+
+    /**
      * Retrieves sales statistics.
      *
      * @return ApiResponse containing sales statistics (for now, just a list of all placed orders).

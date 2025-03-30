@@ -1,18 +1,20 @@
 package com.example.foodordering.controller;
 
-import com.example.foodordering.dto.response.ApiResponse;
 import com.example.foodordering.entity.Customer;
 import com.example.foodordering.entity.Food;
 import com.example.foodordering.entity.FoodOrder;
 import com.example.foodordering.service.ManagerService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/manager")
+/**
+ * Controller for managing administrative operations such as users, orders, and food items.
+ */
+@Controller
+@RequestMapping("/manager")
 public class ManagerController {
 
     private final ManagerService managerService;
@@ -24,35 +26,65 @@ public class ManagerController {
     /**
      * Retrieves a list of all registered users.
      *
-     * @return ResponseEntity containing a list of users.
+     * @param model Model to add user data.
+     * @return Thymeleaf template for user list.
      */
     @GetMapping("/users")
-    public ResponseEntity<ApiResponse<List<Customer>>> getAllUsers() {
-        ApiResponse<List<Customer>> response = managerService.getAllUsers();
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    public String getAllUsers(Model model) {
+        List<Customer> users = managerService.getAllUsers().getData();
+        model.addAttribute("users", users);
+        return "manager/user-list";
     }
 
     /**
      * Retrieves a list of all placed orders.
      *
-     * @return ResponseEntity containing a list of orders.
+     * @param model Model to add order data.
+     * @return Thymeleaf template for order list.
      */
     @GetMapping("/orders")
-    public ResponseEntity<ApiResponse<List<FoodOrder>>> getAllOrders() {
-        ApiResponse<List<FoodOrder>> response = managerService.getAllOrders();
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    public String getAllOrders(Model model) {
+        List<FoodOrder> orders = managerService.getAllOrders().getData();
+        model.addAttribute("orders", orders);
+        return "manager/order-list";
+    }
+
+    /**
+     * Displays the form for adding a new food item.
+     *
+     * @param model Model to add food data.
+     * @return Thymeleaf template for adding food.
+     */
+    @GetMapping("/food/add")
+    public String showAddFoodForm(Model model) {
+        model.addAttribute("food", new Food());
+        return "manager/food-form";
     }
 
     /**
      * Adds a new food item.
      *
      * @param food The Food entity to be added.
-     * @return ResponseEntity containing the added food item.
+     * @return Redirect to food list page.
      */
     @PostMapping("/food")
-    public ResponseEntity<ApiResponse<Food>> addFood(@RequestBody Food food) {
-        ApiResponse<Food> response = managerService.addFood(food);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    public String addFood(@ModelAttribute Food food) {
+        managerService.addFood(food);
+        return "redirect:/manager/food";
+    }
+
+    /**
+     * Displays the form for editing an existing food item.
+     *
+     * @param foodId ID of the food item to update.
+     * @param model  Model to add food data.
+     * @return Thymeleaf template for editing food.
+     */
+    @GetMapping("/food/edit/{foodId}")
+    public String showEditFoodForm(@PathVariable int foodId, Model model) {
+        Food food = managerService.getFoodById(foodId).getData();
+        model.addAttribute("food", food);
+        return "manager/food-form";
     }
 
     /**
@@ -60,34 +92,36 @@ public class ManagerController {
      *
      * @param foodId      The ID of the food item to update.
      * @param updatedFood The Food entity containing updated information.
-     * @return ResponseEntity containing the updated food item.
+     * @return Redirect to food list page.
      */
-    @PutMapping("/food/{foodId}")
-    public ResponseEntity<ApiResponse<Food>> updateFood(@PathVariable int foodId, @RequestBody Food updatedFood) {
-        ApiResponse<Food> response = managerService.updateFood(foodId, updatedFood);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    @PostMapping("/food/{foodId}")
+    public String updateFood(@PathVariable int foodId, @ModelAttribute Food updatedFood) {
+        managerService.updateFood(foodId, updatedFood);
+        return "redirect:/manager/food";
     }
 
     /**
      * Deletes a food item.
      *
      * @param foodId The ID of the food item to delete.
-     * @return ResponseEntity indicating success.
+     * @return Redirect to food list page.
      */
-    @DeleteMapping("/food/{foodId}")
-    public ResponseEntity<ApiResponse<String>> deleteFood(@PathVariable int foodId) {
-        ApiResponse<String> response = managerService.deleteFood(foodId);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    @GetMapping("/food/delete/{foodId}")
+    public String deleteFood(@PathVariable int foodId) {
+        managerService.deleteFood(foodId);
+        return "redirect:/manager/food";
     }
 
     /**
      * Retrieves sales statistics.
      *
-     * @return ResponseEntity containing sales statistics.
+     * @param model Model to add sales data.
+     * @return Thymeleaf template for sales statistics.
      */
     @GetMapping("/sales")
-    public ResponseEntity<ApiResponse<List<FoodOrder>>> getSalesStatistics() {
-        ApiResponse<List<FoodOrder>> response = managerService.getSalesStatistics();
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    public String getSalesStatistics(Model model) {
+        List<FoodOrder> sales = managerService.getSalesStatistics().getData();
+        model.addAttribute("sales", sales);
+        return "manager/sales-statistics";
     }
 }

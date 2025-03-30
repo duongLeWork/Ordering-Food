@@ -1,20 +1,17 @@
 package com.example.foodordering.controller;
 
 import com.example.foodordering.dto.request.SearchFoodRequest;
-import com.example.foodordering.dto.response.ApiResponse;
 import com.example.foodordering.dto.response.FoodResponse;
 import com.example.foodordering.service.GuestService;
 import jakarta.validation.Valid;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * Controller for guest-related operations such as retrieving available dishes,
- * searching for food, sorting, and filtering by category.
- */
-@RestController
-@RequestMapping("/api") // Thêm @RequestMapping("/api") ở cấp class
+@Controller
+@RequestMapping("/dishes")
 public class GuestController {
 
     private final GuestService guestService;
@@ -23,57 +20,41 @@ public class GuestController {
         this.guestService = guestService;
     }
 
-    /**
-     * Retrieves all available dishes.
-     * Danh sách món ăn (Dishes List): GET /api/dishes
-     * @return ApiResponse containing the list of available dishes.
-     */
-    @GetMapping("/dishes")
-    public ApiResponse<List<FoodResponse>> getAvailableDishes() {
-        return guestService.getAvailableDishes();
+    @GetMapping
+    public String getAvailableDishes(Model model) {
+        List<FoodResponse> dishes = guestService.getAvailableDishes().getData();
+        model.addAttribute("dishes", dishes);
+        return "dishes/list"; // Thymeleaf template: dishes/list.html
     }
 
-    /**
-     * Searches for dishes by keyword (case-insensitive).
-     * Tìm kiếm món ăn (Search Dishes): GET /api/dishes?keyword={keyword}
-     * @param keyword, sortBy, category, maxResults
-     * @return ApiResponse containing matching dishes.
-     */
-    @GetMapping("/dishes/search") // Đổi thành /dishes/search
-    public ApiResponse<List<FoodResponse>> searchDishes(
-            @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) String sortBy,
-            @RequestParam(required = false) String category,
-            @RequestParam(required = false) Integer maxResults) {
-
+    @GetMapping("/search")
+    public String searchDishes(@RequestParam(required = false) String keyword,
+                               @RequestParam(required = false) String sortBy,
+                               @RequestParam(required = false) String category,
+                               @RequestParam(required = false) Integer maxResults,
+                               Model model) {
         SearchFoodRequest request = new SearchFoodRequest();
         request.setKeyword(keyword);
         request.setSortBy(sortBy);
         request.setCategory(category);
         request.setMaxResults(maxResults);
 
-        return guestService.searchDishes(request);
+        List<FoodResponse> results = guestService.searchDishes(request).getData();
+        model.addAttribute("dishes", results);
+        return "dishes/search-results"; // Thymeleaf template: dishes/search-results.html
     }
 
-    /**
-     * Retrieves a sorted list of available dishes based on sorting criteria.
-     *
-     * @param request sorting option (e.g., "price_asc", "price_desc").
-     * @return ApiResponse containing sorted dishes.
-     */
-    @GetMapping("/dishes/sort") // Đổi thành /dishes/sorted
-    public ApiResponse<List<FoodResponse>> getDishes(@RequestBody @Valid SearchFoodRequest request) {
-        return guestService.getSortedDishes(request);
+    @GetMapping("/sort")
+    public String getDishes(@ModelAttribute @Valid SearchFoodRequest request, Model model) {
+        List<FoodResponse> sortedDishes = guestService.getSortedDishes(request).getData();
+        model.addAttribute("dishes", sortedDishes);
+        return "dishes/sorted-list"; // Thymeleaf template: dishes/sorted-list.html
     }
 
-    /**
-     * Retrieves details of a specific food item.
-     *
-     * @param foodId the ID of the food item.
-     * @return ApiResponse containing food details.
-     */
-    @GetMapping("/dishes/{foodId}")
-    public ApiResponse<FoodResponse> getFoodDetails(@PathVariable int foodId) {
-        return guestService.getFoodDetails(foodId);
+    @GetMapping("/{foodId}")
+    public String getFoodDetails(@PathVariable int foodId, Model model) {
+        FoodResponse food = guestService.getFoodDetails(foodId).getData();
+        model.addAttribute("food", food);
+        return "dishes/detail"; // Thymeleaf template: dishes/detail.html
     }
 }

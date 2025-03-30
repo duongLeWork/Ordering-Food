@@ -1,16 +1,19 @@
 package com.example.foodordering.controller;
 
-import com.example.foodordering.dto.response.ApiResponse;
 import com.example.foodordering.entity.FoodOrder;
 import com.example.foodordering.service.OrderService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/orders")
+/**
+ * Controller for managing customer orders.
+ * Supports creating, listing, and retrieving order details.
+ */
+@Controller
+@RequestMapping("/orders")
 public class OrderController {
 
     private final OrderService orderService;
@@ -23,24 +26,28 @@ public class OrderController {
      * Creates a new order for a specific customer.
      *
      * @param customerId ID of the customer placing the order.
-     * @return ResponseEntity containing the newly created order.
+     * @param model      Model to add order data.
+     * @return Thymeleaf template for order success page.
      */
     @PostMapping
-    public ResponseEntity<ApiResponse<FoodOrder>> createOrder(@RequestParam int customerId) {
-        ApiResponse<FoodOrder> response = orderService.createOrder(customerId);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    public String createOrder(@RequestParam int customerId, Model model) {
+        FoodOrder order = orderService.createOrder(customerId).getData();
+        model.addAttribute("order", order);
+        return "orders/order-success"; // Thymeleaf template: orders/order-success.html
     }
 
     /**
      * Retrieves a list of orders for a specific customer.
      *
      * @param customerId ID of the customer.
-     * @return ResponseEntity containing the list of orders.
+     * @param model      Model to add order list data.
+     * @return Thymeleaf template for order list page.
      */
     @GetMapping
-    public ResponseEntity<ApiResponse<List<FoodOrder>>> getOrderList(@RequestParam int customerId) {
-        ApiResponse<List<FoodOrder>> response = orderService.getOrderList(customerId);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    public String getOrderList(@RequestParam int customerId, Model model) {
+        List<FoodOrder> orders = orderService.getOrderList(customerId).getData();
+        model.addAttribute("orders", orders);
+        return "orders/order-list"; // Thymeleaf template: orders/order-list.html
     }
 
     /**
@@ -48,11 +55,13 @@ public class OrderController {
      *
      * @param orderId    ID of the order.
      * @param customerId ID of the customer.
-     * @return ResponseEntity containing the order details.
+     * @param model      Model to add order detail data.
+     * @return Thymeleaf template for order detail page.
      */
     @GetMapping("/{orderId}")
-    public ResponseEntity<ApiResponse<FoodOrder>> getOrderDetails(@PathVariable int orderId, @RequestParam int customerId) {
-        ApiResponse<FoodOrder> response = orderService.getOrderDetails(orderId, customerId);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    public String getOrderDetails(@PathVariable int orderId, @RequestParam int customerId, Model model) {
+        FoodOrder order = orderService.getOrderDetails(orderId, customerId).getData();
+        model.addAttribute("order", order);
+        return "orders/order-detail"; // Thymeleaf template: orders/order-detail.html
     }
 }

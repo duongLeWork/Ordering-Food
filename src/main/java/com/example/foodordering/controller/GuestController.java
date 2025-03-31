@@ -3,14 +3,18 @@ package com.example.foodordering.controller;
 import com.example.foodordering.dto.request.SearchFoodRequest;
 import com.example.foodordering.dto.response.FoodResponse;
 import com.example.foodordering.service.GuestService;
-import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller xử lý các yêu cầu liên quan đến khách, bao gồm hiển thị danh sách món ăn,
+ * tìm kiếm và xem chi tiết món ăn.
+ */
 @Controller
+@RequestMapping("/")
 public class GuestController {
 
     private final GuestService guestService;
@@ -19,46 +23,58 @@ public class GuestController {
         this.guestService = guestService;
     }
 
-    @GetMapping("/")
-    public String home(Model model) {
-        return "home";
+    /**
+     * Hiển thị trang chủ.
+     *
+     * @return tên view của trang chủ.
+     */
+    @GetMapping
+    public String home() {
+        return "index";
     }
 
+    /**
+     * Lấy danh sách tất cả các món ăn có sẵn và hiển thị trên trang chủ.
+     *
+     * @param model đối tượng Model để truyền dữ liệu tới view.
+     * @return tên view hiển thị danh sách món ăn.
+     */
     @GetMapping("/dishes")
     public String getAvailableDishes(Model model) {
         List<FoodResponse> dishes = guestService.getAvailableDishes().getData();
         model.addAttribute("dishes", dishes);
-        return "home";
+        return "dish/list";
     }
 
+    /**
+     * Tìm kiếm các món ăn dựa trên từ khóa, sắp xếp, danh mục và số lượng kết quả tối đa.
+     *
+     * @param keyword    từ khóa tìm kiếm (tùy chọn).
+     * @param sortBy     tiêu chí sắp xếp (tùy chọn).
+     * @param model      đối tượng Model để truyền dữ liệu tới view.
+     * @return tên view hiển thị kết quả tìm kiếm.
+     */
     @GetMapping("/search")
     public String searchDishes(@RequestParam(required = false) String keyword,
                                @RequestParam(required = false) String sortBy,
-                               @RequestParam(required = false) String category,
-                               @RequestParam(required = false) Integer maxResults,
                                Model model) {
-        SearchFoodRequest request = new SearchFoodRequest();
-        request.setKeyword(keyword);
-        request.setSortBy(sortBy);
-        request.setCategory(category);
-        request.setMaxResults(maxResults);
-
+        SearchFoodRequest request = new SearchFoodRequest(keyword, sortBy);
         List<FoodResponse> results = guestService.searchDishes(request).getData();
         model.addAttribute("dishes", results);
-        return "dishes/search-results"; // Thymeleaf template: dishes/search-results.html
+        return "search";
     }
 
-    @GetMapping("/sort")
-    public String getDishes(@ModelAttribute @Valid SearchFoodRequest request, Model model) {
-        List<FoodResponse> sortedDishes = guestService.getSortedDishes(request).getData();
-        model.addAttribute("dishes", sortedDishes);
-        return "dishes"; // Thymeleaf template: dishes/sorted-list.html
-    }
-
+    /**
+     * Lấy thông tin chi tiết của một món ăn cụ thể.
+     *
+     * @param foodId ID của món ăn.
+     * @param model  đối tượng Model để truyền dữ liệu tới view.
+     * @return tên view hiển thị chi tiết món ăn.
+     */
     @GetMapping("/dish/{foodId}")
     public String getFoodDetails(@PathVariable int foodId, Model model) {
         FoodResponse food = guestService.getFoodDetails(foodId).getData();
         model.addAttribute("food", food);
-        return "dishes/detail"; // Thymeleaf template: dishes/detail.html
+        return "dishes/details";
     }
 }

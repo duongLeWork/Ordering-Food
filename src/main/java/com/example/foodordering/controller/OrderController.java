@@ -62,6 +62,6 @@ public class OrderController {
     public String getOrderDetails(@PathVariable int orderId, @RequestParam int customerId, Model model) {
         FoodOrder order = orderService.getOrderDetails(orderId, customerId).getData();
         model.addAttribute("order", order);
-        return "orders/order-detail"; // Thymeleaf template: orders/order-detail.html
+        return "orders/order-detail"; // Thymeleaf template: orders/order-details.html
     }
 }

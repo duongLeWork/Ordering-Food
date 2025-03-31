@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/dishes")
 public class GuestController {
 
     private final GuestService guestService;
@@ -20,11 +19,16 @@ public class GuestController {
         this.guestService = guestService;
     }
 
-    @GetMapping
+    @GetMapping("/")
+    public String home(Model model) {
+        return "home";
+    }
+
+    @GetMapping("/dishes")
     public String getAvailableDishes(Model model) {
         List<FoodResponse> dishes = guestService.getAvailableDishes().getData();
         model.addAttribute("dishes", dishes);
-        return "dishes/list"; // Thymeleaf template: dishes/list.html
+        return "home";
     }
 
     @GetMapping("/search")
@@ -48,10 +52,10 @@ public class GuestController {
     public String getDishes(@ModelAttribute @Valid SearchFoodRequest request, Model model) {
         List<FoodResponse> sortedDishes = guestService.getSortedDishes(request).getData();
         model.addAttribute("dishes", sortedDishes);
-        return "dishes/sorted-list"; // Thymeleaf template: dishes/sorted-list.html
+        return "dishes"; // Thymeleaf template: dishes/sorted-list.html
     }
 
-    @GetMapping("/{foodId}")
+    @GetMapping("/dish/{foodId}")
     public String getFoodDetails(@PathVariable int foodId, Model model) {
         FoodResponse food = guestService.getFoodDetails(foodId).getData();
         model.addAttribute("food", food);

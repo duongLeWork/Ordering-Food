@@ -32,7 +32,7 @@ public class CartController {
     public String getCart(Model model) {
         List<OrderMenuItem> cartItems = cartService.getCart().getData();
         model.addAttribute("cartItems", cartItems);
-        return "cart/cart-list"; // Thymeleaf template: cart/cart-list.html
+        return "cart/list";
     }
 
     /**
@@ -46,7 +46,7 @@ public class CartController {
     public String addItemToCart(@ModelAttribute CartItemRequest request, Model model) {
         OrderMenuItem item = cartService.addItemToCart(request).getData();
         model.addAttribute("item", item);
-        return "cart/cart-item"; // Thymeleaf template: cart/cart-item.html
+        return "cart/item";
     }
 
     /**
@@ -61,7 +61,7 @@ public class CartController {
     public String updateItemQuantity(@PathVariable int cartItemId, @RequestParam int newQuantity, Model model) {
         OrderMenuItem item = cartService.updateItemQuantity(cartItemId, newQuantity).getData();
         model.addAttribute("item", item);
-        return "cart/cart-item"; // Thymeleaf template: cart/cart-item.html
+        return "cart/item";
     }
 
     /**

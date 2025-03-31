@@ -16,6 +16,7 @@ public class AuthenticationService {
     AccountRepository accountRepository;
 
     public AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest) {
+        // Chưa thực sự xử lý (Mới chỉ dừng lại ở so sánh PW).
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         Account account = accountRepository.findByUsername(authenticationRequest.getUsername())
                 .orElseThrow(() -> new RuntimeException("Account Not Found"));
@@ -26,6 +27,5 @@ public class AuthenticationService {
         AuthenticationResponse authenticationResponse = new AuthenticationResponse();
         authenticationResponse.setAuthenticated(authenticated);
         return authenticationResponse;
-
     }
 }

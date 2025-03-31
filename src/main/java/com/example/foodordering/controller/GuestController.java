@@ -80,6 +80,6 @@ public class GuestController {
     public String getFoodDetails(@PathVariable int foodId, Model model) {
         FoodResponse food = guestService.getFoodDetails(foodId).getData();
         model.addAttribute("food", food);
-        return "dishes/details";
+        return "dish/details";
     }
 }

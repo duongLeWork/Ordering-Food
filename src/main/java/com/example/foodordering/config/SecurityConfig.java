@@ -23,7 +23,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
+        // Chuyển SessionPolicy thành stateless
         return http.csrf(customizer -> customizer.disable()).
                 authorizeHttpRequests(request -> request.anyRequest().authenticated()).
                 httpBasic(Customizer.withDefaults()).

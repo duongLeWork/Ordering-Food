@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Đặt Hàng Thành Công</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="alert alert-success" role="alert" th:if="${order}">
+            <h4 class="alert-heading">Đặt Hàng Thành Công!</h4>
+            <p>Cảm ơn bạn đã đặt hàng tại cửa hàng của chúng tôi.</p>
+            <hr>
+            <p class="mb-0">Mã đơn hàng của bạn là: <strong th:text="${order.id}">#123</strong></p>
+            <p class="mb-0">Tổng số món: <span th:text="${order.totalItems}">3</span></p>
+            <p class="mb-0">Tổng giá trị đơn hàng: <span th:text="${#numbers.formatCurrency(order.price)}">150.000 VNĐ</span></p>
+        </div>
+        <div class="alert alert-danger" role="alert" th:unless="${order}">
+            Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại sau.
+        </div>
+        <a th:href="@{/orders?customerId=*}" class="btn btn-primary mt-3">Xem Lịch Sử Đơn Hàng</a>
+        <a th:href="@{/dishes}" class="btn btn-secondary mt-3">Tiếp tục mua hàng</a>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

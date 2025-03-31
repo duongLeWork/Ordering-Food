@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class AuthenticationController {
-
+    // Cần truy vấn vào CSDL
     @Autowired
     private AuthenticationService authenticationService;
 

@@ -31,7 +31,7 @@ public class OrderController {
      */
     @PostMapping
     public String createOrder(@RequestParam int customerId, Model model) {
-        FoodOrder order = orderService.createOrder(customerId).getData();
+        FoodOrder order = orderService.createOrder().getData();
         model.addAttribute("order", order);
         return "orders/order-success"; // Thymeleaf template: orders/order-success.html
     }
@@ -45,7 +45,7 @@ public class OrderController {
      */
     @GetMapping
     public String getOrderList(@RequestParam int customerId, Model model) {
-        List<FoodOrder> orders = orderService.getOrderList(customerId).getData();
+        List<FoodOrder> orders = orderService.getOrderList().getData();
         model.addAttribute("orders", orders);
         return "orders/order-list"; // Thymeleaf template: orders/order-list.html
     }
@@ -60,7 +60,7 @@ public class OrderController {
      */
     @GetMapping("/{orderId}")
     public String getOrderDetails(@PathVariable int orderId, @RequestParam int customerId, Model model) {
-        FoodOrder order = orderService.getOrderDetails(orderId, customerId).getData();
+        FoodOrder order = orderService.getOrderDetails(orderId).getData();
         model.addAttribute("order", order);
         return "orders/order-detail"; // Thymeleaf template: orders/order-details.html
     }

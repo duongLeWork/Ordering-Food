@@ -9,6 +9,8 @@ import com.example.foodordering.repository.intf.CustomerRepository;
 import com.example.foodordering.repository.FoodRepository;
 import com.example.foodordering.repository.OrderMenuItemRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -42,12 +44,17 @@ public class CartService {
 
     /**
      * Retrieves the cart items for a specific customer.
-     *
-     * @param customerId ID of the customer.
      * @return ApiResponse containing cart items or an empty list if the cart is empty.
      */
-    public ApiResponse<List<OrderMenuItem>> getCart(int customerId) {
-        List<FoodOrder> cartOrders = foodOrderRepository.findByCustomer_idAndOrderStatus_StatusValue(customerId, false);
+    public ApiResponse<List<OrderMenuItem>> getCart() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Account account = (Account) authentication.getPrincipal();
+        int accountId = (int) account.getAccountId();
+
+        List<FoodOrder> cartOrders = foodOrderRepository.findByCustomer_idAndOrderStatus_StatusValue(
+                accountId,
+                false
+        );
         // Giả sử statusValue = false là trạng thái giỏ hàng
 
         if (!cartOrders.isEmpty()) {
@@ -177,11 +184,14 @@ public class CartService {
     /**
      * Clears the entire cart for a specific customer.
      *
-     * @param customerId ID of the customer.
      * @return ApiResponse indicating success.
      */
-    public ApiResponse<String> clearCart(int customerId) {
-        List<FoodOrder> cartOrders = foodOrderRepository.findByCustomer_idAndOrderStatus_StatusValue(customerId, false);
+    public ApiResponse<String> clearCart() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Account account = (Account) authentication.getPrincipal();
+        int accountId = (int) account.getAccountId();
+
+        List<FoodOrder> cartOrders = foodOrderRepository.findByCustomer_idAndOrderStatus_StatusValue(accountId, false);
         if (!cartOrders.isEmpty()) {
             orderMenuItemRepository.deleteByFoodOrder_Id(cartOrders.getFirst().getId());
             FoodOrder order = cartOrders.getFirst();

@@ -25,14 +25,12 @@ public class CartController {
 
     /**
      * Retrieves the cart items of a specific customer.
-     *
-     * @param customerId ID of the customer.
      * @param model      Model to add cart items.
      * @return Thymeleaf template for the cart page.
      */
-    @GetMapping("/{customerId}")
-    public String getCart(@PathVariable int customerId, Model model) {
-        List<OrderMenuItem> cartItems = cartService.getCart(customerId).getData();
+    @GetMapping("/")
+    public String getCart(Model model) {
+        List<OrderMenuItem> cartItems = cartService.getCart().getData();
         model.addAttribute("cartItems", cartItems);
         return "cart/cart-list"; // Thymeleaf template: cart/cart-list.html
     }
@@ -81,12 +79,11 @@ public class CartController {
     /**
      * Clears the entire cart of a customer.
      *
-     * @param customerId ID of the customer whose cart will be cleared.
      * @return Redirect to cart page after clearing.
      */
-    @DeleteMapping("/{customerId}")
-    public String clearCart(@PathVariable int customerId) {
-        cartService.clearCart(customerId);
+    @DeleteMapping("/clear")
+    public String clearCart() {
+        cartService.clearCart();
         return "redirect:/cart"; // Redirect to cart page
     }
 }

@@ -33,6 +33,11 @@ public class GuestController {
         return "index";
     }
 
+    @GetMapping("/home")
+    public String dashboard() {
+        return "home";
+    }
+
     /**
      * Lấy danh sách tất cả các món ăn có sẵn và hiển thị trên trang chủ.
      *

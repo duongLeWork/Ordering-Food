@@ -40,9 +40,8 @@ public class AccountRegistrationService {
     @Autowired
     private CustomerRepository customerRepository;
 
-    PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
-//    @Autowired
-//    PasswordEncoder passwordEncoder;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     /**
      * Creates a new account.

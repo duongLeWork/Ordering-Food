@@ -1,4 +1,4 @@
-package com.example.foodordering.repository;
+package com.example.foodordering.repository.intf;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

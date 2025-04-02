@@ -15,8 +15,9 @@ public class AuthenticationService {
     @Autowired
     AccountRepository accountRepository;
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
     public AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest) {
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         Account account = accountRepository.findByUsername(authenticationRequest.getUsername())
                 .orElseThrow(() -> new RuntimeException("Account Not Found"));
 

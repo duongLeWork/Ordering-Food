@@ -5,7 +5,7 @@ import com.example.foodordering.dto.response.ApiResponse;
 import com.example.foodordering.dto.response.FoodResponse;
 import com.example.foodordering.entity.Food;
 import com.example.foodordering.mapper.FoodResponseMapper;
-import com.example.foodordering.repository.FoodRepository;
+import com.example.foodordering.repository.intf.FoodRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

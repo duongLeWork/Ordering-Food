@@ -5,14 +5,12 @@ import com.example.foodordering.dto.response.ApiResponse;
 import com.example.foodordering.dto.response.FoodResponse;
 import com.example.foodordering.entity.Food;
 import com.example.foodordering.mapper.FoodResponseMapper;
-import com.example.foodordering.repository.FoodRepository;
+import com.example.foodordering.repository.intf.FoodRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Service to handle guest-related operations, such as retrieving available dishes,

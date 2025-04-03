@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Mục Giỏ Hàng</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="alert alert-success" role="alert" th:if="${item}">
+            Đã thêm/cập nhật <strong th:text="${item.food.name}">Tên món ăn</strong> vào giỏ hàng.
+            Số lượng: <span th:text="${item.quantityOrdered}">Số lượng</span>.
+        </div>
+        <div class="alert alert-danger" role="alert" th:unless="${item}">
+            Có lỗi xảy ra khi thêm/cập nhật mục giỏ hàng.
+        </div>
+        <a th:href="@{/cart}" class="btn btn-secondary mt-3">Quay lại giỏ hàng</a>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

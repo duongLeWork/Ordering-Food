@@ -23,6 +23,4 @@ public class AccountRegistrationRequest {
 
     @Size(min = 8, message = "PASSWORD_INVALID")
     String password;
-
-
 }

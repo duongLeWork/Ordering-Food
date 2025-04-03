@@ -12,14 +12,9 @@ import com.example.foodordering.mapper.AccountResponseMapper;
 import com.example.foodordering.mapper.CustomerMapper;
 import com.example.foodordering.repository.intf.AccountRepository;
 import com.example.foodordering.repository.intf.CustomerRepository;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 
@@ -40,9 +35,8 @@ public class AccountRegistrationService {
     @Autowired
     private CustomerRepository customerRepository;
 
-    PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
-//    @Autowired
-//    PasswordEncoder passwordEncoder;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     /**
      * Creates a new account.

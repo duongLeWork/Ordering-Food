@@ -2,33 +2,44 @@ package com.example.foodordering.controller;
 
 import com.example.foodordering.dto.request.AccountRegistrationRequest;
 import com.example.foodordering.dto.response.AccountResponse;
-import com.example.foodordering.dto.response.ApiResponse;
 import com.example.foodordering.service.AccountRegistrationService;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@RequestMapping("/registers")
 public class AccountRegisterController {
-
     @Autowired
-    private AccountRegistrationService accountService;
+    AccountRegistrationService accountService;
 
-    @PostMapping("")
-    public ApiResponse<AccountResponse> createAccount(@RequestBody @Valid AccountRegistrationRequest request) {
-        ApiResponse<AccountResponse> response = new ApiResponse<>();
+    @GetMapping("/registers")
+    public String showRegistrationForm(Model model) {
+        model.addAttribute("accountRegistrationRequest", new AccountRegistrationRequest());
+        return "register";
+    }
+
+    @PostMapping("/registers")
+    public String createAccount(@Valid @ModelAttribute AccountRegistrationRequest request, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            return "register"; // Return to registration form with validation errors
+        }
 
         AccountResponse accountResponse = accountService.createAccount(request);
 
-        response.setData(accountResponse);
-        return response;
+        if (accountResponse != null) {
+            // Successful registration logic here
+            return "redirect:/login"; // Example redirect to login page after successful registration
+        } else {
+            // Failed registration logic here
+            model.addAttribute("error", "Registration failed");
+            return "register"; // Return to registration form with error message
+        }
     }
 }

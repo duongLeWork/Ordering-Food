@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 @Setter
 @AllArgsConstructor
 public class FoodResponse {
-    private Integer foodId;
+    private Integer id;
     private String name;
     private BigDecimal price;
     private String description;

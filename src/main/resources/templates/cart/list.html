@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Giỏ Hàng</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>Giỏ Hàng</h1>
+
+        <div th:if="${not #lists.isEmpty(cartItems)}">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Tên Món Ăn</th>
+                        <th>Số Lượng</th>
+                        <th>Giá Mỗi Món</th>
+                        <th>Tổng Giá</th>
+                        <th>Hành Động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="item : ${cartItems}">
+                        <td th:text="${item.food.name}">Tên món ăn</td>
+                        <td>
+                            <form th:action="@{/cart/items/{cartItemId}(cartItemId=${item.id})}" method="post" class="form-inline">
+                                <input type="hidden" name="_method" value="put" />
+                                <div class="form-group mr-2">
+                                    <input type="number" class="form-control form-control-sm"
+                                           th:value="${item.quantityOrdered}" name="newQuantity" min="1">
+                                </div>
+                                <button type="submit" class="btn btn-sm btn-primary">Cập nhật</button>
+                            </form>
+                        </td>
+                        <td th:text="${#numbers.formatCurrency(item.food.price)}">Giá</td>
+                        <td th:text="${#numbers.formatCurrency(item.food.price * item.quantityOrdered)}">Tổng</td>
+                        <td>
+                            <form th:action="@{/cart/items/{cartItemId}(cartItemId=${item.id})}" method="post">
+                                <input type="hidden" name="_method" value="delete" />
+                                <button type="submit" class="btn btn-sm btn-danger">Xóa</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <form th:action="@{/cart/clear}" method="post">
+                <input type="hidden" name="_method" value="delete" />
+                <button type="submit" class="btn btn-danger">Xóa Toàn Bộ Giỏ Hàng</button>
+            </form>
+
+            <a href="#" class="btn btn-success mt-3">Tiến Hành Thanh Toán</a>
+
+        </div>
+        <div th:unless="${not #lists.isEmpty(cartItems)}" class="alert alert-info mt-3" role="alert">
+            Giỏ hàng của bạn đang trống.
+        </div>
+
+        <a th:href="@{/dishes}" class="btn btn-secondary mt-3">Tiếp tục mua hàng</a>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

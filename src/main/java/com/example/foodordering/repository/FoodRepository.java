@@ -1,34 +1,46 @@
 package com.example.foodordering.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
 import com.example.foodordering.entity.Food;
-
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface FoodRepository extends JpaRepository<Food, Integer> {
 
-    List<Food> findByNameContainingIgnoreCase(String name);
-    @Query("SELECT f FROM Food f WHERE f.isAvailable = true ORDER BY f.price :order")
-    List<Food> findAvailableDishesSorted(@Param("order") String order);
-    List<Food> findByIsAvailableTrue();
-    // Filter by category
-    List<Food> findByCategoryAndIsAvailableTrue(String category);
 
-    @Query("SELECT f FROM Food f WHERE f.isAvailable = true AND f.price BETWEEN :minPrice AND :maxPrice AND f.foodId <> :excludeFoodId")
-    List<Food> findSimilarDishes(@Param("minPrice") BigDecimal minPrice,
-                                 @Param("maxPrice") BigDecimal maxPrice,
-                                 @Param("excludeFoodId") int excludeFoodId);
-    /*
-    * It retrieves the first matching food item based on the keyword (case-insensitive).
-    * This food item serves as the reference to find similar dishes based on category and price range.
-    * */
-    Optional<Food> findFirstByNameContainingIgnoreCase(String name);
+    /**
+     * Tìm các món ăn có tên chứa một chuỗi nhất định, case insensitive.
+     * SELECT * FROM food f
+     * WHERE LOWER(f.name) LIKE LOWER(CONCAT('%', ?, '%'));
+     * @param name Chuỗi tìm kiếm.
+     * @return Danh sách các món ăn phù hợp.
+     */
+    List<Food> findByNameContainingIgnoreCase(String name);
+
+
+    /**
+     * Tìm tất cả các món ăn có sẵn và sắp xếp theo giá tăng dần hoặc giảm dần.
+     * Các lệnh SQL tương ứng với các hàm này:
+     * Phần ASC - Tăng dần
+     * SELECT * FROM food f
+     * WHERE f.is_available = true
+     * ORDER BY f.price ASC;
+     * hoặc cho DESC - Giảm dần
+     * SELECT * FROM food f
+     * WHERE f.is_available = true
+     * ORDER BY f.price DESC;
+     * @return Danh sách các món ăn có sẵn, sắp xếp theo giá tăng dần hoặc giảm dần.
+     */
+    List<Food> findByIsAvailableTrueOrderByPriceAsc();
+    List<Food> findByIsAvailableTrueOrderByPriceDesc();
+
+    /**
+     * Tìm tất cả các món ăn đang có sẵn.
+     * SELECT * FROM food f
+     * WHERE f.is_available = true;
+     * @return Danh sách các món ăn có sẵn.
+     */
+    List<Food> findByIsAvailableTrue();
 
 }

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Trang chủ</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <h2>Chào mừng đến với hệ thống đặt món ăn!</h2>
+
+    <!-- Hiển thị tên người dùng -->
+    <p>Xin chào, <span th:text="${username}"></span>!</p>
+
+    <div class="mt-4">
+        <a href="/cart" class="btn btn-primary">Giỏ hàng</a>
+        <a href="/orders" class="btn btn-success">Đơn hàng</a>
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <button type="submit" class="btn btn-danger">Đăng xuất</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

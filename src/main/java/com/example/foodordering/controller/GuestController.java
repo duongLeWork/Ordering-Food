@@ -1,19 +1,23 @@
 package com.example.foodordering.controller;
 
+import com.example.foodordering.config.CustomUserDetails;
 import com.example.foodordering.dto.request.SearchFoodRequest;
-import com.example.foodordering.dto.response.ApiResponse;
 import com.example.foodordering.dto.response.FoodResponse;
 import com.example.foodordering.service.GuestService;
-import jakarta.validation.Valid;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 /**
- * Controller for guest-related operations such as retrieving available dishes,
- * searching for food, sorting, and filtering by category.
+ * Controller xử lý các yêu cầu liên quan đến khách, bao gồm hiển thị danh sách món ăn,
+ * tìm kiếm và xem chi tiết món ăn.
  */
-@RestController
+@Controller
+@RequestMapping("/")
 public class GuestController {
 
     private final GuestService guestService;
@@ -23,57 +27,75 @@ public class GuestController {
     }
 
     /**
-     * Retrieves all available dishes.
-     * Danh sách món ăn (Dishes List): GET /api/dishes
-     * @return ApiResponse containing the list of available dishes.
-     */
-    @GetMapping("/dishes")
-    public ApiResponse<List<FoodResponse>> getAvailableDishes() {
-        return guestService.getAvailableDishes();
-    }
-
-    /**
-     * Searches for dishes by keyword (case-insensitive).
-     * Tìm kiếm món ăn (Search Dishes): GET /api/dishes?keyword={keyword}
-     * @param keyword, sortBy, category, maxResults
-     * @return ApiResponse containing matching dishes.
-     */
-    @GetMapping("/dishes")
-    public ApiResponse<List<FoodResponse>> searchDishes(
-            @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) String sortBy,
-            @RequestParam(required = false) String category,
-            @RequestParam(required = false) Integer maxResults) {
-
-        SearchFoodRequest request = new SearchFoodRequest();
-        request.setKeyword(keyword);
-        request.setSortBy(sortBy);
-        request.setCategory(category);
-        request.setMaxResults(maxResults);
-
-        return guestService.searchDishes(request);
-    }
-
-    /**
-     * Retrieves a sorted list of available dishes based on sorting criteria.
+     * Hiển thị trang chủ.
      *
-     * @param request sorting option (e.g., "price_asc", "price_desc").
-     * @return ApiResponse containing sorted dishes.
+     * @return tên view của trang chủ.
+     */
+
+    @GetMapping("/")
+    public String getRoot(Model model)
+    {
+        return "redirect:/login";
+
+    }
+
+    @GetMapping("/home")
+    public String homepage(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
+            System.out.println("Ohhh my juss");
+            // Truyền thông tin username vào model để hiển thị trên home.html
+            model.addAttribute("username", userDetails.getUsername());
+            model.addAttribute("password", userDetails.getPassword());
+            return "home"; // Trả về home.html
+        }
+
+        // Nếu chưa đăng nhập, chuyển hướng về trang login
+        return "redirect:/login";
+    }
+    /**
+     * Lấy danh sách tất cả các món ăn có sẵn và hiển thị trên trang chủ.
+     *
+     * @param model đối tượng Model để truyền dữ liệu tới view.
+     * @return tên view hiển thị danh sách món ăn.
      */
     @GetMapping("/dishes")
-    public ApiResponse<List<FoodResponse>> getDishes(@RequestBody @Valid SearchFoodRequest request) {
-        return guestService.getSortedDishes(request);
+    public String getAvailableDishes(Model model) {
+        List<FoodResponse> dishes = guestService.getAvailableDishes().getData();
+        model.addAttribute("dishes", dishes);
+        return "dish/list";
     }
 
     /**
-     * Retrieves details of a specific food item.
+     * Tìm kiếm các món ăn dựa trên từ khóa, sắp xếp, danh mục và số lượng kết quả tối đa.
      *
-     * @param foodId the ID of the food item.
-     * @return ApiResponse containing food details.
+     * @param keyword    từ khóa tìm kiếm (tùy chọn).
+     * @param sortBy     tiêu chí sắp xếp (tùy chọn).
+     * @param model      đối tượng Model để truyền dữ liệu tới view.
+     * @return tên view hiển thị kết quả tìm kiếm.
      */
-    @GetMapping("/dishes/{foodId}")
-    public ApiResponse<FoodResponse> getFoodDetails(@PathVariable int foodId) {
-        return guestService.getFoodDetails(foodId);
+    @GetMapping("/search")
+    public String searchDishes(@RequestParam(required = false) String keyword,
+                               @RequestParam(required = false) String sortBy,
+                               Model model) {
+        SearchFoodRequest request = new SearchFoodRequest(keyword, sortBy);
+        List<FoodResponse> results = guestService.searchDishes(request).getData();
+        model.addAttribute("dishes", results);
+        return "search";
     }
 
+    /**
+     * Lấy thông tin chi tiết của một món ăn cụ thể.
+     *
+     * @param foodId ID của món ăn.
+     * @param model  đối tượng Model để truyền dữ liệu tới view.
+     * @return tên view hiển thị chi tiết món ăn.
+     */
+    @GetMapping("/dish/{foodId}")
+    public String getFoodDetails(@PathVariable int foodId, Model model) {
+        FoodResponse food = guestService.getFoodDetails(foodId).getData();
+        model.addAttribute("food", food);
+        return "dish/details";
+    }
 }

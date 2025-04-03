@@ -46,22 +46,18 @@ public class CartService {
     /**
      * Retrieves the cart items for a specific customer.
      *
+     * @param customerId ID of the customer.
      * @return ApiResponse containing cart items or an empty list if the cart is empty.
      */
-    public ApiResponse<List<OrderMenuItem>> getCart() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public ApiResponse<List<OrderMenuItem>> getCart(int customerId) {
+        List<FoodOrder> cartOrders = foodOrderRepository.findByCustomer_idAndOrderStatus_StatusValue(
+                customerId,
+                false
+        );
 
-        if (authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
-            long accountId = userDetails.getAccountId(); // Đúng kiểu dữ liệu
-            List<FoodOrder> cartOrders = foodOrderRepository.findByCustomer_idAndOrderStatus_StatusValue(
-                    (int) accountId,
-                    false
-            );
-
-            if (!cartOrders.isEmpty()) {
-                List<OrderMenuItem> cartItems = orderMenuItemRepository.findByFoodOrder_Id(cartOrders.getFirst().getId());
-                return ApiResponse.build(1000, "Success", cartItems);
-            }
+        if (!cartOrders.isEmpty()) {
+            List<OrderMenuItem> cartItems = orderMenuItemRepository.findByFoodOrder_Id(cartOrders.getFirst().getId());
+            return ApiResponse.build(1000, "Success", cartItems);
         }
         return ApiResponse.build(1000, "Success", List.of());
     }
@@ -90,7 +86,8 @@ public class CartService {
             // Tạo một FoodOrder mới nếu chưa có giỏ hàng
             cartOrder = new FoodOrder();
             cartOrder.setCustomer(customer);
-            // Giả sử bạn có OrderStatus với Status value là false (ví dụ, ID là 1)
+            // Có OrderStatus với Status value là false (ví dụ, ID là 1)
+            // Sẽ chỉ có đúng một giỏ hàng là Cart được phép có StatusValue là false
             OrderStatus cartOrderStatus = orderStatusRepository.findById(1)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Cart Order Status not found"));
             cartOrder.setOrderStatus(cartOrderStatus);
@@ -133,18 +130,17 @@ public class CartService {
     /**
      * Updates the quantity of an item in the cart.
      *
+     * @param customerId  ID of the logged-in customer.
      * @param cartItemId  ID of the cart item.
      * @param newQuantity the new quantity.
      * @return ApiResponse containing the updated cart item.
      */
-    public ApiResponse<OrderMenuItem> updateItemQuantity(int cartItemId, int newQuantity) {
+    public ApiResponse<OrderMenuItem> updateItemQuantity(int customerId, int cartItemId, int newQuantity) {
         OrderMenuItem cartItem = orderMenuItemRepository.findById(cartItemId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cart item not found"));
 
         FoodOrder cartOrder = cartItem.getFoodOrder();
-        List<FoodOrder> customerCartOrders = foodOrderRepository.findByCustomer_idAndOrderStatus_StatusValue(cartOrder.getCustomer().getId(), false);
-
-        if (customerCartOrders.isEmpty() || !(customerCartOrders.getFirst().getId() == cartOrder.getId())) {
+        if (cartOrder.getCustomer().getId() != customerId) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cart item does not belong to the current customer's cart");
         }
 
@@ -160,17 +156,16 @@ public class CartService {
     /**
      * Removes an item from the cart.
      *
+     * @param customerId ID of the logged-in customer.
      * @param cartItemId ID of the cart item to be removed.
      * @return ApiResponse indicating success or failure.
      */
-    public ApiResponse<String> removeItemFromCart(int cartItemId) {
+    public ApiResponse<String> removeItemFromCart(int customerId, int cartItemId) {
         OrderMenuItem cartItem = orderMenuItemRepository.findById(cartItemId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cart item not found"));
 
         FoodOrder cartOrder = cartItem.getFoodOrder();
-        List<FoodOrder> customerCartOrders = foodOrderRepository.findByCustomer_idAndOrderStatus_StatusValue(cartOrder.getCustomer().getId(), false);
-
-        if (customerCartOrders.isEmpty() || !(customerCartOrders.getFirst().getId() == cartOrder.getId())) {
+        if (cartOrder.getCustomer().getId() != customerId) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cart item does not belong to the current customer's cart");
         }
 
@@ -185,14 +180,11 @@ public class CartService {
     /**
      * Clears the entire cart for a specific customer.
      *
+     * @param customerId ID of the logged-in customer.
      * @return ApiResponse indicating success.
      */
-    public ApiResponse<String> clearCart() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Account account = (Account) authentication.getPrincipal();
-        int accountId = (int) account.getAccountId();
-
-        List<FoodOrder> cartOrders = foodOrderRepository.findByCustomer_idAndOrderStatus_StatusValue(accountId, false);
+    public ApiResponse<String> clearCart(int customerId) {
+        List<FoodOrder> cartOrders = foodOrderRepository.findByCustomer_idAndOrderStatus_StatusValue(customerId, false);
         if (!cartOrders.isEmpty()) {
             orderMenuItemRepository.deleteByFoodOrder_Id(cartOrders.getFirst().getId());
             FoodOrder order = cartOrders.getFirst();

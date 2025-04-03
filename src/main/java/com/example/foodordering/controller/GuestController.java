@@ -2,6 +2,7 @@ package com.example.foodordering.controller;
 
 import com.example.foodordering.config.CustomUserDetails;
 import com.example.foodordering.dto.request.SearchFoodRequest;
+import com.example.foodordering.dto.response.ApiResponse;
 import com.example.foodordering.dto.response.FoodResponse;
 import com.example.foodordering.service.GuestService;
 import org.springframework.security.core.Authentication;
@@ -94,8 +95,23 @@ public class GuestController {
      */
     @GetMapping("/dish/{foodId}")
     public String getFoodDetails(@PathVariable int foodId, Model model) {
-        FoodResponse food = guestService.getFoodDetails(foodId).getData();
-        model.addAttribute("food", food);
-        return "dish/details";
+        ApiResponse<FoodResponse> response = guestService.getFoodDetails(foodId);
+        if (response.getData() != null) {
+            model.addAttribute("food", response.getData());
+
+            // Lấy thông tin người dùng đã đăng nhập từ SecurityContextHolder
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+            // Kiểm tra xem người dùng đã đăng nhập và principal là CustomUserDetails hay không
+            if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
+                CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+                model.addAttribute("userDetails", userDetails); // Thêm userDetails vào model
+            }
+
+            return "dish/details";
+        } else {
+            model.addAttribute("foodNotFound", true);
+            return "dish/details";
+        }
     }
 }

@@ -92,11 +92,11 @@ public class GuestService {
      * @param foodId the ID of the food item
      * @return ApiResponse containing food details or an error if not found.
      */
-    public ApiResponse<FoodResponse> getFoodDetails(int foodId) {
-        Food food = foodRepository.findById(foodId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Food not found"));
-        return ApiResponse.build(1000, "Success", foodResponseMapper.toFoodResponse(food));
-    }
 
+    public ApiResponse<FoodResponse> getFoodDetails(int foodId) {
+        return foodRepository.findById(foodId)
+                .map(food -> ApiResponse.build(1000, "Success", foodResponseMapper.toFoodResponse(food)))
+                .orElse(ApiResponse.build(1404, "Failed", null));
+    }
 }
 

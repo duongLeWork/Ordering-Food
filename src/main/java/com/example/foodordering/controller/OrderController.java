@@ -25,12 +25,11 @@ public class OrderController {
     /**
      * Creates a new order for a specific customer.
      *
-     * @param customerId ID of the customer placing the order.
      * @param model      Model to add order data.
      * @return Thymeleaf template for order success page.
      */
     @PostMapping
-    public String createOrder(@RequestParam int customerId, Model model) {
+    public String createOrder(Model model) {
         FoodOrder order = orderService.createOrder().getData();
         model.addAttribute("order", order);
         return "orders/success"; // Thymeleaf template: orders/order-success.html
@@ -39,12 +38,11 @@ public class OrderController {
     /**
      * Retrieves a list of orders for a specific customer.
      *
-     * @param customerId ID of the customer.
      * @param model      Model to add order list data.
      * @return Thymeleaf template for order list page.
      */
     @GetMapping
-    public String getOrderList(@RequestParam int customerId, Model model) {
+    public String getOrderList(Model model) {
         List<FoodOrder> orders = orderService.getOrderList().getData();
         model.addAttribute("orders", orders);
         return "orders/list"; // Thymeleaf template: orders/order-list.html
@@ -54,12 +52,11 @@ public class OrderController {
      * Retrieves details of a specific order for a customer.
      *
      * @param orderId    ID of the order.
-     * @param customerId ID of the customer.
      * @param model      Model to add order detail data.
      * @return Thymeleaf template for order detail page.
      */
     @GetMapping("/{orderId}")
-    public String getOrderDetails(@PathVariable int orderId, @RequestParam int customerId, Model model) {
+    public String getOrderDetails(@PathVariable int orderId, Model model) {
         FoodOrder order = orderService.getOrderDetails(orderId).getData();
         model.addAttribute("order", order);
         return "orders/detail"; // Thymeleaf template: orders/order-details.html

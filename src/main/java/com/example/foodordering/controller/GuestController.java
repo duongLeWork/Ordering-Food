@@ -1,8 +1,11 @@
 package com.example.foodordering.controller;
 
+import com.example.foodordering.config.CustomUserDetails;
 import com.example.foodordering.dto.request.SearchFoodRequest;
 import com.example.foodordering.dto.response.FoodResponse;
 import com.example.foodordering.service.GuestService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -28,16 +31,29 @@ public class GuestController {
      *
      * @return tên view của trang chủ.
      */
-    @GetMapping
-    public String home() {
-        return "index";
+
+    @GetMapping("/")
+    public String getRoot(Model model)
+    {
+        return "redirect:/login";
+
     }
 
     @GetMapping("/home")
-    public String dashboard() {
-        return "home";
-    }
+    public String homepage(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+        if (authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
+            System.out.println("Ohhh my juss");
+            // Truyền thông tin username vào model để hiển thị trên home.html
+            model.addAttribute("username", userDetails.getUsername());
+            model.addAttribute("password", userDetails.getPassword());
+            return "home"; // Trả về home.html
+        }
+
+        // Nếu chưa đăng nhập, chuyển hướng về trang login
+        return "redirect:/login";
+    }
     /**
      * Lấy danh sách tất cả các món ăn có sẵn và hiển thị trên trang chủ.
      *

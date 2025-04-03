@@ -12,13 +12,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequiredArgsConstructor
 public class AccountRegisterController {
-
-    private final AccountRegistrationService accountService;
+    @Autowired
+    AccountRegistrationService accountService;
 
     @GetMapping("/registers")
     public String showRegistrationForm(Model model) {

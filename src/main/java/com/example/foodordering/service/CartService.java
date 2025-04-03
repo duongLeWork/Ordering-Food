@@ -1,5 +1,6 @@
 package com.example.foodordering.service;
 
+import com.example.foodordering.config.CustomUserDetails;
 import com.example.foodordering.dto.request.CartItemRequest;
 import com.example.foodordering.dto.response.ApiResponse;
 import com.example.foodordering.entity.*;
@@ -44,25 +45,25 @@ public class CartService {
 
     /**
      * Retrieves the cart items for a specific customer.
+     *
      * @return ApiResponse containing cart items or an empty list if the cart is empty.
      */
     public ApiResponse<List<OrderMenuItem>> getCart() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Account account = (Account) authentication.getPrincipal();
-        int accountId = (int) account.getAccountId();
 
-        List<FoodOrder> cartOrders = foodOrderRepository.findByCustomer_idAndOrderStatus_StatusValue(
-                accountId,
-                false
-        );
-        // Giả sử statusValue = false là trạng thái giỏ hàng
+        if (authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
+            long accountId = userDetails.getAccountId(); // Đúng kiểu dữ liệu
+            List<FoodOrder> cartOrders = foodOrderRepository.findByCustomer_idAndOrderStatus_StatusValue(
+                    (int) accountId,
+                    false
+            );
 
-        if (!cartOrders.isEmpty()) {
-            List<OrderMenuItem> cartItems = orderMenuItemRepository.findByFoodOrder_Id(cartOrders.getFirst().getId());
-            return ApiResponse.build(1000, "Success", cartItems);
-        } else {
-            return ApiResponse.build(1000, "Success", List.of());
+            if (!cartOrders.isEmpty()) {
+                List<OrderMenuItem> cartItems = orderMenuItemRepository.findByFoodOrder_Id(cartOrders.getFirst().getId());
+                return ApiResponse.build(1000, "Success", cartItems);
+            }
         }
+        return ApiResponse.build(1000, "Success", List.of());
     }
 
 
@@ -132,7 +133,7 @@ public class CartService {
     /**
      * Updates the quantity of an item in the cart.
      *
-     * @param cartItemId ID of the cart item.
+     * @param cartItemId  ID of the cart item.
      * @param newQuantity the new quantity.
      * @return ApiResponse containing the updated cart item.
      */

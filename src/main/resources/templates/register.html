@@ -31,16 +31,6 @@
                     <span th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}" class="text-danger"></span>
                 </div>
                 <div class="mb-3">
-                    <label for="role" class="form-label">Role:</label>
-                    <select id="role" th:field="*{role}" class="form-select" required>
-                        <option value="">Select Role</option>
-                        <option value="admin">Admin</option>
-                        <option value="customer">Customer</option>
-                        <!-- Add more roles as needed -->
-                    </select>
-                    <span th:if="${#fields.hasErrors('role')}" th:errors="*{role}" class="text-danger"></span>
-                </div>
-                <div class="mb-3">
                     <label for="username" class="form-label">Username:</label>
                     <input type="text" id="username" th:field="*{username}" class="form-control" required>
                     <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="text-danger"></span>

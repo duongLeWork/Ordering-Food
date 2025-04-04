@@ -2,16 +2,17 @@ package com.example.foodordering.controller;
 
 import com.example.foodordering.config.CustomUserDetails;
 import com.example.foodordering.dto.request.SearchFoodRequest;
-import com.example.foodordering.dto.response.ApiResponse;
 import com.example.foodordering.dto.response.FoodResponse;
+import com.example.foodordering.entity.Food;
 import com.example.foodordering.service.GuestService;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import com.example.foodordering.utils.UserDetailsHelper;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Controller xử lý các yêu cầu liên quan đến khách, bao gồm hiển thị danh sách món ăn,
@@ -33,25 +34,22 @@ public class GuestController {
      * @return tên view của trang chủ.
      */
 
-    @GetMapping("/")
+    @GetMapping
     public String getRoot(Model model)
     {
-        return "redirect:/login";
+        return "redirect:/home";
 
     }
 
     @GetMapping("/home")
     public String homepage(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
-            System.out.println("Ohhh my juss");
+        Optional<CustomUserDetails> userDetails = UserDetailsHelper.getUserDetails();
+        if (userDetails.isPresent()) {
             // Truyền thông tin username vào model để hiển thị trên home.html
-            model.addAttribute("username", userDetails.getUsername());
-            model.addAttribute("password", userDetails.getPassword());
+            model.addAttribute("username", userDetails.get().getUsername());
+            model.addAttribute("password", userDetails.get().getPassword());
             return "home"; // Trả về home.html
         }
-
         // Nếu chưa đăng nhập, chuyển hướng về trang login
         return "redirect:/login";
     }
@@ -63,7 +61,7 @@ public class GuestController {
      */
     @GetMapping("/dishes")
     public String getAvailableDishes(Model model) {
-        List<FoodResponse> dishes = guestService.getAvailableDishes().getData();
+        List<Food> dishes = guestService.getAvailableDishes();
         model.addAttribute("dishes", dishes);
         return "dish/list";
     }
@@ -95,19 +93,11 @@ public class GuestController {
      */
     @GetMapping("/dish/{foodId}")
     public String getFoodDetails(@PathVariable int foodId, Model model) {
-        ApiResponse<FoodResponse> response = guestService.getFoodDetails(foodId);
-        if (response.getData() != null) {
-            model.addAttribute("food", response.getData());
-
-            // Lấy thông tin người dùng đã đăng nhập từ SecurityContextHolder
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-            // Kiểm tra xem người dùng đã đăng nhập và principal là CustomUserDetails hay không
-            if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
-                CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-                model.addAttribute("userDetails", userDetails); // Thêm userDetails vào model
-            }
-
+        Food response = guestService.getFoodDetails(foodId);
+        if (response != null) {
+            model.addAttribute("food", response);
+            Optional<CustomUserDetails> userDetails = UserDetailsHelper.getUserDetails();
+            userDetails.ifPresent(details -> model.addAttribute("userDetails", details));
             return "dish/details";
         } else {
             model.addAttribute("foodNotFound", true);

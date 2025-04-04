@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -32,14 +33,8 @@ public class GuestService {
      *
      * @return ApiResponse containing available dishes or an error if none found.
      */
-    public ApiResponse<List<FoodResponse>> getAvailableDishes() {
-        List<FoodResponse> dishes = foodRepository.findByIsAvailableTrue()
-                .stream()
-                .map(foodResponseMapper::toFoodResponse)
-                .toList();
-        return dishes.isEmpty()
-                ? ApiResponse.build(1404, "Failed", null)
-                : ApiResponse.build(1000, "Success", dishes);
+    public List<Food> getAvailableDishes() {
+        return foodRepository.findByIsAvailableTrue();
     }
 
     /**
@@ -93,10 +88,11 @@ public class GuestService {
      * @return ApiResponse containing food details or an error if not found.
      */
 
-    public ApiResponse<FoodResponse> getFoodDetails(int foodId) {
-        return foodRepository.findById(foodId)
-                .map(food -> ApiResponse.build(1000, "Success", foodResponseMapper.toFoodResponse(food)))
-                .orElse(ApiResponse.build(1404, "Failed", null));
+    public Food getFoodDetails(int foodId) {
+        if (foodRepository.findById(foodId).isPresent()) {
+            return foodRepository.findById(foodId).get();
+        }
+        return null;
     }
 }
 

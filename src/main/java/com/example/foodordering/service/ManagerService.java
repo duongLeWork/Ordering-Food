@@ -9,7 +9,6 @@ import com.example.foodordering.repository.FoodOrderRepository;
 import com.example.foodordering.repository.FoodRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -46,7 +45,7 @@ public class ManagerService {
      */
     public ApiResponse<List<FoodOrder>> getAllOrders() {
         // Assuming 'true' in statusValue represents a placed order
-        List<FoodOrder> orders = foodOrderRepository.findByOrderStatus_StatusValue(true);
+        List<FoodOrder> orders = foodOrderRepository.findByOrderStatus(true);
         return ApiResponse.build(1000, "Success", orders);
     }
 
@@ -123,7 +122,7 @@ public class ManagerService {
     public ApiResponse<List<FoodOrder>> getSalesStatistics() {
         // In a real application, you would perform calculations here.
         // For simplicity, we are just returning all placed orders.
-        List<FoodOrder> placedOrders = foodOrderRepository.findByOrderStatus_StatusValue(true);
+        List<FoodOrder> placedOrders = foodOrderRepository.findByOrderStatus(true);
         return ApiResponse.build(1000, "Success", placedOrders);
     }
 }

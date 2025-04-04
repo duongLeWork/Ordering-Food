@@ -8,7 +8,6 @@ import java.util.List;
 @Repository
 public interface FoodRepository extends JpaRepository<Food, Integer> {
 
-
     /**
      * Tìm các món ăn có tên chứa một chuỗi nhất định, case insensitive.
      * SELECT * FROM food f

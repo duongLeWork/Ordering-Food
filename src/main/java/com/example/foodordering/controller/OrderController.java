@@ -35,8 +35,8 @@ public class OrderController {
     public String createOrder(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
-            int customerId = (int) userDetails.getAccountId();
-            FoodOrder order = orderService.createOrder(customerId).getData();
+            int customerId = userDetails.getAccountId();
+            FoodOrder order = orderService.createOrder(customerId);
             model.addAttribute("order", order);
             return "orders/success"; // Thymeleaf template: orders/order-success.html
         }
@@ -75,7 +75,7 @@ public class OrderController {
             int customerId = (int) userDetails.getAccountId();
             FoodOrder order = orderService.getOrderDetails(orderId, customerId).getData();
             model.addAttribute("order", order);
-            return "orders/detail"; // Thymeleaf template: orders/order-details.html
+            return "orders/detail"; // Thymeleaf template: orders/order-detail.html
         }
         return "redirect:/login";
     }

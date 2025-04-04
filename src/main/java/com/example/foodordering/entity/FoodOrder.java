@@ -12,16 +12,15 @@ public class FoodOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     private int totalItems;
     private BigDecimal price;
+
+    private boolean orderStatus; // false = giỏ hàng, true = đã đặt hàng
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
-
-    @ManyToOne
-    @JoinColumn(name = "order_status_id")
-    private OrderStatus orderStatus;
 
     @OneToMany(mappedBy = "foodOrder", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderMenuItem> orderMenuItems;

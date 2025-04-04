@@ -18,7 +18,7 @@
                     <label for="quantity">Số lượng:</label>
                     <input type="number" class="form-control" id="quantity" name="quantity" value="1" min="1">
                 </div>
-                <input type="hidden" name="foodId" th:value="${food.id}">
+                <input type="hidden" name="foodId" th:if="${food.id}" th:value="${food.id}" />
                 <input type="hidden" name="customerId" th:value="${userDetails.accountId}">
                 <button type="submit" class="btn btn-success">Thêm vào giỏ hàng</button>
             </form>

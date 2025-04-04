@@ -9,8 +9,6 @@
     <div class="container mt-4">
         <div th:if="${order}">
             <h1>Chi Tiết Đơn Hàng #<span th:text="${order.id}">123</span></h1>
-            <p>Ngày Đặt: <span th:text="${#dates.format(order.orderDate, 'dd-MM-yyyy HH:mm')}">20-03-2025 20:00</span></p>
-            <p>Trạng Thái: <span th:text="${order.orderStatus.statusValue ? 'Đã Đặt Hàng' : 'Trong Giỏ Hàng'}">Đã Đặt Hàng</span></p>
             <p>Tổng Số Món: <span th:text="${order.totalItems}">3</span></p>
             <p>Tổng Giá Trị: <span th:text="${#numbers.formatCurrency(order.price)}">150.000 VNĐ</span></p>
 

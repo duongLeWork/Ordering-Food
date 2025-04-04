@@ -9,6 +9,8 @@ import com.example.foodordering.repository.FoodRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,48 +39,13 @@ public class GuestService {
         return foodRepository.findByIsAvailableTrue();
     }
 
-    /**
-     * Searches for food items by name (case-insensitive).
-     *
-     * @param request the search term to find matching food names
-     * @return ApiResponse containing matched food items or an error if none found.
-     */
-    public ApiResponse<List<FoodResponse>> searchDishes(SearchFoodRequest request) {
+    public List<Food> searchDishes(SearchFoodRequest request) {
+        // Nếu không có từ khóa, trả về tất cả món ăn
         if (request.getKeyword() == null || request.getKeyword().trim().isEmpty()) {
-            return ApiResponse.build(1404, "Failed", null);
+            return foodRepository.findAll();  // Nếu không có từ khóa, lấy tất cả món ăn
         }
-        List<FoodResponse> results = foodRepository.findByNameContainingIgnoreCase(request.getKeyword())
-                .stream()
-                .map(foodResponseMapper::toFoodResponse)
-                .toList();
-        return results.isEmpty()
-                ? ApiResponse.build(1404, "Failed", null)
-                : ApiResponse.build(1000, "Success", results);
-    }
-
-
-    /**
-     * Retrieves a sorted list of available dishes based on sorting criteria.
-     *
-     * @param request sorting criteria (e.g., "price_asc", "price_desc")
-     * @return ApiResponse containing sorted dishes.
-     */
-    public ApiResponse<List<FoodResponse>> getSortedDishes(SearchFoodRequest request) {
-        List<Food> sortedDishes;
-        if ("price_asc".equals(request.getSortBy())) {
-            sortedDishes = foodRepository.findByIsAvailableTrueOrderByPriceAsc();
-        } else if ("price_desc".equals(request.getSortBy())) {
-            sortedDishes = foodRepository.findByIsAvailableTrueOrderByPriceDesc();
-        } else {
-            // Mặc định sắp xếp theo giá tăng nếu không có tiêu chí hoặc tiêu chí không hợp lệ
-            sortedDishes = foodRepository.findByIsAvailableTrueOrderByPriceAsc();
-        }
-
-        List<FoodResponse> foodResponses = sortedDishes.stream()
-                .map(foodResponseMapper::toFoodResponse)
-                .collect(Collectors.toList());
-
-        return ApiResponse.build(1000, "Success", foodResponses);
+        // Tìm kiếm theo tên món ăn
+        return foodRepository.findByNameContainingIgnoreCase(request.getKeyword());
     }
 
     /**

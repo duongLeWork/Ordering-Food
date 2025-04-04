@@ -70,17 +70,27 @@ public class GuestController {
      * Tìm kiếm các món ăn dựa trên từ khóa, sắp xếp, danh mục và số lượng kết quả tối đa.
      *
      * @param keyword    từ khóa tìm kiếm (tùy chọn).
-     * @param sortBy     tiêu chí sắp xếp (tùy chọn).
      * @param model      đối tượng Model để truyền dữ liệu tới view.
      * @return tên view hiển thị kết quả tìm kiếm.
      */
+    // Xử lý tìm kiếm món ăn
+    @GetMapping("/search-results")
+    public String searchDishes(@RequestParam(required = false) String keyword, Model model) {
+        // Tạo đối tượng SearchFoodRequest từ từ khóa tìm kiếm
+        SearchFoodRequest request = new SearchFoodRequest(keyword, null);  // Không sử dụng sortBy
+        List<Food> results = guestService.searchDishes(request);
+
+        // Thêm kết quả tìm kiếm vào mô hình để hiển thị
+        model.addAttribute("searchResults", results);
+        model.addAttribute("searchKeyword", keyword);
+
+        // Trả về trang kết quả tìm kiếm
+        return "search-results";
+    }
+
+    // Trang tìm kiếm để nhập từ khóa
     @GetMapping("/search")
-    public String searchDishes(@RequestParam(required = false) String keyword,
-                               @RequestParam(required = false) String sortBy,
-                               Model model) {
-        SearchFoodRequest request = new SearchFoodRequest(keyword, sortBy);
-        List<FoodResponse> results = guestService.searchDishes(request).getData();
-        model.addAttribute("dishes", results);
+    public String searchPage() {
         return "search";
     }
 

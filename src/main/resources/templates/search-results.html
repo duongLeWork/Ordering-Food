@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tìm kiếm món ăn</title>
+    <title>Kết quả tìm kiếm món ăn</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
@@ -25,22 +25,32 @@
 </nav>
 
 <div class="container mt-4">
-    <h1>Tìm kiếm món ăn</h1>
+    <h1>Kết quả tìm kiếm</h1>
 
-    <!-- Form tìm kiếm chuyển tới trang kết quả -->
-    <form th:action="@{/search-results}" method="get" class="mb-3">
-        <div class="input-group">
-            <input type="text" class="form-control" name="keyword" placeholder="Nhập từ khóa tìm kiếm" />
-            <div class="input-group-append">
-                <button class="btn btn-outline-secondary" type="submit">Tìm kiếm</button>
+    <div th:if="${searchResults != null and #lists.isEmpty(searchResults)}">
+        <p class="lead">Không tìm thấy món ăn nào phù hợp với từ khóa "<span th:text="${searchKeyword}"></span>".</p>
+    </div>
+
+    <div th:if="${searchResults != null and !#lists.isEmpty(searchResults)}">
+        <div class="row">
+            <div class="col-md-4 mb-4" th:each="dish : ${searchResults}">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${dish.name}">Tên món ăn</h5>
+                        <p class="card-text" th:text="${dish.description}">Mô tả ngắn về món ăn</p>
+                        <p class="card-text"><small class="text-muted">Giá: <span th:text="${#numbers.formatCurrency(dish.price)}">Giá</span></small></p>
+                        <a th:href="@{/dish/{foodId}(foodId=${dish.id})}" class="btn btn-primary">Xem chi tiết</a>
+                    </div>
+                </div>
             </div>
         </div>
-    </form>
+    </div>
+
+    <div th:if="${searchResults == null}">
+        <p class="lead">Vui lòng nhập từ khóa để tìm kiếm.</p>
+    </div>
 </div>
 
-<footer class="mt-5 bg-light text-center py-3">
-    <p>&copy; 2025 Food Ordering - All Rights Reserved</p>
-</footer>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>

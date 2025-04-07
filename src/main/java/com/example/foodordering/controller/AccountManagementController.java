@@ -41,7 +41,7 @@ public class AccountManagementController {
         if (userDetails.isPresent()) {
             Long accountId = (long) userDetails.get().getAccountId();
             AccountResponse updatedAccount = accountManagementService.updateAccount(accountId, request);
-            return "redirect:/success";
+            return "redirect:/account/success";
         } else {
             return "redirect:/login";
         }

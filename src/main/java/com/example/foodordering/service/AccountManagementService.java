@@ -33,13 +33,26 @@ public class AccountManagementService {
      * @throws AppException if the account does not exist.
      */
     public AccountResponse updateAccount(Long accountId, AccountUpdateRequest request) {
-        Account account = accountRepository.findById(accountId).orElseThrow(() -> new AppException(ErrorCode.USER_EXISTED));
-        accountMapper.updateAccount(account, request);
-        account.setPassword(passwordEncoder.encode(request.getPassword()));
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_EXISTED));
+
+        // Cập nhật thông tin cá nhân
+        account.getCustomer().setFirstname(request.getFirstname());
+        account.getCustomer().setLastname(request.getLastname());
+        account.setEmail(request.getEmail());
+        account.getCustomer().setPhoneNumber(request.getPhoneNumber());
+
+        // Nếu có mật khẩu mới thì encode và cập nhật
+        if (request.getPassword() != null && !request.getPassword().isEmpty()) {
+            String encodedPassword = passwordEncoder.encode(request.getPassword());
+            account.setPassword(encodedPassword);
+        }
 
         accountRepository.save(account);
+
         return accountMapper.toAccountResponse(account);
     }
+
 
     /**
      * Retrieves an account by its ID.

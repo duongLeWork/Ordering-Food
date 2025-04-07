@@ -38,6 +38,11 @@ public class ManagerService {
         return ApiResponse.build(1000, "Success", users);
     }
 
+    public ApiResponse<Customer> getCurrentCustomer(int userId) {
+        Customer user = customerRepository.findById(userId).get();
+        return ApiResponse.build(1000, "Success", user);
+    }
+
     /**
      * Retrieves a list of all placed orders.
      *
@@ -53,11 +58,10 @@ public class ManagerService {
      * Adds a new food item to the menu.
      *
      * @param food The Food entity to be added.
-     * @return ApiResponse containing the newly added Food entity.
      */
-    public ApiResponse<Food> addFood(Food food) {
+    public void addFood(Food food) {
         Food savedFood = foodRepository.save(food);
-        return ApiResponse.build(1201, "Food added successfully", savedFood);
+        ApiResponse.build(1201, "Food added successfully", savedFood);
     }
 
     /**
@@ -65,9 +69,8 @@ public class ManagerService {
      *
      * @param foodId      The ID of the food item to update.
      * @param updatedFood The Food entity containing updated information.
-     * @return ApiResponse containing the updated Food entity.
      */
-    public ApiResponse<Food> updateFood(int foodId, Food updatedFood) {
+    public void updateFood(int foodId, Food updatedFood) {
         Optional<Food> existingFoodOptional = foodRepository.findById(foodId);
         if (existingFoodOptional.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Food item not found with ID: " + foodId);
@@ -78,26 +81,17 @@ public class ManagerService {
         existingFood.setPrice(updatedFood.getPrice());
         existingFood.setImage(updatedFood.getImage());
         existingFood.setIsAvailable(updatedFood.getIsAvailable());
+        foodRepository.save(existingFood);
 
-        Food savedFood = foodRepository.save(existingFood);
-        return ApiResponse.build(1000, "Food updated successfully", savedFood);
     }
 
     /**
      * Deletes a food item by marking it as unavailable.
      *
      * @param foodId The ID of the food item to delete.
-     * @return ApiResponse indicating success.
      */
-    public ApiResponse<String> deleteFood(int foodId) {
-        Optional<Food> foodOptional = foodRepository.findById(foodId);
-        if (foodOptional.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Food item not found with ID: " + foodId);
-        }
-        Food food = foodOptional.get();
-        food.setIsAvailable(false); // Mark as unavailable
-        foodRepository.save(food);
-        return ApiResponse.build(1000, "Food item marked as unavailable", "Deleted");
+    public void deleteFood(int foodId) {
+        foodRepository.deleteById(foodId);
     }
 
     /**

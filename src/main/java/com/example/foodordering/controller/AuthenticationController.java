@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class AuthenticationController {
-    @Autowired
-    private AuthenticationService authenticationService;
 
     @GetMapping("/login")
     public String showLoginForm(Model model) {
@@ -22,18 +20,5 @@ public class AuthenticationController {
         return "login";
     }
 
-//    @PostMapping("/login")
-//    public String authenticate(@ModelAttribute AuthenticationRequest authenticationRequest, Model model) {
-//        try {
-//            UsernamePasswordAuthenticationToken authenticationToken = authenticationService.authenticate(authenticationRequest);
-//
-//            if (authenticationToken.isAuthenticated()) {
-//                return "redirect:/home";
-//            }
-//        } catch (Exception e) {
-//            model.addAttribute("error", "Authentication failed: " + e.getMessage());
-//        }
-//        return "login";
-//    }
 
 }

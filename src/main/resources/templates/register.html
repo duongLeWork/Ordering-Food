@@ -12,22 +12,22 @@
             <form th:object="${accountRegistrationRequest}" method="post">
                 <div class="mb-3">
                     <label for="firstname" class="form-label">First Name:</label>
-                    <input type="text" id="firstname" th:field="*{firstname}" class="form-control" required>
+                    <input type="text" id="firstname" th:field="*{firstname}" class="form-control">
                     <span th:if="${#fields.hasErrors('firstname')}" th:errors="*{firstname}" class="text-danger"></span>
                 </div>
                 <div class="mb-3">
                     <label for="lastname" class="form-label">Last Name:</label>
-                    <input type="text" id="lastname" th:field="*{lastname}" class="form-control" required>
+                    <input type="text" id="lastname" th:field="*{lastname}" class="form-control">
                     <span th:if="${#fields.hasErrors('lastname')}" th:errors="*{lastname}" class="text-danger"></span>
                 </div>
                 <div class="mb-3">
                     <label for="email" class="form-label">Email:</label>
-                    <input type="email" id="email" th:field="*{email}" class="form-control" required>
+                    <input type="email" id="email" th:field="*{email}" class="form-control">
                     <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"></span>
                 </div>
                 <div class="mb-3">
                     <label for="phoneNumber" class="form-label">Phone Number:</label>
-                    <input type="text" id="phoneNumber" th:field="*{phoneNumber}" class="form-control" required>
+                    <input type="text" id="phoneNumber" th:field="*{phoneNumber}" class="form-control">
                     <span th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}" class="text-danger"></span>
                 </div>
                 <div class="mb-3">

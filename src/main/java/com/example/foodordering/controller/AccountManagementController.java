@@ -1,76 +1,54 @@
 package com.example.foodordering.controller;
 
+import com.example.foodordering.config.CustomUserDetails;
 import com.example.foodordering.dto.request.AccountUpdateRequest;
 import com.example.foodordering.dto.response.AccountResponse;
-import com.example.foodordering.dto.response.ApiResponse;
 import com.example.foodordering.service.AccountManagementService;
-import com.example.foodordering.service.AccountRegistrationService;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
+import com.example.foodordering.utils.UserDetailsHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import java.util.Optional;
 
-import java.util.List;
-
-@RestController
-@RequiredArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@RequestMapping("/manager/management")
+@Controller
+@RequestMapping("/account")
 public class AccountManagementController {
 
     @Autowired
     private AccountManagementService accountManagementService;
 
-    @PutMapping("{id}")
-    public ApiResponse<AccountResponse> updateAccount(@PathVariable Long id,
-                                                      @RequestBody AccountUpdateRequest request) {
-        ApiResponse<AccountResponse> response = new ApiResponse<>();
+    // Hiển thị chi tiết tài khoản của người dùng hiện tại
+    @GetMapping
+    public String getAccount(Model model) {
+        Optional<CustomUserDetails> userDetails = UserDetailsHelper.getUserDetails();
+        if (userDetails.isPresent()) {
+            Long accountId = (long) userDetails.get().getAccountId();
+            AccountResponse account = accountManagementService.getAccount(accountId);
 
-        AccountResponse accountResponse = accountManagementService.updateAccount(id, request);
-
-        response.setCode(1000);
-        response.setMessage("Success");
-        response.setData(accountResponse);
-
-        return response;
-
+            model.addAttribute("account", account);
+            model.addAttribute("updateRequest", new AccountUpdateRequest());
+            return "account/detail";
+        } else {
+            return "redirect:/login";
+        }
     }
 
-    @DeleteMapping("{id}")
-    public void deleteAccount(@PathVariable Long id) {
-        accountManagementService.deleteAccount(id);
+    // Cập nhật thông tin tài khoản của người dùng hiện tại
+    @PostMapping
+    public String updateAccount(@ModelAttribute("updateRequest") AccountUpdateRequest request) {
+        Optional<CustomUserDetails> userDetails = UserDetailsHelper.getUserDetails();
+        if (userDetails.isPresent()) {
+            Long accountId = (long) userDetails.get().getAccountId();
+            AccountResponse updatedAccount = accountManagementService.updateAccount(accountId, request);
+            return "redirect:/account/success";
+        } else {
+            return "redirect:/login";
+        }
     }
 
-    @GetMapping("")
-    public ApiResponse<List<AccountResponse>> getAllAccounts() {
-        ApiResponse<List<AccountResponse>> response = new ApiResponse<>();
-
-        List<AccountResponse> accountResponse = accountManagementService.getAllAccounts();
-
-        response.setCode(1000);
-        response.setMessage("Success");
-        response.setData(accountResponse);
-
-        return response;
-    }
-
-    @GetMapping("{accountId}")
-    public ApiResponse<AccountResponse> getAccount(@PathVariable Long accountId) {
-        ApiResponse<AccountResponse> response = new ApiResponse<>();
-        response.setCode(1000);
-        response.setMessage("Success");
-        response.setData(accountManagementService.getAccount(accountId));
-
-        return response;
-    }
-
-    //    @GetMapping("/csrf-token")
-//    public CsrfToken getCsrfToken(HttpServletRequest request) {
-//        return (CsrfToken) request.getAttribute("_csrf");
-//    }
-    @GetMapping("/tuu")
-    public String greet(HttpServletRequest request) {
-        return "Token: "+request.getSession().getId();
+    @GetMapping("/success")
+    public String updateSuccessPage() {
+        return "account/update";
     }
 }

@@ -4,6 +4,7 @@ import com.example.foodordering.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -42,12 +43,19 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
+                        // Public URLs
                         .requestMatchers("/", "/home", "/registers", "/login").permitAll()
-                        .anyRequest().authenticated()
+                        // Manager-only endpoints
+                        .requestMatchers("/manager/**").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.POST, "/manager/**").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.PUT, "/manager/**").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.DELETE, "/manager/**").hasRole("MANAGER")
+                        // All other endpoints require CUSTOMER role
+                        .anyRequest().hasRole("CUSTOMER")
                 )
                 .formLogin(login -> login
                         .loginPage("/login")
-                        .defaultSuccessUrl("/home", true)
+                        .defaultSuccessUrl("/", true)
                         .permitAll()
                 )
                 .logout(logout -> logout
@@ -56,7 +64,9 @@ public class SecurityConfig {
                 )
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
+
         return http.build();
     }
+
 
 }

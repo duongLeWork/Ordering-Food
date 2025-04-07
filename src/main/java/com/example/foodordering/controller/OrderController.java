@@ -1,7 +1,10 @@
 package com.example.foodordering.controller;
 
+import com.example.foodordering.config.CustomUserDetails;
 import com.example.foodordering.entity.FoodOrder;
 import com.example.foodordering.service.OrderService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -30,9 +33,14 @@ public class OrderController {
      */
     @PostMapping
     public String createOrder(Model model) {
-        FoodOrder order = orderService.createOrder().getData();
-        model.addAttribute("order", order);
-        return "orders/success"; // Thymeleaf template: orders/order-success.html
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
+            int customerId = userDetails.getAccountId();
+            FoodOrder order = orderService.createOrder(customerId);
+            model.addAttribute("order", order);
+            return "orders/success"; // Thymeleaf template: orders/order-success.html
+        }
+        return "redirect:/login";
     }
 
     /**
@@ -43,9 +51,14 @@ public class OrderController {
      */
     @GetMapping
     public String getOrderList(Model model) {
-        List<FoodOrder> orders = orderService.getOrderList().getData();
-        model.addAttribute("orders", orders);
-        return "orders/list"; // Thymeleaf template: orders/order-list.html
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
+            int customerId = (int) userDetails.getAccountId();
+            List<FoodOrder> orders = orderService.getOrderList(customerId).getData();
+            model.addAttribute("orders", orders);
+            return "orders/list"; // Thymeleaf template: orders/order-list.html
+        }
+        return "redirect:/login";
     }
 
     /**
@@ -57,8 +70,13 @@ public class OrderController {
      */
     @GetMapping("/{orderId}")
     public String getOrderDetails(@PathVariable int orderId, Model model) {
-        FoodOrder order = orderService.getOrderDetails(orderId).getData();
-        model.addAttribute("order", order);
-        return "orders/detail"; // Thymeleaf template: orders/order-details.html
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
+            int customerId = (int) userDetails.getAccountId();
+            FoodOrder order = orderService.getOrderDetails(orderId, customerId).getData();
+            model.addAttribute("order", order);
+            return "orders/detail"; // Thymeleaf template: orders/order-detail.html
+        }
+        return "redirect:/login";
     }
 }

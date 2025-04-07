@@ -40,6 +40,17 @@
                     <input type="password" id="password" th:field="*{password}" class="form-control" required>
                     <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger"></span>
                 </div>
+                <div class="mb-3">
+                    <label for="role" class="form-label">Role:</label>
+                    <select id="role" th:field="*{role}" class="form-select" required>
+                        <option value="">Select Role</option>
+                        <option value="manager">Manager</option>
+                        <option value="customer">Customer</option>
+                        <!-- Add more roles as needed -->
+                    </select>
+                    <span th:if="${#fields.hasErrors('role')}" th:errors="*{role}" class="text-danger"></span>
+                </div>
+
                 <button type="submit" class="btn btn-primary">Register</button>
                 <p th:if="${error}" class="text-danger mt-2">${error}</p>
             </form>

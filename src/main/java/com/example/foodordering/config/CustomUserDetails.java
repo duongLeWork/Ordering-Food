@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 @AllArgsConstructor
 public class CustomUserDetails implements UserDetails {
@@ -49,8 +48,8 @@ public class CustomUserDetails implements UserDetails {
         return true;
     }
 
-    public long getAccountId() {
-        return account.getAccountId();
+    public int getAccountId() {
+        return (int) account.getAccountId();
     }
 
     public String getRole() {

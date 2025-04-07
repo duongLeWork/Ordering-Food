@@ -3,14 +3,16 @@ package com.example.foodordering.controller;
 import com.example.foodordering.config.CustomUserDetails;
 import com.example.foodordering.dto.request.SearchFoodRequest;
 import com.example.foodordering.dto.response.FoodResponse;
+import com.example.foodordering.entity.Food;
 import com.example.foodordering.service.GuestService;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import com.example.foodordering.utils.UserDetailsHelper;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Controller xử lý các yêu cầu liên quan đến khách, bao gồm hiển thị danh sách món ăn,
@@ -32,25 +34,22 @@ public class GuestController {
      * @return tên view của trang chủ.
      */
 
-    @GetMapping("/")
+    @GetMapping
     public String getRoot(Model model)
     {
-        return "redirect:/login";
+        return "redirect:/home";
 
     }
 
     @GetMapping("/home")
     public String homepage(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
-            System.out.println("Ohhh my juss");
+        Optional<CustomUserDetails> userDetails = UserDetailsHelper.getUserDetails();
+        if (userDetails.isPresent()) {
             // Truyền thông tin username vào model để hiển thị trên home.html
-            model.addAttribute("username", userDetails.getUsername());
-            model.addAttribute("password", userDetails.getPassword());
+            model.addAttribute("username", userDetails.get().getUsername());
+            model.addAttribute("password", userDetails.get().getPassword());
             return "home"; // Trả về home.html
         }
-
         // Nếu chưa đăng nhập, chuyển hướng về trang login
         return "redirect:/login";
     }
@@ -62,7 +61,7 @@ public class GuestController {
      */
     @GetMapping("/dishes")
     public String getAvailableDishes(Model model) {
-        List<FoodResponse> dishes = guestService.getAvailableDishes().getData();
+        List<Food> dishes = guestService.getAvailableDishes();
         model.addAttribute("dishes", dishes);
         return "dish/list";
     }
@@ -71,17 +70,27 @@ public class GuestController {
      * Tìm kiếm các món ăn dựa trên từ khóa, sắp xếp, danh mục và số lượng kết quả tối đa.
      *
      * @param keyword    từ khóa tìm kiếm (tùy chọn).
-     * @param sortBy     tiêu chí sắp xếp (tùy chọn).
      * @param model      đối tượng Model để truyền dữ liệu tới view.
      * @return tên view hiển thị kết quả tìm kiếm.
      */
+    // Xử lý tìm kiếm món ăn
+    @GetMapping("/search-results")
+    public String searchDishes(@RequestParam(required = false) String keyword, Model model) {
+        // Tạo đối tượng SearchFoodRequest từ từ khóa tìm kiếm
+        SearchFoodRequest request = new SearchFoodRequest(keyword, null);  // Không sử dụng sortBy
+        List<Food> results = guestService.searchDishes(request);
+
+        // Thêm kết quả tìm kiếm vào mô hình để hiển thị
+        model.addAttribute("searchResults", results);
+        model.addAttribute("searchKeyword", keyword);
+
+        // Trả về trang kết quả tìm kiếm
+        return "search-results";
+    }
+
+    // Trang tìm kiếm để nhập từ khóa
     @GetMapping("/search")
-    public String searchDishes(@RequestParam(required = false) String keyword,
-                               @RequestParam(required = false) String sortBy,
-                               Model model) {
-        SearchFoodRequest request = new SearchFoodRequest(keyword, sortBy);
-        List<FoodResponse> results = guestService.searchDishes(request).getData();
-        model.addAttribute("dishes", results);
+    public String searchPage() {
         return "search";
     }
 
@@ -94,8 +103,15 @@ public class GuestController {
      */
     @GetMapping("/dish/{foodId}")
     public String getFoodDetails(@PathVariable int foodId, Model model) {
-        FoodResponse food = guestService.getFoodDetails(foodId).getData();
-        model.addAttribute("food", food);
-        return "dish/details";
+        Food response = guestService.getFoodDetails(foodId);
+        if (response != null) {
+            model.addAttribute("food", response);
+            Optional<CustomUserDetails> userDetails = UserDetailsHelper.getUserDetails();
+            userDetails.ifPresent(details -> model.addAttribute("userDetails", details));
+            return "dish/details";
+        } else {
+            model.addAttribute("foodNotFound", true);
+            return "dish/details";
+        }
     }
 }

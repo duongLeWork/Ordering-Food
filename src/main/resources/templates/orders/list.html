@@ -14,20 +14,16 @@
                 <thead>
                     <tr>
                         <th>Mã Đơn Hàng</th>
-                        <th>Ngày Đặt</th>
                         <th>Tổng Số Món</th>
                         <th>Tổng Giá</th>
-                        <th>Trạng Thái</th>
                         <th>Hành Động</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr th:each="order : ${orders}">
                         <td th:text="${order.id}">#123</td>
-                        <td th:text="${#dates.format(order.orderDate, 'dd-MM-yyyy HH:mm')}">20-03-2025 20:00</td>
                         <td th:text="${order.totalItems}">3</td>
                         <td th:text="${#numbers.formatCurrency(order.price)}">150.000 VNĐ</td>
-                        <td th:text="${order.orderStatus.statusValue ? 'Đã Đặt Hàng' : 'Trong Giỏ Hàng'}">Đã Đặt Hàng</td>
                         <td>
                             <a th:href="@{/orders/{orderId}(orderId=${order.id}, customerId=${param.customerId})}" class="btn btn-sm btn-info">Xem Chi Tiết</a>
                         </td>

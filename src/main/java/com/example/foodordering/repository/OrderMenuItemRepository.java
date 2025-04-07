@@ -29,7 +29,6 @@ public interface OrderMenuItemRepository extends JpaRepository<OrderMenuItem, In
      * @return list of order menu items associated with the given food order
      */
     List<OrderMenuItem> findByFoodOrder_Id(int foodOrderId);
-
     /**
      * Retrieves all OrderMenuItems by a given Customer ID via FoodOrder.
      * Equivalent SQL:

@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -37,7 +38,24 @@ public class GuestController {
     @GetMapping
     public String getRoot(Model model)
     {
-        return "redirect:/home";
+        Optional<CustomUserDetails> userDetails = UserDetailsHelper.getUserDetails();
+        if (userDetails.isPresent()) {
+            if (Objects.equals(userDetails.get().getRole(), "customer")) {
+                // Truyền thông tin username vào model để hiển thị trên home.html
+                model.addAttribute("username", userDetails.get().getUsername());
+                model.addAttribute("password", userDetails.get().getPassword());
+                return "home"; // Trả về home.html
+            }
+
+            if (Objects.equals(userDetails.get().getRole(), "manager")) {
+                model.addAttribute("username", userDetails.get().getUsername());
+                model.addAttribute("password", userDetails.get().getPassword());
+                return "manager/dashboard";
+            }
+
+        }
+        // Nếu chưa đăng nhập, chuyển hướng về trang login
+        return "redirect:/login";
 
     }
 

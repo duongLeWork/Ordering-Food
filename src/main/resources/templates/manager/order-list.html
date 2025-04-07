@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order List</title>
+</head>
+<body>
+<h1>Order List</h1>
+<table>
+    <thead>
+    <tr>
+        <th>Order ID</th>
+        <th>Total Items</th>
+        <th>Total Price</th>
+        <th>Order Status</th>
+        <th>Details</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Loop through the list of orders -->
+    <tr th:each="order : ${orders}">
+        <td th:text="${order.id}"></td>
+        <td th:text="${order.totalItems}"></td>
+        <td th:text="${order.price}"></td>
+        <td th:text="${order.orderStatus ? 'Placed' : 'In Cart'}"></td>
+        <td>
+            <!-- Button to go to the order details page -->
+            <a th:href="@{/manager/orders/{id}(id=${order.id})}">
+                <button>View Details</button>
+            </a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

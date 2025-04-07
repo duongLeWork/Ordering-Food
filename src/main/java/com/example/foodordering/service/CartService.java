@@ -167,25 +167,15 @@ public class CartService {
      * @param customerId ID of the logged-in customer.
      */
     public void clearCart(int customerId) {
-        // Find the active (in-progress) cart for the given customer.
-        List<FoodOrder> cartOrders = foodOrderRepository.findByCustomer_IdAndOrderStatus(customerId, false);
-
-        // If there is no active cart, return (nothing to clear).
-        if (cartOrders.isEmpty()) {
-            return; // Cart is already empty or the customer has no active cart.
+        // Find the customer's active cart (orderStatus = false)
+        List<OrderMenuItem> orderMenuItems = orderMenuItemRepository.findAll();
+        FoodOrder cartOrder = orderMenuItems.getFirst().getFoodOrder();
+        if (cartOrder.getCustomer().getId() != customerId) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cart item does not belong to the current customer's cart");
         }
-        // Get the first (and presumably only) cart for the customer.
-        FoodOrder cartOrder = cartOrders.getFirst();
-
-        // Delete all items in the cart (OrderMenuItems).
-        orderMenuItemRepository.deleteByFoodOrder_Id(cartOrder.getId());
-
-        // Optionally, reset cart order details such as item count and total price.
-        cartOrder.setTotalItems(0); // Set the total items count to zero
-        cartOrder.setPrice(BigDecimal.ZERO); // Set the total price to zero
-
-        // Save the updated cart order (with zero items and price).
-        foodOrderRepository.save(cartOrder);
+        for (OrderMenuItem item : orderMenuItems) {
+            orderMenuItemRepository.deleteById(item.getId());
+        }
     }
 
     private void updateCartTotals(FoodOrder cartOrder) {

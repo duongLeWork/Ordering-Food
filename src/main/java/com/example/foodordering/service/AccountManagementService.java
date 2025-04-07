@@ -6,11 +6,9 @@ import com.example.foodordering.entity.Account;
 import com.example.foodordering.exception.AppException;
 import com.example.foodordering.exception.ErrorCode;
 import com.example.foodordering.mapper.AccountMapper;
-import com.example.foodordering.mapper.AccountResponseMapper;
-import com.example.foodordering.mapper.CustomerMapper;
 import com.example.foodordering.repository.intf.AccountRepository;
-import com.example.foodordering.repository.intf.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,18 +18,11 @@ import java.util.List;
 public class AccountManagementService {
     @Autowired
     private AccountRepository accountRepository;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Autowired
     private AccountMapper accountMapper;
-
-    @Autowired
-    AccountResponseMapper accountResponseMapper;
-
-    @Autowired
-    CustomerMapper customerMapper;
-
-    @Autowired
-    private CustomerRepository customerRepository;
 
     /**
      * Updates an existing account.
@@ -44,6 +35,8 @@ public class AccountManagementService {
     public AccountResponse updateAccount(Long accountId, AccountUpdateRequest request) {
         Account account = accountRepository.findById(accountId).orElseThrow(() -> new AppException(ErrorCode.USER_EXISTED));
         accountMapper.updateAccount(account, request);
+        account.setPassword(passwordEncoder.encode(request.getPassword()));
+
         accountRepository.save(account);
         return accountMapper.toAccountResponse(account);
     }
@@ -56,10 +49,7 @@ public class AccountManagementService {
      * @throws RuntimeException if the account is not found.
      */
     public AccountResponse getAccount(Long accountId) {
-//        return accountMapper.toAccountResponse(accountRepository.findById(accountId)
-//                .orElseThrow(() -> new RuntimeException("Account not found")));
         Account account = accountRepository.findById(accountId).orElseThrow(() -> new AppException(ErrorCode.USER_EXISTED));
-
 
         AccountResponse accountResponse = new AccountResponse();
         accountResponse.setFirstname(account.getCustomer().getFirstname());

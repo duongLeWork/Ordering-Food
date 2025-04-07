@@ -1,5 +1,7 @@
 package com.example.foodordering.controller;
 
+import com.example.foodordering.dto.response.AccountResponse;
+import com.example.foodordering.dto.response.ApiResponse;
 import com.example.foodordering.entity.Customer;
 import com.example.foodordering.entity.Food;
 import com.example.foodordering.entity.FoodOrder;
@@ -112,16 +114,23 @@ public class ManagerController {
         return "redirect:/manager/food";
     }
 
-    /**
-     * Retrieves sales statistics.
-     *
-     * @param model Model to add sales data.
-     * @return Thymeleaf template for sales statistics.
-     */
-    @GetMapping("/sales")
-    public String getSalesStatistics(Model model) {
-        List<FoodOrder> sales = managerService.getSalesStatistics().getData();
-        model.addAttribute("sales", sales);
-        return "manager/sales-statistics";
-    }
+//    @DeleteMapping("{id}")
+//    public void deleteAccount(@PathVariable Long id) {
+//        accountManagementService.deleteAccount(id);
+//    }
+//
+//    @GetMapping("")
+//    public ApiResponse<List<AccountResponse>> getAllAccounts() {
+//        ApiResponse<List<AccountResponse>> response = new ApiResponse<>();
+//
+//        List<AccountResponse> accountResponse = accountManagementService.getAllAccounts();
+//
+//        response.setCode(1000);
+//        response.setMessage("Success");
+//        response.setData(accountResponse);
+//
+//        return response;
+//    }
+//
+
 }

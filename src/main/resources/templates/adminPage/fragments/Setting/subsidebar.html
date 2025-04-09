@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Sub Sidebar</title>
+</head>
+<body>
+
+
+<div th:fragment="subsidebarTab">
+    <ul class="cusU nav side-menu ">
+        <!-- User Account Link -->
+        <li class="cusB" th:classappend="${activePage == 'userAccount' ? ' active' : ''}">
+            <a class="cusC d-flex align-item-center justify-content-center" th:href="@{user-account}"
+               th:classappend="${activePage == 'userAccount' ? ' active' : ''}">
+                <div class="d-flex align-item-center justify-content-center">
+                    <i class="fa-solid fa-circle-user"></i>
+                    <div class="d-flex row">
+                        <span>User Account</span>
+                        <span class="small-text2">Lorem ipsum dolor sit amet, consectetur </span>
+                    </div>
+                </div>
+            </a>
+        </li>
+
+        <!-- Payment Method Link -->
+        <li class="cusB" th:classappend="${activePage == 'paymentMethod' ? ' active' : ''}">
+            <a class="cusC d-flex align-item-center justify-content-center" th:href="@{payment-method}"
+               th:classappend="${activePage == 'paymentMethod' ? ' active' : ''}">
+                <div class="d-flex align-item-center justify-content-center">
+                    <i class="fa-solid fa-wallet"></i>
+                    <div class="d-flex row">
+                        <span>Payment Method</span>
+                        <span class="small-text2">Setup payment to increase shopping convienience</span>
+                    </div>
+                </div>
+            </a>
+        </li>
+    </ul>
+</div>
+</body>
+</html>

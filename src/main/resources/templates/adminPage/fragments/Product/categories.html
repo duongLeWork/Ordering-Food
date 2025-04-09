@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle}">Categories</title>
+</head>
+<body>
+<div th:fragment="categoriesList" th:if="${activePage == 'categories'}">
+    <div class="container mt-4">
+        <div class="actionBar w-100 d-flex justify-content-between align-items-center" >
+            <!-- Search Box -->
+            <div class="searchbox position-relative">
+                <input type="text" class="form-control h-100 pl-5" placeholder="Search for categories...">
+                <i class="fa-solid fa-magnifying-glass search-icon position-absolute"></i>
+            </div>
+            <!-- Button to Add New Product -->
+            <div class="addNewP">
+                <button class="w-100 h-100 btn">Add New Categories</button>
+            </div>
+        </div>
+        <!-- Categories content here -->
+        <table class="table table-striped">
+            <thead>
+            <tr class="tblhea">
+                <th class="tblcell">No</th>
+                <th class="tblcell">Category</th>
+                <th class="tblcell">Variant Price</th>
+                <th class="tblcell">Status</th>
+                <th class="tblcell">Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="tblcont" th:each="category : ${categories}">
+                <td class="tblcell" th:text="${category.id}"></td>
+                <td class="tblcell" th:text="${category.name}"></td>
+                <td class="tblcell" th:text="${category.variantPrice}"></td>
+                <td class="tblcell">
+                    <i th:class="${category.isAvailable ? 'fa-solid fa-toggle-on text-success' : 'fa-solid fa-toggle-off text-danger'}"
+                       th:attr="data-category-id=${category.id}"
+                       style="cursor: pointer; font-size: 30px;">
+                    </i>
+                </td>
+                <td class="tblcell">
+                    <div class="dropdown">
+                        <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-ellipsis-vertical" style="font-size: 20px; color: #EF6B27;"></i>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <li><a class="dropdown-item" href="#">Edit</a></li>
+                            <li><a class="dropdown-item" href="#">Delete</a></li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <!-- Pagination -->
+        <div class="d-flex justify-content-between mt-4">
+            <!-- Rows per page selection -->
+            <span>Rows per page:
+                <input type="number" id="rowsPerPage" class="form-control w-auto" value="10" min="1"
+                       th:value="${rowsPerPage}" onchange="updateRowsPerPage()">
+            </span>
+
+            <!-- Pagination controls -->
+            <div>
+                <a class="btn btn-outline-secondary"
+                   href="javascript:void(0);" onclick="goLeftPage()"
+                   id="prevPageBtn" >
+                    <i class="fa-solid fa-chevron-left"></i>
+                </a>
+                <span class="mx-2">
+                    Page
+                    <input type="number" id="pageInput" class="form-control d-inline w-auto"
+                           th:value="${currentPage}" th:max="${totalPages}" min="1" onchange="goToPage()">
+                    of <span id="totalPages" th:text="${totalPages}"></span>
+                </span>
+                <a class="btn btn-outline-secondary"
+                   href="javascript:void(0);" onclick="goRightPage()"
+                   id="nextPageBtn" >
+                    <i class="fa-solid fa-chevron-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

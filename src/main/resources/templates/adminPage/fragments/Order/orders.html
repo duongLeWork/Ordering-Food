@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${pageTitle}">Orders</title>
+</head>
+<body>
+<div th:fragment="orderList" th:if="${activePage == 'orders'}">
+  <!-- Orders Page Content -->
+  <div class="container mt-4">
+    <div class="actionBar w-100 d-flex justify-content-between align-items-center" >
+      <!-- Search Box -->
+      <div class="searchbox position-relative">
+        <input type="text" class="form-control h-100 pl-5" placeholder="Search for orders...">
+        <i class="fa-solid fa-magnifying-glass search-icon position-absolute"></i>
+      </div>
+      <!-- Filter Dropdown -->
+      <div class="filterDrop">
+        <div class="filter dropdown">
+          <button class="h-100 w-100 btn btn-outline-secondary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            Filter
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="filterDropdown">
+            <!-- Dynamically display filters based on the active page -->
+            <li th:each="filter : ${filters}">
+              <a class="dropdown-item" href="#" th:text="${filter}" th:data-filter="${filter}"  ></a> <!--onclick="applyFilter(this)"-->
+            </li>
+          </ul>
+        </div>
+      </div>
+      <!-- Button to Add New Product -->
+      <div class="addNewP">
+        <button class="w-100 h-100 btn">Add New Order</button>
+      </div>
+    </div>
+
+
+    <!-- Orders Table -->
+    <table class="table table-striped">
+      <thead>
+      <tr class="tblhea">
+        <th class="tblcell"><input type="checkbox" /></th>
+        <th class="tblcell">Order Id</th>
+        <th class="tblcell">Customer</th>
+        <th class="tblcell">Items</th>
+        <th class="tblcell">Amounts</th>
+        <th class="tblcell">Status</th>
+        <th class="tblcell">Action</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="tblcont" th:each="order, iterStat : ${orders}">
+        <td class="tblcell"><input type="checkbox" /></td>
+        <td class="tblcell">
+          <span th:text="${order.foodOrderId}">#001001</span><br>
+          <span class="small-text" th:text="${order.orderDate}"></span>
+        </td>
+        <td class="tblcell">
+          <span th:text="${order.customer.name}">Devon Lane</span><br/>
+          <span class="small-text" th:text="${order.customer.address}">1234 Main St, Apt 5</span>
+        </td>
+        <td class="tblcell" th:text="${order.orderMenu.menuItem}">Pizza</td>
+        <td class="tblcell" th:text="${order.price}">250</td>
+        <td class="tblcell">
+          <span class="badge" th:class="${order.orderStatus.status == 'New Order' ? 'bg-secondary px-2 py-1 color1'
+                                      : (order.orderStatus.status == 'Processing' ? 'bg-warning px-2 py-1 color1'
+                                      : 'bg-danger px-2 py-1 color1')}" th:text="${order.orderStatus.status}">
+          </span>
+        </td>
+        <td class="tblcell">
+          <a href="#" class="btn btn-sm btn-outline-primary">
+            <i class="fa-solid fa-eye"></i> View
+          </a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+
+    <!-- Pagination -->
+    <div class="d-flex justify-content-between mt-4">
+      <!-- Rows per page selection -->
+      <span>Rows per page:
+                <input type="number" id="rowsPerPage" class="form-control w-auto" value="10" min="1"
+                       th:value="${rowsPerPage}" onchange="updateRowsPerPage()">
+                </span>
+
+      <!-- Pagination controls -->
+      <div>
+        <a class="btn btn-outline-secondary"
+           href="javascript:void(0);" onclick="goLeftPage()"
+           id="prevPageBtn" >
+          <i class="fa-solid fa-chevron-left"></i>
+        </a>
+        <span class="mx-2">
+                    Page
+                    <input type="number" id="pageInput" class="form-control d-inline w-auto"
+                           th:value="${currentPage}" th:max="${totalPages}" min="1" onchange="goToPage()">
+                    of <span id="totalPages" th:text="${totalPages}"></span>
+                    </span>
+        <a class="btn btn-outline-secondary"
+           href="javascript:void(0);" onclick="goRightPage()"
+           id="nextPageBtn" >
+          <i class="fa-solid fa-chevron-right"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

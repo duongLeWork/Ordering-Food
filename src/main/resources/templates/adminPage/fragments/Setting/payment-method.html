@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle}">Settings</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+<div th:fragment="paymentMethodPage">
+    <div class="c1">
+        <!-- Payment Method Section -->
+        <h3 class="title1">Payment Method</h3>
+
+        <!-- Payment Methods List -->
+        <div class="payment-methods-list">
+            <div class="column1" th:each="paymentMethod : ${paymentMethods}">
+                <div class="card1">
+                    <div class="cardc d-flex justify-content-between align-items-center">
+                        <div class="cardw d-flex row">
+                            <span class="head1" th:text="${paymentMethod.name}">Payment Method Name</span>
+                            <p class="cardt" th:text="${paymentMethod.description}">Payment Method Description</p>
+                        </div>
+                        <div>
+                            <i th:class="${paymentMethod.active ? 'fa-solid fa-toggle-on text-success' : 'fa-solid fa-toggle-off text-danger'}"
+                               th:attr="data-paymentMethod-name=${paymentMethod.name}"
+                               style="cursor: pointer; font-size: 30px;">
+                            </i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

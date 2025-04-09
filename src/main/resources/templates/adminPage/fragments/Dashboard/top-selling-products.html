@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Top Selling Products Chart</title>
+</head>
+<body>
+<div th:fragment="topSellingProducts">
+    <div class="top-selling-products">
+        <h3>Top Selling Products</h3>
+        <div class="row">
+            <div th:each="product : ${topSellingProducts}" class="col-3">
+                <div class="product-card">
+                    <img th:src="@{${product.imageUrl}}" alt="Product Image" class="img-fluid">
+                    <h5 th:text="${product.name}"></h5>
+                    <p th:text="'$' + ${product.price}"></p>
+                    <p th:text="${product.salesCount + ' sold'}"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

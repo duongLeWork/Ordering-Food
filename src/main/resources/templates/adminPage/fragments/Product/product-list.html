@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle}">Product List</title>
+</head>
+<body>
+    <div th:fragment="productList" th:if="${activePage == 'productList'}">
+        <div class="container mt-4">
+            <div class="actionBar w-100 d-flex justify-content-between align-items-center" >
+                <!-- Search Box -->
+                <div class="searchbox position-relative">
+                    <input type="text" class="form-control h-100 pl-5" placeholder="Search for products...">
+                    <i class="fa-solid fa-magnifying-glass search-icon position-absolute"></i>
+                </div>
+                <!-- Filter Dropdown -->
+                <div class="filterDrop">
+                    <div class="filter dropdown">
+                        <button class="h-100 w-100 btn btn-outline-secondary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            Filter
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="filterDropdown">
+                            <!-- Dynamically display filters based on the active page -->
+                            <li th:each="filter : ${filters}">
+                                <a class="dropdown-item" href="#" th:text="${filter}" th:data-filter="${filter}"  ></a> <!--onclick="applyFilter(this)"-->
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- Button to Add New Product -->
+                <div class="addNewP">
+                    <button class="w-100 h-100 btn">Add New Product</button>
+                </div>
+            </div>
+            <!-- Table -->
+            <table class="table table-striped">
+                <thead>
+                <tr class="tblhea">
+                    <th class="tblcell">No</th>
+                    <th class="tblcell">Product</th>
+                    <th class="tblcell">Price</th>
+                    <th class="tblcell">Stock</th>
+                    <th class="tblcell">Status</th>
+                    <th class="tblcell">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="tblcont" th:each="product, iterStat : ${products}">
+                    <td class="tblcell" th:text="${(currentPage - 1) * rowsPerPage + iterStat.index + 1}"></td>
+                    <td>
+                        <div class="d-flex">
+                            <img th:src="${product.imageUrl}" alt="Product Image" class="rounded-circle" style="width: 50px; height: 50px;">
+                            <div class="name d-flex row">
+                                <span th:text="${product.name}"></span>
+                                <span class="small-text" th:text="${product.category.name}"></span>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="tblcell" th:text="'$' + ${product.price}"></td>
+                    <td class="tblcell" th:text="${product.stock}"></td>
+                    <td class="tblcell">
+                        <i th:class="${product.isAvailable ? 'fa-solid fa-toggle-on text-success' : 'fa-solid fa-toggle-off text-danger'}"
+                           th:attr="data-product-id=${product.id}"
+                           style="cursor: pointer; font-size: 30px;">
+                        </i>
+                    </td>
+                    <td class="tblcell">
+                        <div class="dropdown">
+                            <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa-solid fa-ellipsis-vertical" style="font-size: 20px; color: #EF6B27;"></i>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <li><a class="dropdown-item" href="#">Edit</a></li>
+                                <li><a class="dropdown-item" href="#">Delete</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <!-- Pagination -->
+            <div class="d-flex justify-content-between mt-4">
+                <!-- Rows per page selection -->
+                <span>Rows per page:
+                <input type="number" id="rowsPerPage" class="form-control w-auto" value="10" min="1"
+                       th:value="${rowsPerPage}" onchange="updateRowsPerPage()">
+                </span>
+
+                <!-- Pagination controls -->
+                <div>
+                    <a class="btn btn-outline-secondary"
+                       href="javascript:void(0);" onclick="goLeftPage()"
+                       id="prevPageBtn" >
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </a>
+                    <span class="mx-2">
+                    Page
+                    <input type="number" id="pageInput" class="form-control d-inline w-auto"
+                           th:value="${currentPage}" th:max="${totalPages}" min="1" onchange="goToPage()">
+                    of <span id="totalPages" th:text="${totalPages}"></span>
+                    </span>
+                    <a class="btn btn-outline-secondary"
+                       href="javascript:void(0);" onclick="goRightPage()"
+                       id="nextPageBtn" >
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

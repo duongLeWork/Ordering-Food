@@ -1,0 +1,78 @@
+.actionBar {
+    margin-bottom: 30px;
+}
+.searchbox {
+    position: relative;
+    width:60%;
+    height:50px;
+}
+.searchbox input {
+    padding-left: 20px; /* Adjust this value based on the size of the icon */
+}
+.search-icon {
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%); /* Centers the icon vertically */
+    font-size: 16px; /* Adjust size as needed */
+    color: #888; /* Icon color */
+}
+
+.filterDrop {
+    width: 11%;
+    height:50px;
+}
+.filterA {
+    height:100%;
+}
+
+.custom-dropdown {
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 0px;
+    font-size: 16px;
+    height:100%;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.custom-dropdown:focus {
+    border-color: #EF6B27;
+    border-radius: 0px;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    outline: none;
+}
+.custom-dropdown.has-selection {
+    background-color: #EF6B27;
+    color: #FCF8EF;
+}
+.custom-dropdown option{
+    border:0px;
+    border-radius:0px;
+}
+.custom-dropdown option:checked {
+    background-color: #EF6B27;
+    color: #FCF8EF;
+}
+.custom-dropdown option:hover {
+    background-color: #EF6B27;
+    color: #FCF8EF;
+}
+
+.addNewP {
+    width:20%;
+    height:50px;
+}
+
+.addNewP .anp {
+    background-color: #EF6B27;
+    color: #FCF8EF;
+    text-decoration: none;
+}
+.addNewP a:hover {
+    background-color: #DD714E;
+    color: #FCF8EF;
+}
+
+
+.btn, .form-control {
+    border-radius: 0px;
+}

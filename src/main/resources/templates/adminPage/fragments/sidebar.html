@@ -49,23 +49,10 @@
               <div class="menu_section">
                 <h3>MASTER DATA</h3>
                 <ul class="nav side-menu">
-                  <li th:classappend="${activePage == 'productList' || activePage == 'categories' ? ' active' : ''}">
-                    <a href="#" data-bs-toggle="collapse" data-bs-target="#productDropdown" aria-expanded="${activePage == 'productList' || activePage == 'categories' ? 'true' : 'false'}" aria-controls="productDropdown">
-                      <div class="d-flex justify-content-between w-100">
-                        <span><i class="fa-solid fa-layer-group"></i> Product</span>
-                        <i class="fa fa-chevron-down" th:classappend="${activePage == 'productList' || activePage == 'categories' ? ' fa-chevron-up' : ' fa-chevron-down'}"></i>
-                      </div>
-                    </a>
-                    <ul id="productDropdown" class="nav child_menu collapse" th:classappend="${activePage == 'productList' || activePage == 'categories' ? ' show' : 'collapse'}">
-                      <li th:classappend="${activePage == 'productList' ? ' active' : ''}">
-                        <a th:href="@{/admin/product-list}"><i class="fa-solid fa-circle"></i>Product List</a>
-                      </li>
-                      <li th:classappend="${activePage == 'categories' ? ' active' : ''}">
-                        <a th:href="@{/admin/categories}"><i class="fa-solid fa-circle"></i>Categories</a>
-                      </li>
-                    </ul>
+                  <li th:classappend="${activePage == 'productList' || activePage == 'editFood' || activePage == 'addNewFood' ? ' active' : ''}">
+                    <a th:href="@{/admin/product-list}"><i class="fa-solid fa-layer-group"></i>Product</a>
                   </li>
-                  <li th:classappend="${activePage == 'paymentMethod' || activePage == 'userAccount' ? ' active' : ''}"><a th:href="@{/admin/settings/user-account}"><i class="fa-solid fa-gear"></i> Setting </a></li>
+                  <li th:classappend="${activePage == 'userAccount' || activePage == 'userDetail' ? ' active' : ''}"><a th:href="@{/admin/account}"><i class="fa-solid fa-gear"></i> Users </a></li>
                 </ul>
               </div>
             </div>

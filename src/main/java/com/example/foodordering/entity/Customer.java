@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
+
 @Data
 @Entity
 @NoArgsConstructor
@@ -18,6 +20,9 @@ public class Customer {
     String firstname;
     String lastname;
     String phoneNumber;
+    String address;
+    BigDecimal totalSpent;
+    int orderCount;
 
     @OneToOne
     @JoinColumn(name = "account_id")

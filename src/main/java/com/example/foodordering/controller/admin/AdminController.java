@@ -1,8 +1,9 @@
 package com.example.foodordering.controller.admin;
 
-import com.example.foodordering.entity.Account;
-import com.example.foodordering.entity.Customer;
-import com.example.foodordering.entity.Food;
+import com.example.foodordering.entity.*;
+import com.example.foodordering.repository.OrderMenuItemRepository;
+import com.example.foodordering.repository.OrderStatusRepository;
+import com.example.foodordering.repository.FoodOrderRepository;
 import com.example.foodordering.repository.FoodRepository;
 import com.example.foodordering.repository.intf.AccountRepository;
 import com.example.foodordering.repository.intf.CustomerRepository;
@@ -19,12 +20,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.math.BigDecimal;
 
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
     @Autowired
     private FoodRepository foodRepository;
+    @Autowired
+    private CustomerRepository customerRepository;
+    @Autowired
+    private FoodOrderRepository foodOrderRepository;
+    @Autowired
+    private OrderStatusRepository orderStatusRepository;
+    @Autowired
+    private OrderMenuItemRepository orderMenuItemRepository;
+    @Autowired
+    private AccountRepository accountRepository;
+
 
     @GetMapping("/product-list")
     public String productsListPage(Model model,
@@ -69,9 +82,6 @@ public class AdminController {
         return "adminPage/index"; // maps to templates/admin/products.html
     }
 
-    @Autowired
-    private AccountRepository accountRepository;
-
     @GetMapping("/account")
     public String accountsPage(Model model,
                                @RequestParam(defaultValue = "1") int page,
@@ -109,6 +119,7 @@ public class AdminController {
 
         return "adminPage/index";
     }
+
     @GetMapping("/account/{accountId}")
     public String userDetailPage(@PathVariable Long accountId, Model model) {
         // Find the Account by the accountId
@@ -128,10 +139,6 @@ public class AdminController {
         return "adminPage/index";  // Return to the user detail page
     }
 
-
-    @Autowired
-    private CustomerRepository customerRepository; // Inject the customer repository
-
     @GetMapping("/customers")
     public String customerPage(Model model,
                                @RequestParam(defaultValue = "1") int page,
@@ -139,26 +146,19 @@ public class AdminController {
                                @RequestParam(defaultValue = "ASC") String sortOrder,
                                @RequestParam(required = false) String searchTerm) {
         Pageable pageable = PageRequest.of(page - 1, rowsPerPage);
+        Page<Customer> customersPage;
 
         // Apply sorting based on 'sortOrder'
         if (sortOrder.equalsIgnoreCase("ASC")) {
-            pageable = PageRequest.of(page - 1, rowsPerPage, Sort.by(Sort.Order.asc("totalSpent")));
+            customersPage = customerRepository.findCustomersSortedByTotalSpentAsc(pageable);
         } else {
-            pageable = PageRequest.of(page - 1, rowsPerPage, Sort.by(Sort.Order.desc("totalSpent")));
+            customersPage = customerRepository.findCustomersSortedByTotalSpentDesc(pageable);
         }
 
-        Page<Customer> customersPage;
+        // If a search term is provided, filter customers based on firstname or lastname
         if (searchTerm != null && !searchTerm.trim().isEmpty()) {
             customersPage = customerRepository.findByFirstnameContainingOrLastnameContaining(searchTerm, pageable);
-        } else {
-            // If no search term, fetch all customers
-            customersPage = customerRepository.findAllCustomers(pageable);
         }
-
-        // Calculate totalSpent and orderCount for each customer if they aren't in the model yet
-        customersPage.getContent().forEach(customer -> {
-            //...
-        });
 
         model.addAttribute("sortOrder", sortOrder);
         model.addAttribute("searchTerm", searchTerm);
@@ -171,13 +171,99 @@ public class AdminController {
         model.addAttribute("path", "/admin/customers");
         model.addAttribute("activePage", "customers");
 
+        // Calculate totalItems and totalSpent for each customer after fetching from DB
+        customersPage.getContent().forEach(Customer::calculateTotals);
+
         return "adminPage/index"; // This will map to admin/customers.html
     }
 
-
     @GetMapping("/orders")
-    public String orders() {
-        return "admin/orders"; // (optional)
+    public String showOrderPage(Model model,
+                         @RequestParam(defaultValue = "1") int page,
+                         @RequestParam(defaultValue = "5") int rowsPerPage,
+                         @RequestParam(required = false) String searchTerm) {
+        // Pagination logic using Spring Data pagination
+        Pageable pageable = PageRequest.of(page - 1, rowsPerPage);
+
+        Page<FoodOrder> ordersPage;
+
+        // Apply search if a search term is provided
+        if (searchTerm != null && !searchTerm.isEmpty()) {
+            ordersPage = foodOrderRepository.findByCustomerNameContainingIgnoreCase(searchTerm, pageable);
+        } else {
+            ordersPage = foodOrderRepository.findAll(pageable);  // If no search term, retrieve all orders
+        }
+
+        List<FoodOrder> orders = ordersPage.getContent();  // Get paged orders
+        int totalPages = ordersPage.getTotalPages();  // Total pages
+        long totalOrders = ordersPage.getTotalElements();  // Total orders
+
+        // Calculate total items in each order and add it to the order
+        orders.forEach(order -> {
+            int totalItems = order.getOrderMenuItems().stream()
+                    .mapToInt(item -> item.getQuantityOrdered())  // Sum quantities
+                    .sum();
+            order.setTotalItems(totalItems);  // Store the total items count in the order
+        });
+
+        // Pass attributes to the model
+        model.addAttribute("orders", orders);
+        model.addAttribute("searchTerm", searchTerm);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("totalOrders", totalOrders);
+        model.addAttribute("rowsPerPage", rowsPerPage);
+        model.addAttribute("path", "/admin/orders");
+        model.addAttribute("pageTitle", "Orders");
+        model.addAttribute("pagePath", "Main Menu / Orders");
+        model.addAttribute("activePage", "orders");
+        return "adminPage/index"; // (optional)
+    }
+    @GetMapping("/orders/{id}")
+    public String showOrderDetails(@PathVariable("id") int id, Model model) {
+        FoodOrder order = foodOrderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        model.addAttribute("order", order);
+        model.addAttribute("pageTitle", "Order Details");
+        model.addAttribute("pagePath", "Main Menu / Order / Details");
+        model.addAttribute("activePage", "orderDetail");// Add order to the model
+        return "adminPage/index";  // Template for the detailed order view
+    }
+
+    @GetMapping("/dashboard")
+    public String dashboardPage(Model model) {
+        // Fetch real data from the database
+        List<Customer> customers = customerRepository.findAll();
+        List<FoodOrder> orders = foodOrderRepository.findAll();
+        List<Food> foods = foodRepository.findAll();
+
+        // Sort the foods by sales count (simulating top-selling products)
+        // If you have an actual field for sales, replace this sorting logic
+        foods.sort((f1, f2) -> Integer.compare(f2.getId(), f1.getId())); // Example for sorting by ID, update to suit your needs
+
+        // Only get the top 4 selling foods (if applicable)
+        List<Food> topSellingFoods = foods.subList(0, Math.min(4, foods.size()));
+
+        // Simulate order status counts
+        long newOrders = orders.stream().filter(order -> !order.isOrderStatus()).count(); // false = giỏ hàng
+        long orderProcessed = orders.stream().filter(order -> order.isOrderStatus()).count(); // true = đã đặt hàng
+
+        // Simulate new customers (e.g., for this month)
+        long newCustomers = customers.size(); // Adjust as needed based on your business logic
+
+        // Add all necessary attributes to the model
+        model.addAttribute("newOrders", newOrders);
+        model.addAttribute("orderProcessed", orderProcessed);
+        model.addAttribute("newCustomers", newCustomers);
+        model.addAttribute("topSellingFoods", topSellingFoods);
+        model.addAttribute("orders", orders);
+        model.addAttribute("customers", customers);
+        model.addAttribute("pageTitle", "Dashboard");
+        model.addAttribute("pagePath", "Main Menu / Dashboard");
+        model.addAttribute("activePage", "dashboard");
+
+        return "adminPage/index"; // This maps to the templates/admin/dashboard.html
     }
 
     // Add more mappings as needed

@@ -14,7 +14,9 @@
         <form th:action="@{/admin/customers}" method="get" class="d-flex h-100">
           <input type="text" class="form-control h-100 pl-5" placeholder="Search for customer..."
                  th:value="${searchTerm}" name="searchTerm">
-          <i class="fa-solid fa-magnifying-glass search-icon position-absolute"></i>
+          <button type="submit" class="btn position-absolute" style="right: 10px; top: 30%;">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          </button>
           <input type="hidden" th:value="${rowsPerPage}" name="rowsPerPage"/>
           <input type="hidden" th:value="${currentPage}" name="page"/>
           <input type="hidden" th:value="${sortOrder}" name="sortOrder"/>
@@ -61,8 +63,8 @@
         <td class="tblcell" th:text="${customer.phoneNumber}">-</td>
         <td class="tblcell" th:text="${customer.address}">-</td>
         <td class="tblcell">
-          <span th:text="${customer.totalSpent}">-</span>
-          <span class="small-text" th:text="${customer.orderCount}">-</span>
+          <span th:text="${customer.totalSpent}">-</span><br>
+          <span class="small-text" th:text="${customer.totalItems + ' Total Items'}">-</span>
         </td>
       </tr>
       </tbody>

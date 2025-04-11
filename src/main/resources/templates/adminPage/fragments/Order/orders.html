@@ -11,26 +11,16 @@
     <div class="actionBar w-100 d-flex justify-content-between align-items-center" >
       <!-- Search Box -->
       <div class="searchbox position-relative">
-        <input type="text" class="form-control h-100 pl-5" placeholder="Search for orders...">
-        <i class="fa-solid fa-magnifying-glass search-icon position-absolute"></i>
-      </div>
-      <!-- Filter Dropdown -->
-      <div class="filterDrop">
-        <div class="filter dropdown">
-          <button class="h-100 w-100 btn btn-outline-secondary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-            Filter
+        <form th:action="@{/admin/orders}" method="get" class="d-flex h-100">
+          <input type="text" class="form-control h-100 pl-5" placeholder="Search for customer..."
+                 th:value="${searchTerm}" name="searchTerm">
+          <button type="submit" class="btn position-absolute" style="right: 10px; top: 30%;">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
           </button>
-          <ul class="dropdown-menu" aria-labelledby="filterDropdown">
-            <!-- Dynamically display filters based on the active page -->
-            <li th:each="filter : ${filters}">
-              <a class="dropdown-item" href="#" th:text="${filter}" th:data-filter="${filter}"  ></a> <!--onclick="applyFilter(this)"-->
-            </li>
-          </ul>
-        </div>
-      </div>
-      <!-- Button to Add New Product -->
-      <div class="addNewP">
-        <button class="w-100 h-100 btn">Add New Order</button>
+          <input type="hidden" th:value="${rowsPerPage}" name="rowsPerPage"/>
+          <input type="hidden" th:value="${currentPage}" name="page"/>
+          <input type="hidden" th:value="${sortOrder}" name="sortOrder"/>
+        </form>
       </div>
     </div>
 
@@ -39,10 +29,9 @@
     <table class="table table-striped">
       <thead>
       <tr class="tblhea">
-        <th class="tblcell"><input type="checkbox" /></th>
         <th class="tblcell">Order Id</th>
         <th class="tblcell">Customer</th>
-        <th class="tblcell">Items</th>
+        <th class="tblcell">Total Items</th>
         <th class="tblcell">Amounts</th>
         <th class="tblcell">Status</th>
         <th class="tblcell">Action</th>
@@ -50,25 +39,23 @@
       </thead>
       <tbody>
       <tr class="tblcont" th:each="order, iterStat : ${orders}">
-        <td class="tblcell"><input type="checkbox" /></td>
-        <td class="tblcell">
-          <span th:text="${order.foodOrderId}">#001001</span><br>
-          <span class="small-text" th:text="${order.orderDate}"></span>
+        <td class="tblcell"  th:text="${order.id}">-</td>
+        <td class="tblcell" >
+          <span th:if="${order.customer != null}" th:text="${order.customer.firstname + ' ' + order.customer.lastname}">Devon Lane</span>
+          <span th:if="${order.customer == null}">No customer assigned</span>
         </td>
         <td class="tblcell">
-          <span th:text="${order.customer.name}">Devon Lane</span><br/>
-          <span class="small-text" th:text="${order.customer.address}">1234 Main St, Apt 5</span>
+          <!-- Displaying total number of items in the cart -->
+          <span th:text="${order.totalItems}">Total Items</span>
         </td>
-        <td class="tblcell" th:text="${order.orderMenu.menuItem}">Pizza</td>
-        <td class="tblcell" th:text="${order.price}">250</td>
+        <td class="tblcell" th:text="${order.price}">-</td>
         <td class="tblcell">
-          <span class="badge" th:class="${order.orderStatus.status == 'New Order' ? 'bg-secondary px-2 py-1 color1'
-                                      : (order.orderStatus.status == 'Processing' ? 'bg-warning px-2 py-1 color1'
-                                      : 'bg-danger px-2 py-1 color1')}" th:text="${order.orderStatus.status}">
+          <span th:class="${order.orderStatus ? 'color1' : 'color2'}"
+                th:text="${order.orderStatus ? 'New Order' : 'Processing'}">
           </span>
         </td>
         <td class="tblcell">
-          <a href="#" class="btn btn-sm btn-outline-primary">
+          <a th:href="@{/admin/orders/{id}(id=${order.id})}" class="btn btn-sm btn-outline-primary">
             <i class="fa-solid fa-eye"></i> View
           </a>
         </td>

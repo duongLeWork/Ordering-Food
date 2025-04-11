@@ -12,15 +12,15 @@
             <div class="order-info container">
                 <div class="row">
                     <div class="col">
-                        <div th:if="${#lists.isEmpty(order.orderItems) == false}">
-                            <img class="order-img rounded-circle" th:src="@{${order.orderItems[0].imageUrl}}" alt="Product Image" style="width: 50px; height: 50px;">
+                        <div th:if="${#lists.isEmpty(order.orderMenuItems) == false}">
+                            <img class="order-img rounded-circle" th:src="@{${order.orderMenuItems[0].food.image}}" alt="Product Image" style="width: 50px; height: 50px;">
                         </div>
                         <p class="order-price" th:text="'$' + ${order.price}"></p>
                     </div>
                     <div class="col-6">
-                        <p class="order-id" th:text="'#' + ${order.foodOrderId}"></p>
-                        <p class="order-items" th:text="${order.totalAmount + ' items'}"></p>
-                        <p class="order-date" th:text="${#dates.format(order.orderDate, 'MMM dd, yyyy')}"></p>
+                        <p class="order-id" th:text="'#' + ${order.id}"></p>
+                        <p class="order-items" th:text="${order.orderMenuItems.size() + ' items'}"></p>
+<!--                        <p class="order-date" th:text="${#dates.format(order.orderDate, 'MMM dd, yyyy')}"></p>-->
                     </div>
                     <div class="col">
                         <div class="view-order-btn">

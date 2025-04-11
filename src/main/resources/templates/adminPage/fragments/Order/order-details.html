@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${pageTitle}">Order Details</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+  <div th:fragment="orderDetail" th:if="${activePage == 'orderDetail'}">
+    <div class="container mt-4">
+      <div class="row">
+        <div class="col-md-6">
+          <p><strong>Order ID:</strong> <span th:text="${order.id}">#001001</span></p>
+          <p><strong>Customer Name:</strong> <span th:text="${order.customer.firstname + ' ' + order.customer.lastname}">Devon Lane</span></p>
+          <p><strong>Customer Address:</strong> <span th:text="${order.customer.address}">1234 Main St, Apt 5</span></p>
+        </div>
+
+        <div class="col-md-6">
+          <h5>Order Items</h5>
+          <ul th:each="item : ${order.orderMenuItems}">
+            <li>
+              <span th:text="${item.food.name}">Pizza</span> -
+              <span th:text="${item.quantityOrdered}">2</span> items
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="row mt-4">
+        <div class="col-md-6">
+          <p><strong>Total Price:</strong> <span th:text="${order.price}">250</span></p>
+        </div>
+        <div class="col-md-6">
+          <p><strong>Status:</strong>
+            <span th:class="${order.orderStatus ? 'bg-success' : 'bg-warning'}"
+                  th:text="${order.orderStatus ? 'Completed' : 'Processing'}">Processing</span>
+          </p>
+        </div>
+      </div>
+
+      <a href="/admin/orders" class="btn btn-secondary">Back to Orders</a>
+    </div>
+  </div>
+</body>
+</html>

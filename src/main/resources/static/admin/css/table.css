@@ -21,6 +21,9 @@ tr.tblcont {
 .name {
     padding-left: 20px
 }
+.name span {
+    text-align: left;
+}
 .small-text {
     font-size: 14px;
     color: #818181;
@@ -33,5 +36,8 @@ tr.tblcont {
 }
 
 .color1 {
-    color: #fff;
+    color: #EF6B27;
+}
+.color2 {
+    color: #ccc
 }

@@ -30,7 +30,7 @@
         <!-- Body -->
         <div class="cont">
             <div th:if="${activePage == 'productList'}"
-                    th:replace="~{adminPage/fragments/Product/product-list :: productList}"></div>
+                 th:replace="~{adminPage/fragments/Product/product-list :: productList}"></div>
             <div th:if="${activePage == 'editFood'}"
                  th:replace="~{adminPage/fragments/Product/edit-food :: editFood}"></div>
             <div th:if="${activePage == 'addNewFood'}"
@@ -42,7 +42,9 @@
             <div th:if="${activePage == 'dashboardPage'}"
                     th:replace="~{adminPage/fragments/Dashboard/dashboard :: dashboardPage}"></div>
             <div th:if="${activePage == 'orderList'}"
-                    th:replace="~{adminPage/fragments/Order/orders :: orderList}"></div>
+                 th:replace="~{adminPage/fragments/Order/orders :: orderList}"></div>
+            <div th:if="${activePage == 'orderDetail'}"
+                 th:replace="~{adminPage/fragments/Order/order-details :: orderDetail}"></div>
             <div th:if="${activePage == 'customers'}"
                     th:replace="~{adminPage/fragments/Customer/customers :: customerList}"></div>
 

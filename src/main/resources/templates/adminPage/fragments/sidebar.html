@@ -38,7 +38,7 @@
                   <li th:classappend="${activePage == 'dashboard' ? ' active' : ''}">
                     <a th:href="@{/admin/dashboard}"><i class="fa-solid fa-chart-simple"></i> Dashboard</a>
                   </li>
-                  <li th:classappend="${activePage == 'orders' ? ' active' : ''}">
+                  <li th:classappend="${activePage == 'orders' || activePage == 'orderDetail' ? ' active' : ''}">
                     <a th:href="@{/admin/orders}"><i class="fa-solid fa-cart-plus"></i> Orders</a>
                   </li>
                   <li th:classappend="${activePage == 'customers' ? ' active' : ''}">

@@ -6,6 +6,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Date;
 
 @Data
 @Entity
@@ -29,6 +30,10 @@ public class Customer {
 
     @OneToMany(mappedBy = "customer")
     List<FoodOrder> foodOrders;
+
+    // Track last login date
+    @Setter
+    private Date lastLogin;
 
     // Transient fields for total items and total spent, not persisted in the database
     @Transient

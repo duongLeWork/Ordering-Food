@@ -25,6 +25,14 @@ public class OrderService {
     public OrderService(FoodOrderRepository foodOrderRepository, CartService cartService, CustomerRepository customerRepository) {
         this.foodOrderRepository = foodOrderRepository;
     }
+    /**
+     * Check if an order exists by order ID.
+     * @param orderId ID of the order.
+     * @return true if the order exists, false otherwise.
+     */
+    public boolean orderExists(int orderId) {
+        return foodOrderRepository.findById(orderId).isPresent();
+    }
 
     /**
      * Creates a new order from the customer's cart.

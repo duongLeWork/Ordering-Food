@@ -14,33 +14,9 @@
     <title>Sales Chart</title>
 </head>
 <body>
-<div th:fragment="salesChart">
-    <h5>Sales This Week</h5>
-    <canvas id="salesChart"></canvas>
+<div th:fragment="salesChart" class="container mt-4">
+    <h3>Sales This Week: <span th:text="${'$' + salesTotalAmount}"></span></h3> <!-- Dynamic sales total -->
+    <canvas id="salesChart" width="400" height="200"></canvas>
 </div>
-
-<script>
-    var ctx = document.getElementById('salesChart').getContext('2d');
-    var salesChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-            datasets: [{
-                label: 'Sales',
-                data: [8.5, 8.6, 8.2, 8.4, 8.7, 8.8], // Sales data
-                backgroundColor: 'rgba(255, 159, 64, 0.2)',
-                borderColor: 'rgba(255, 159, 64, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-</script>
 </body>
 </html>

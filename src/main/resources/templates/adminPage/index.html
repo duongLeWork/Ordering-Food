@@ -40,13 +40,15 @@
             <div th:if="${activePage == 'userDetail'}"
                  th:replace="~{adminPage/fragments/Users/user-details :: userDetail}"></div>
             <div th:if="${activePage == 'dashboardPage'}"
-                    th:replace="~{adminPage/fragments/Dashboard/dashboard :: dashboardPage}"></div>
+                 th:replace="~{adminPage/fragments/Dashboard/dashboard :: dashboardPage}"></div>
             <div th:if="${activePage == 'orderList'}"
                  th:replace="~{adminPage/fragments/Order/orders :: orderList}"></div>
             <div th:if="${activePage == 'orderDetail'}"
                  th:replace="~{adminPage/fragments/Order/order-details :: orderDetail}"></div>
             <div th:if="${activePage == 'customers'}"
-                    th:replace="~{adminPage/fragments/Customer/customers :: customerList}"></div>
+                 th:replace="~{adminPage/fragments/Customer/customers :: customerList}"></div>
+            <div th:if="${activePage == 'announcement'}"
+                 th:replace="~{adminPage/fragments/Announcement/announcement-form :: announcementForm}"></div>
 
         </div>
     </div>

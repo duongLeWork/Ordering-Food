@@ -1,5 +1,6 @@
 package com.example.foodordering.controller.admin;
 
+import com.example.foodordering.dto.response.MonthlySalesData;
 import com.example.foodordering.entity.*;
 import com.example.foodordering.repository.OrderMenuItemRepository;
 import com.example.foodordering.repository.OrderStatusRepository;
@@ -7,20 +8,30 @@ import com.example.foodordering.repository.FoodOrderRepository;
 import com.example.foodordering.repository.FoodRepository;
 import com.example.foodordering.repository.intf.AccountRepository;
 import com.example.foodordering.repository.intf.CustomerRepository;
+import com.example.foodordering.service.OrderService;
+import com.example.foodordering.service.SalesService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Arrays;
 import java.util.List;
 import java.math.BigDecimal;
+import java.util.Date;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin")
@@ -37,7 +48,69 @@ public class AdminController {
     private OrderMenuItemRepository orderMenuItemRepository;
     @Autowired
     private AccountRepository accountRepository;
+    @Autowired
+    private OrderService orderService;
+    @Autowired
+    private SalesService salesService;
 
+
+    @GetMapping("/dashboard")
+    public String dashboardPage(Model model) {
+        // Fetch real data from the database
+        List<Customer> customers = customerRepository.findAll();
+        List<FoodOrder> orders = foodOrderRepository.findAll();
+        List<Food> foods = foodRepository.findAll();
+
+        // Sort the foods by sales count (simulating top-selling products)
+        // If you have an actual field for sales, replace this sorting logic
+        foods.sort((f1, f2) -> Integer.compare(f2.getId(), f1.getId())); // Example for sorting by ID, update to suit your needs
+
+        // Only get the top 4 selling foods (if applicable)
+        List<Food> topSellingFoods = foods.subList(0, Math.min(4, foods.size()));
+
+        // Simulate order status counts
+        long newOrders = orders.stream().filter(order -> !order.isOrderStatus()).count(); // false = giỏ hàng
+        long orderProcessed = orders.stream().filter(order -> order.isOrderStatus()).count(); // true = đã đặt hàng
+        long allCustomers = customers.size();
+
+
+        // Calculate today's date
+        LocalDate today = LocalDate.now();
+        // Convert today to a Date object (to compare with lastLogin)
+        Date todayStartDate = Date.from(today.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date todayEndDate = Date.from(today.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant()); // End of today
+
+        // Calculate customers who signed in today (between 00:00:00 and 23:59:59)
+        long activeSignins = customers.stream()
+                .filter(customer -> customer.getLastLogin() != null &&
+                        !customer.getLastLogin().before(todayStartDate) &&
+                        !customer.getLastLogin().after(todayEndDate))
+                .count();
+        // Prepare sales data for the chart
+        List<MonthlySalesData> salesData = Arrays.asList(
+                new MonthlySalesData("Jan", 8.5, 6.3),
+                new MonthlySalesData("Feb", 8.6, 6.5),
+                new MonthlySalesData("Mar", 8.4, 6.2),
+                new MonthlySalesData("Apr", 8.2, 6.1),
+                new MonthlySalesData("May", 8.8, 6.7),
+                new MonthlySalesData("Jun", 8.7, 6.6)
+        );
+
+        // Add all necessary attributes to the model
+        model.addAttribute("salesData", salesData);
+        model.addAttribute("newOrders", newOrders);
+        model.addAttribute("orderProcessed", orderProcessed);
+        model.addAttribute("allCustomers", allCustomers);
+        model.addAttribute("topSellingFoods", topSellingFoods);
+        model.addAttribute("activeSignins", activeSignins);
+        model.addAttribute("orders", orders);
+        model.addAttribute("customers", customers);
+        model.addAttribute("pageTitle", "Dashboard");
+        model.addAttribute("pagePath", "Main Menu / Dashboard");
+        model.addAttribute("activePage", "dashboard");
+
+        return "adminPage/index"; // This maps to the templates/admin/dashboard.html
+    }
 
     @GetMapping("/product-list")
     public String productsListPage(Model model,
@@ -220,51 +293,42 @@ public class AdminController {
         return "adminPage/index"; // (optional)
     }
     @GetMapping("/orders/{id}")
-    public String showOrderDetails(@PathVariable("id") int id, Model model) {
+    public String showOrderDetails(@PathVariable("id") int id, Model model, HttpServletRequest request, HttpSession session) {
         FoodOrder order = foodOrderRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
+        session.setAttribute("previousPage", request.getHeader("Referer"));
         model.addAttribute("order", order);
         model.addAttribute("pageTitle", "Order Details");
         model.addAttribute("pagePath", "Main Menu / Order / Details");
-        model.addAttribute("activePage", "orderDetail");// Add order to the model
+        model.addAttribute("activePage", "orderDetail");
         return "adminPage/index";  // Template for the detailed order view
     }
+    @GetMapping("/check-order/{orderId}")
+    public ResponseEntity<String> checkOrderExists(@PathVariable int orderId) {
+        // Check if the order exists using the OrderService
+        boolean orderExists = orderService.orderExists(orderId);
 
-    @GetMapping("/dashboard")
-    public String dashboardPage(Model model) {
-        // Fetch real data from the database
-        List<Customer> customers = customerRepository.findAll();
-        List<FoodOrder> orders = foodOrderRepository.findAll();
-        List<Food> foods = foodRepository.findAll();
-
-        // Sort the foods by sales count (simulating top-selling products)
-        // If you have an actual field for sales, replace this sorting logic
-        foods.sort((f1, f2) -> Integer.compare(f2.getId(), f1.getId())); // Example for sorting by ID, update to suit your needs
-
-        // Only get the top 4 selling foods (if applicable)
-        List<Food> topSellingFoods = foods.subList(0, Math.min(4, foods.size()));
-
-        // Simulate order status counts
-        long newOrders = orders.stream().filter(order -> !order.isOrderStatus()).count(); // false = giỏ hàng
-        long orderProcessed = orders.stream().filter(order -> order.isOrderStatus()).count(); // true = đã đặt hàng
-
-        // Simulate new customers (e.g., for this month)
-        long newCustomers = customers.size(); // Adjust as needed based on your business logic
-
-        // Add all necessary attributes to the model
-        model.addAttribute("newOrders", newOrders);
-        model.addAttribute("orderProcessed", orderProcessed);
-        model.addAttribute("newCustomers", newCustomers);
-        model.addAttribute("topSellingFoods", topSellingFoods);
-        model.addAttribute("orders", orders);
-        model.addAttribute("customers", customers);
-        model.addAttribute("pageTitle", "Dashboard");
-        model.addAttribute("pagePath", "Main Menu / Dashboard");
-        model.addAttribute("activePage", "dashboard");
-
-        return "adminPage/index"; // This maps to the templates/admin/dashboard.html
+        if (orderExists) {
+            // If the order exists, return "found"
+            return ResponseEntity.ok("found");
+        } else {
+            // If order doesn't exist, return "notFound"
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("notFound");
+        }
     }
+
+    @GetMapping("/announcement")
+    public String showAnnouncementForm(Model model) {
+        // You may want to add other attributes, like a list of customers if needed
+        model.addAttribute("pageTitle", "Create Announcement");
+        model.addAttribute("pagePath", "Main Menu / Announcement");
+        model.addAttribute("activePage", "announcement");
+
+
+        return "adminPage/index";  // Return the view for the email form
+    }
+
 
     // Add more mappings as needed
 }

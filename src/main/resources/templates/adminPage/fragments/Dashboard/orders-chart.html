@@ -6,30 +6,34 @@
 </head>
 <body>
 <div th:fragment="ordersList">
-    <h5>New Orders</h5>
-    <div class="new-orders-list d-flex row">
+    <div class="container m-2 new-orders-list d-flex row custom-card">
+        <h5 class="head-text">New Orders</h5>
         <div th:each="order : ${orders}" class="new-order-card">
+            <div class="line"></div>
             <div class="order-info container">
                 <div class="row">
-                    <div class="col">
-                        <div th:if="${#lists.isEmpty(order.orderMenuItems) == false}">
+                    <div class="col flex">
+                        <div class="flex" th:if="${#lists.isEmpty(order.orderMenuItems) == false}">
                             <img class="order-img rounded-circle" th:src="@{${order.orderMenuItems[0].food.image}}" alt="Product Image" style="width: 50px; height: 50px;">
                         </div>
-                        <p class="order-price" th:text="'$' + ${order.price}"></p>
-                    </div>
-                    <div class="col-6">
-                        <p class="order-id" th:text="'#' + ${order.id}"></p>
-                        <p class="order-items" th:text="${order.orderMenuItems.size() + ' items'}"></p>
-<!--                        <p class="order-date" th:text="${#dates.format(order.orderDate, 'MMM dd, yyyy')}"></p>-->
+
                     </div>
                     <div class="col">
+                        <p class="card-text order-id" th:text="'ID: #' + ${order.id}"></p>
+                        <p class="card-text order-items" th:text="${order.totalItems + ' items'}"></p>
+                        <p class="card-text order-price" th:text="${order.price} + 'đ'"></p>
+                    </div>
+                    <div class="col flex">
                         <div class="view-order-btn">
-                            <a href="#" class="btn btn-outline-primary">View</a>
+                            <a th:href="@{/admin/orders/{id}(id=${order.id})}" class="btn btn-sm btn-outline-primary">
+                                <i class="fa-solid fa-eye"></i> View
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
     </div>
 </div>
 

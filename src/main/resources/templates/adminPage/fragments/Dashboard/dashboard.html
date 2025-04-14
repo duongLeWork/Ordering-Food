@@ -8,13 +8,13 @@
   <div th:fragment="dashboardPage" th:if="${activePage == 'dashboard'}">
     <div class="dashboard-stats d-flex justify-content-between p-4">
       <!-- Track Order Card -->
-      <div class="card bg-light text-dark" style="width: 18rem;">
+      <div class="card bg-light text-dark col" style="width: 18rem;">
         <div class="card-body">
           <h5 class="card-title">Track Order</h5>
           <p class="card-text">Type your order ID and find the order status.</p>
           <div class="d-flex">
             <input type="text" id="orderIdInput" class="form-control" placeholder="Enter Order ID" />
-            <button class="btn btn-primary ms-2" onclick="trackOrder()">Search</button>
+            <button class="btn sbtn ms-2" onclick="trackOrder()">Search</button>
           </div>
           <!-- Placeholder for order details -->
           <div id="orderDetails" class="mt-3" style="display: none;">
@@ -28,38 +28,42 @@
         </div>
       </div>
 
-      <div>
-        <!-- New Orders Card -->
-        <div class="card bg-success text-white" style="width: 18rem;">
-          <div class="card-body">
-            <h5 class="card-title">New Orders</h5>
-            <p class="card-text" th:text="${newOrders}"></p> <!-- Display new orders count -->
+      <div class="container col-8">
+        <div class="row">
+          <div class="d-flex justify-content-evenly">
+            <!-- New Orders Card -->
+            <div class="card bg-success text-white m-2 order-card" style="width: 18rem;">
+              <div class="card-body">
+                <h5 class="card-title">New Orders</h5>
+                <p class="card-text" th:text="${newOrders + ' orders'}"></p> <!-- Display new orders count -->
+              </div>
+            </div>
+            <!-- New Sign-ins This Week Card -->
+            <div class="card bg-warning text-white m-2 active-users-card" style="width: 18rem;">
+              <div class="card-body">
+                <h5 class="card-title">Active Users</h5>
+                <p class="card-text" th:text="${activeSignins + ' users active this week'}"></p> <!-- Display new sign-ins count -->
+              </div>
+            </div>
+          </div>
+          <div class="d-flex justify-content-evenly">
+            <!-- Order Processed Card -->
+            <div class="card bg-info text-white m-2 order-processed-card" style="width: 18rem;">
+              <div class="card-body">
+                <h5 class="card-title">Order Processed</h5>
+                <p class="card-text" th:text="${orderProcessed + ' orders'}"></p> <!-- Display processed orders count -->
+              </div>
+            </div>
+            <!-- New Customers Card -->
+            <div class="card bg-danger text-white m-2 new-customers-card" style="width: 18rem;">
+              <div class="card-body">
+                <h5 class="card-title">All Customers</h5>
+                <p class="card-text" th:text="${allCustomers + ' customers'}"></p> <!-- Display all customers count -->
+              </div>
+            </div>
           </div>
         </div>
-        <!-- Order Shipped Card -->
-        <div class="card bg-warning text-white" style="width: 18rem;">
-          <div class="card-body">
-            <h5 class="card-title">Order Shipped</h5>
-            <p class="card-text" th:text="${orderShipped}"></p> <!-- Display shipped orders count -->
-          </div>
-        </div>
-      </div>
 
-      <div>
-        <!-- Order Processed Card -->
-        <div class="card bg-info text-white" style="width: 18rem;">
-          <div class="card-body">
-            <h5 class="card-title">Order Processed</h5>
-            <p class="card-text" th:text="${orderProcessed}"></p> <!-- Display processed orders count -->
-          </div>
-        </div>
-        <!-- New Customers Card -->
-        <div class="card bg-danger text-white" style="width: 18rem;">
-          <div class="card-body">
-            <h5 class="card-title">New Customers this month</h5>
-            <p class="card-text" th:text="${newCustomers}"></p> <!-- Display new customers count -->
-          </div>
-        </div>
       </div>
     </div>
 

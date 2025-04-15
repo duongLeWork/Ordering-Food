@@ -8,7 +8,7 @@
 <div th:fragment="announcementForm" th:if="${activePage == 'announcement'}">
   <div class="container mt-4 custom-email-form-container">
     <!-- Form for sending the email -->
-    <form th:action="@{/send-announcement}" class="custom-email-form" method="POST">
+    <form th:action="@{/admin/send-announcement}" class="custom-email-form" method="POST">
       <div class="form-group">
         <label for="subject" class="custom-form-label">Subject:</label>
         <input type="text" class="form-control custom-form-control" id="subject" name="subject" placeholder="Enter Subject" required>

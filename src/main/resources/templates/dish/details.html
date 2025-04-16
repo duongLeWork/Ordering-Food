@@ -29,7 +29,7 @@
             <h6 class="card-subtitle mb-2 text-muted" th:if="${food.price}" th:text="${#numbers.formatCurrency(food.price)}">Giá: <span th:text="${#numbers.formatCurrency(food.price)}"></span></h6>
             <p class="card-text" th:if="${food.description}" th:text="${food.description}">Mô tả chi tiết về món ăn.</p>
 
-            <form th:action="@{/cart/items}" method="post" class="mt-3">
+            <form th:action="@{/cart/items/add}" method="post" class="mt-3">
                 <div class="form-group">
                     <label for="quantity">Số lượng:</label>
                     <input type="number" class="form-control" id="quantity" name="quantity" value="1" min="1">

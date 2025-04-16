@@ -10,7 +10,67 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/styles-2.css}">
     <link rel="stylesheet" th:href="@{/css/popup.css}">
+    <style>
+        /* Cart Icon Button */
+        .cart-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #2D1312;
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s;
+            z-index: 1000;
+        }
+
+        .cart-btn:hover {
+            background-color: #e69500;
+        }
+
+        .cart-btn i {
+            font-size: 24px;
+        }
+
+        /* Scroll to Top Button */
+        .scroll-top-btn {
+            position: fixed;
+            bottom: 80px; /* Adjusted to avoid overlapping with cart button */
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background-color: #2D1312;
+            color: #fff;
+            border-radius: 50%;
+            display: none; /* Hidden by default */
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s;
+            z-index: 1000;
+        }
+
+        .scroll-top-btn.show {
+            display: flex;
+        }
+
+        .scroll-top-btn:hover {
+            background-color: #472625;
+        }
+
+        .scroll-top-btn i {
+            font-size: 20px;
+        }
+    </style>
 </head>
+
 <body>
 <!-- Header -->
 <header>
@@ -25,10 +85,20 @@
         </div>
         <div class="Login">
             <span th:text="'Hello, ' + ${username}" style="margin-right: 10px;"></span>
+            <form th:action="@{/account}" method="get" style="display:inline; margin-right: 20px;">
+                <button class="order-btn" type="submit">Cài đặt</button>
+            </form>
+
+            <form th:action="@{/cart}" method="get" style="display:inline; margin-right: 20px;">
+                <button class="order-btn" type="submit">Giỏ hàng</button>
+            </form>
+
             <form th:action="@{/logout}" method="post" style="display:inline;">
                 <button class="order-btn" type="submit">Đăng xuất</button>
             </form>
+            
         </div>
+        
     </nav>
 </header>
 
@@ -39,7 +109,6 @@
         <img th:src="@{/images/backpizza.png}" alt="Background Pizza" class="back-pizza">
         <img th:src="@{/images/pizza.png}" alt="Napoletane Pizza" class="front-pizza">
         <img th:src="@{/images/leaf1.png}" alt="Basil Leaf 1" class="basil-1">
-        <img th:src="@{/images/leaf2.png}" alt="Basil Leaf 2" class="basil-2">
     </div>
 </section>
 
@@ -54,9 +123,9 @@
             <p th:text="${#numbers.formatCurrency(food.price)}">$14.99</p>
             <form th:action="@{/cart/items/add}" method="post">
                 <div class="quantity-wrapper">
-                    <button type="button" class="quantity-btn minus" aria-label="Decrease quantity">−</button>
+                    <button type="button" class="quantity-btn minus" id ="numberMenu" aria-label="Decrease quantity">−</button>
                     <input type="number" name="quantity" value="1" min="1" />
-                    <button type="button" class="quantity-btn plus" aria-label="Increase quantity">+</button>
+                    <button type="button" class="quantity-btn plus" id ="numberMenu2"  aria-label="Increase quantity">+</button>
                 </div>
                 <input type="hidden" name="foodId" th:value="${food.id}" />
                 <button type="submit" class="add-to-cart">Add to Cart</button>
@@ -123,6 +192,7 @@
     </form>
 </section>
 
+
 <!-- Footer -->
 <footer>
     <div class="footer-links">
@@ -148,7 +218,6 @@
         </div>
     </div>
 </footer>
-
 <!-- Scroll Button -->
 <button class="scroll-top-btn">
     <i class="fas fa-arrow-up"></i>

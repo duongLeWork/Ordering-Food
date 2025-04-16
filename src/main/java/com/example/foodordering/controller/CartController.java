@@ -49,7 +49,7 @@ public class CartController {
      *
      * @return Redirect to cart page after adding.
      */
-    @PostMapping("/items")
+    @PostMapping("/items/add")
     public String addItemToCart(@RequestParam("foodId") int foodId,
                                 @RequestParam("quantity") int quantity) {
         Optional<CustomUserDetails> userDetails = UserDetailsHelper.getUserDetails();

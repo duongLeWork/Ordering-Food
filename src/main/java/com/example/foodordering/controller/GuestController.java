@@ -4,6 +4,9 @@ import com.example.foodordering.config.CustomUserDetails;
 import com.example.foodordering.dto.request.SearchFoodRequest;
 import com.example.foodordering.dto.response.FoodResponse;
 import com.example.foodordering.entity.Food;
+import com.example.foodordering.entity.FoodOrder;
+import com.example.foodordering.entity.OrderMenuItem;
+import com.example.foodordering.service.CartService;
 import com.example.foodordering.service.GuestService;
 import com.example.foodordering.utils.UserDetailsHelper;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,9 +27,10 @@ import java.util.Optional;
 public class GuestController {
 
     private final GuestService guestService;
-
-    public GuestController(GuestService guestService) {
+    private final CartService cartService;
+    public GuestController(GuestService guestService, CartService cartService) {
         this.guestService = guestService;
+        this.cartService = cartService;
     }
 
     /**
@@ -41,10 +45,7 @@ public class GuestController {
         Optional<CustomUserDetails> userDetails = UserDetailsHelper.getUserDetails();
         if (userDetails.isPresent()) {
             if (Objects.equals(userDetails.get().getRole(), "customer")) {
-                // Truyền thông tin username vào model để hiển thị trên home.html
-                model.addAttribute("username", userDetails.get().getUsername());
-                model.addAttribute("password", userDetails.get().getPassword());
-                return "home"; // Trả về home.html
+                return "redirect:/home"; // Trả về home.html
             }
 
             if (Objects.equals(userDetails.get().getRole(), "manager") || Objects.equals(userDetails.get().getRole(), "admin")) {
@@ -55,28 +56,28 @@ public class GuestController {
 
         }
         // Nếu chưa đăng nhập, chuyển hướng về trang login
-        return "redirect:/login";
+        return "guest";
 
     }
 
-    @GetMapping("/home")
+    @GetMapping({"/home"})
     public String homepage(Model model) {
         Optional<CustomUserDetails> userDetails = UserDetailsHelper.getUserDetails();
         if (userDetails.isPresent()) {
-            // Truyền thông tin username vào model để hiển thị trên home.html
             model.addAttribute("username", userDetails.get().getUsername());
             model.addAttribute("password", userDetails.get().getPassword());
-            return "home"; // Trả về home.html
+
+            // Thêm dòng này để lấy danh sách món ăn
+            List<Food> dishes = guestService.getAvailableDishes();
+            List<OrderMenuItem> cartItems = cartService.getCart(userDetails.get().getAccountId());
+
+            model.addAttribute("dishes", dishes);
+            model.addAttribute("cartItems", cartItems);
+            return "home";
+        } else {
+            return "redirect:/login";
         }
-        // Nếu chưa đăng nhập, chuyển hướng về trang login
-        return "redirect:/login";
     }
-    /**
-     * Lấy danh sách tất cả các món ăn có sẵn và hiển thị trên trang chủ.
-     *
-     * @param model đối tượng Model để truyền dữ liệu tới view.
-     * @return tên view hiển thị danh sách món ăn.
-     */
     @GetMapping("/dishes")
     public String getAvailableDishes(Model model) {
         List<Food> dishes = guestService.getAvailableDishes();

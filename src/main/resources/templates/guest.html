@@ -4,12 +4,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Napoletane Pizza</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=ADLaM+Display&family=Lobster&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/styles-2.css}">
-    <link rel="stylesheet" th:href="@{/css/popup.css}">
+    <link rel="stylesheet" th:href="@{/css/stylesLogin.css}">
+    <style>
+        /* Cart Icon Button */
+        .cart-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #2D1312;
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s;
+            z-index: 1000;
+        }
+
+        .cart-btn:hover {
+            background-color: #e69500;
+        }
+
+        .cart-btn i {
+            font-size: 24px;
+        }
+
+        /* Scroll to Top Button */
+        .scroll-top-btn {
+            position: fixed;
+            bottom: 80px; /* Adjusted to avoid overlapping with cart button */
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background-color: #2D1312;
+            color: #fff;
+            border-radius: 50%;
+            display: none; /* Hidden by default */
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s;
+            z-index: 1000;
+        }
+
+        .scroll-top-btn.show {
+            display: flex;
+        }
+
+        .scroll-top-btn:hover {
+            background-color: #472625;
+        }
+
+        .scroll-top-btn i {
+            font-size: 20px;
+        }
+    </style>
 </head>
 <body>
 <!-- Header -->
@@ -18,15 +77,14 @@
         <div class="logo">Napoletane Pizza</div>
         <button class="hamburger" aria-label="Toggle menu">☰</button>
         <div class="nav-links">
-            <a th:href="@{#menu}">Menu</a>
-            <a th:href="@{#about}">About Us</a>
-            <a th:href="@{#location}">Location</a>
-            <a th:href="@{#contact}">Contact</a>
+            <a href="#menu">Menu</a>
+            <a href="#services">About Us</a>
+            <a href="#location">Location</a>
+            <a href="#promotion">Contact</a>
         </div>
         <div class="Login">
-            <span th:text="'Hello, ' + ${username}" style="margin-right: 10px;"></span>
-            <form th:action="@{/logout}" method="post" style="display:inline;">
-                <button class="order-btn" type="submit">Đăng xuất</button>
+            <form th:action="@{/login}" method="get" style="display:inline;">
+                <button class="order-btn" type="submit">Đăng nhập</button>
             </form>
         </div>
     </nav>
@@ -39,31 +97,9 @@
         <img th:src="@{/images/backpizza.png}" alt="Background Pizza" class="back-pizza">
         <img th:src="@{/images/pizza.png}" alt="Napoletane Pizza" class="front-pizza">
         <img th:src="@{/images/leaf1.png}" alt="Basil Leaf 1" class="basil-1">
-        <img th:src="@{/images/leaf2.png}" alt="Basil Leaf 2" class="basil-2">
     </div>
 </section>
 
-<!-- Menu Section -->
-<section id="menu" class="menu">
-    <h2>Menu</h2>
-    <p>Khám phá những chiếc pizza đặc sắc, nóng hổi vừa ra lò!</p>
-    <div class="menu-grid">
-        <div class="menu-item" th:each="food : ${dishes}">
-            <img th:src="@{/images/pizza.png}" alt="Pizza">
-            <h3 th:text="${food.name}">Pizza Name</h3>
-            <p th:text="${#numbers.formatCurrency(food.price)}">$14.99</p>
-            <form th:action="@{/cart/items/add}" method="post">
-                <div class="quantity-wrapper">
-                    <button type="button" class="quantity-btn minus" aria-label="Decrease quantity">−</button>
-                    <input type="number" name="quantity" value="1" min="1" />
-                    <button type="button" class="quantity-btn plus" aria-label="Increase quantity">+</button>
-                </div>
-                <input type="hidden" name="foodId" th:value="${food.id}" />
-                <button type="submit" class="add-to-cart">Add to Cart</button>
-            </form>
-        </div>
-    </div>
-</section>
 
 <!-- Location Section -->
 <section id="location" class="location">
@@ -78,7 +114,7 @@
 </section>
 
 <!-- Services Section -->
-<section class="services">
+<section id="services" class="services">
     <h2>Our Service</h2>
     <div class="service-grid">
         <div class="service-item">
@@ -100,7 +136,7 @@
 </section>
 
 <!-- Promotion Section -->
-<section class="promotion">
+<section id="promotion" class="promotion">
     <div class="text">
         <h1>Pizza</h1>
         <h2>Of The Month</h2>
@@ -149,15 +185,20 @@
     </div>
 </footer>
 
-<!-- Scroll Button -->
+<!-- Cart Button -->
+<button class="cart-btn" th:onclick="|window.location.href='/cart'|">
+    <i class="fas fa-shopping-cart"></i>
+</button>
+
+<!-- Scroll to Top Button -->
 <button class="scroll-top-btn">
     <i class="fas fa-arrow-up"></i>
 </button>
 
 <!-- Scripts -->
-<!-- JS for quantity buttons -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        // Quantity buttons functionality
         document.querySelectorAll(".quantity-wrapper").forEach(wrapper => {
             const input = wrapper.querySelector("input");
             const minusBtn = wrapper.querySelector(".minus");
@@ -178,6 +219,51 @@
                     input.value = value + 1;
                 });
             }
+        });
+
+        // Smooth scrolling for nav links
+        document.querySelectorAll('.nav-links a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetSection = document.getElementById(targetId);
+
+                if (targetSection) {
+                    window.scrollTo({
+                        top: targetSection.offsetTop - 60,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Handle fragment identifier on page load
+        const hash = window.location.hash.substring(1);
+        if (hash) {
+            const targetSection = document.getElementById(hash);
+            if (targetSection) {
+                window.scrollTo({
+                    top: targetSection.offsetTop - 60,
+                    behavior: 'smooth'
+                });
+            }
+        }
+
+        // Scroll to top button functionality
+        const scrollTopBtn = document.querySelector('.scroll-top-btn');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) { // Show button after scrolling 300px
+                scrollTopBtn.classList.add('show');
+            } else {
+                scrollTopBtn.classList.remove('show');
+            }
+        });
+
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
         });
     });
 </script>

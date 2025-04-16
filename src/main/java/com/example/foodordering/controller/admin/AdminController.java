@@ -75,14 +75,8 @@ public class AdminController {
                         !customer.getLastLogin().after(todayEndDate))
                 .count();
         // Prepare sales data for the chart
-        List<MonthlySalesData> salesData = Arrays.asList(
-                new MonthlySalesData("Jan", 8.5, 6.3),
-                new MonthlySalesData("Feb", 8.6, 6.5),
-                new MonthlySalesData("Mar", 8.4, 6.2),
-                new MonthlySalesData("Apr", 8.2, 6.1),
-                new MonthlySalesData("May", 8.8, 6.7),
-                new MonthlySalesData("Jun", 8.7, 6.6)
-        );
+        List<MonthlySalesData> salesData = orderService.getMonthlySalesData();
+        System.out.println(salesData);
 
         // Add all necessary attributes to the model
         model.addAttribute("salesData", salesData);

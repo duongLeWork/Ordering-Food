@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -17,6 +18,7 @@ public class FoodOrder {
     private BigDecimal price;
 
     private boolean orderStatus; // false = giỏ hàng, true = đã đặt hàng
+    private LocalDate orderDate;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "customer_id")

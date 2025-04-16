@@ -15,7 +15,7 @@
 </head>
 <body>
 <div th:fragment="salesChart" class="container mt-4">
-    <h3>Sales This Week: <span th:text="${'$' + salesTotalAmount}"></span></h3> <!-- Dynamic sales total -->
+    <h3>Sales This Week: <span th:text="${'$' + revenue}"></span></h3> <!-- Dynamic sales total -->
     <canvas id="salesChart" width="400" height="200"></canvas>
 </div>
 </body>

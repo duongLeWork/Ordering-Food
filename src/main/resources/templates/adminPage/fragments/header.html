@@ -8,7 +8,7 @@
 </head>
 <body>
 <div th:fragment="header" class="header bg-white">
-  <div class="w-100 d-flex justify-content-between">
+  <div class="w-100 d-flex">
     <!-- Dynamic Page Path and Title -->
     <div class="path">
       <h4 th:text="${pageTitle}">Page Title</h4> <!-- Display the dynamic page title -->
@@ -19,18 +19,6 @@
       </p> <!-- Display the dynamic path -->
     </div>
 
-    <!-- Action Buttons -->
-    <div class="d-flex align-items-center">
-      <!-- Chat Button -->
-      <button class="but1" onclick="window.location.href='/admin/announcement'">
-        <i class="fa-regular fa-comments"></i> <!-- Chat Icon -->
-      </button>
-
-      <!-- Notification Button -->
-      <button class="but1">
-        <i class="fa-regular fa-bell"></i> <!-- Notification Icon -->
-      </button>
-    </div>
   </div>
 </div>
 </body>

@@ -1,5 +1,6 @@
 package com.example.foodordering.controller.admin;
 
+import com.example.foodordering.dto.response.CustomerSummary;
 import com.example.foodordering.dto.response.MonthlySalesData;
 import com.example.foodordering.entity.*;
 import com.example.foodordering.repository.OrderMenuItemRepository;
@@ -7,6 +8,7 @@ import com.example.foodordering.repository.FoodOrderRepository;
 import com.example.foodordering.repository.FoodRepository;
 import com.example.foodordering.repository.intf.AccountRepository;
 import com.example.foodordering.repository.intf.CustomerRepository;
+import com.example.foodordering.service.CustomerService;
 import com.example.foodordering.service.OrderService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -21,10 +23,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Date;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin")
@@ -49,42 +51,46 @@ public class AdminController {
         List<FoodOrder> orders = foodOrderRepository.findAll();
         List<Food> foods = foodRepository.findAll();
 
-        // Sort the foods by sales count (simulating top-selling products)
-        // If you have an actual field for sales, replace this sorting logic
-        foods.sort((f1, f2) -> Integer.compare(f2.getId(), f1.getId())); // Example for sorting by ID, update to suit your needs
+        // Create a map to store food IDs and their corresponding order count
+        Map<Food, Long> foodOrderCountMap = new HashMap<>();
 
-        // Only get the top 4 selling foods (if applicable)
-        List<Food> topSellingFoods = foods.subList(0, Math.min(4, foods.size()));
+        // Count how many times each food item has been ordered
+        for (FoodOrder order : orders) {
+            // Filter out processing orders and only consider completed orders
+            if (order.isOrderStatus()) {
+                for (OrderMenuItem orderMenuItem : order.getOrderMenuItems()) {
+                    Food food = orderMenuItem.getFood(); // Assuming there's a `Food` object in OrderMenuItem
+                    foodOrderCountMap.put(food, foodOrderCountMap.getOrDefault(food, 0L) + 1);
+                }
+            }
+        }
+
+        // Sort the foods by order count in descending order and take top 5
+        List<Food> topSellingFoods = foodOrderCountMap.entrySet().stream()
+                .sorted((entry1, entry2) -> Long.compare(entry2.getValue(), entry1.getValue())) // Sort by count
+                .map(Map.Entry::getKey) // Get the Food object
+                .limit(5) // Get top 5
+                .collect(Collectors.toList());
 
         // Simulate order status counts
         long newOrders = orders.stream().filter(order -> !order.isOrderStatus()).count(); // false = giỏ hàng
         long orderProcessed = orders.stream().filter(order -> order.isOrderStatus()).count(); // true = đã đặt hàng
         long allCustomers = customers.size();
 
-
-        // Calculate today's date
-        LocalDate today = LocalDate.now();
-        // Convert today to a Date object (to compare with lastLogin)
-        Date todayStartDate = Date.from(today.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        Date todayEndDate = Date.from(today.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant()); // End of today
-
-        // Calculate customers who signed in today (between 00:00:00 and 23:59:59)
-        long activeSignins = customers.stream()
-                .filter(customer -> customer.getLastLogin() != null &&
-                        !customer.getLastLogin().before(todayStartDate) &&
-                        !customer.getLastLogin().after(todayEndDate))
-                .count();
         // Prepare sales data for the chart
         List<MonthlySalesData> salesData = orderService.getMonthlySalesData();
-        System.out.println(salesData);
+        // Calculate the total revenue (sum of all revenues from the monthly sales data)
+        double totalRevenue = salesData.stream()
+                .mapToDouble(MonthlySalesData::getRevenue)  // Sum of all revenues
+                .sum();
 
         // Add all necessary attributes to the model
+        model.addAttribute("revenue", totalRevenue);
         model.addAttribute("salesData", salesData);
         model.addAttribute("newOrders", newOrders);
         model.addAttribute("orderProcessed", orderProcessed);
         model.addAttribute("allCustomers", allCustomers);
         model.addAttribute("topSellingFoods", topSellingFoods);
-        model.addAttribute("activeSignins", activeSignins);
         model.addAttribute("orders", orders);
         model.addAttribute("customers", customers);
         model.addAttribute("pageTitle", "Dashboard");
@@ -155,13 +161,19 @@ public class AdminController {
             // Get all accounts if no filters are applied
             accountPage = accountRepository.findAll(pageable);
         }
-
+        // Fetch accounts filtered by role if provided
+        if (role != null && !role.isEmpty()) {
+            accountPage = accountRepository.findByRole(role, pageable);  // Assuming you have a method in your repository to fetch accounts by role
+        } else {
+            accountPage = accountRepository.findAll(pageable);  // If no role is selected, return all accounts
+        }
         // Get the content of the current page
         List<Account> accounts = accountPage.getContent();
 
         // Calculate total pages for pagination
         int totalPages = accountPage.getTotalPages();
 
+        model.addAttribute("role", role);
         model.addAttribute("accounts", accounts);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("currentPage", page);
@@ -214,7 +226,12 @@ public class AdminController {
         if (searchTerm != null && !searchTerm.trim().isEmpty()) {
             customersPage = customerRepository.findByFirstnameContainingOrLastnameContaining(searchTerm, pageable);
         }
+        // Fetch the summary (totalItems and totalSpent) for each customer
+        List<CustomerSummary> customerSummaries = customersPage.getContent().stream()
+                .map(customer -> new CustomerSummary(customer.getFoodOrders()))  // Create DTO to calculate totals
+                .collect(Collectors.toList());
 
+        model.addAttribute("customerSummaries", customerSummaries);
         model.addAttribute("sortOrder", sortOrder);
         model.addAttribute("searchTerm", searchTerm);
         model.addAttribute("customers", customersPage.getContent());
@@ -226,17 +243,14 @@ public class AdminController {
         model.addAttribute("path", "/admin/customers");
         model.addAttribute("activePage", "customers");
 
-        // Calculate totalItems and totalSpent for each customer after fetching from DB
-        customersPage.getContent().forEach(Customer::calculateTotals);
-
         return "adminPage/index"; // This will map to admin/customers.html
     }
 
     @GetMapping("/orders")
     public String showOrderPage(Model model,
-                         @RequestParam(defaultValue = "1") int page,
-                         @RequestParam(defaultValue = "5") int rowsPerPage,
-                         @RequestParam(required = false) String searchTerm) {
+                                @RequestParam(defaultValue = "1") int page,
+                                @RequestParam(defaultValue = "5") int rowsPerPage,
+                                @RequestParam(required = false) String searchTerm) {
         // Pagination logic using Spring Data pagination
         Pageable pageable = PageRequest.of(page - 1, rowsPerPage);
 

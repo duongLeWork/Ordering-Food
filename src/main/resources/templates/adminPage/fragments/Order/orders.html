@@ -8,7 +8,7 @@
 <div th:fragment="orderList" th:if="${activePage == 'orders'}">
   <!-- Orders Page Content -->
   <div class="container mt-4">
-    <div class="actionBar w-100 d-flex justify-content-between align-items-center" >
+    <div class="actionBar w-100 d-flex align-items-center" >
       <!-- Search Box -->
       <div class="searchbox position-relative">
         <form th:action="@{/admin/orders}" method="get" class="d-flex h-100">

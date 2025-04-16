@@ -24,7 +24,13 @@
 .filterA {
     height:100%;
 }
-
+.filterDrop.A {
+    margin-left: 4.5%;
+}
+.icon {
+    font-size: 25px;
+    padding-top: 18px;
+}
 .custom-dropdown {
     color: #333;
     border: 1px solid #ccc;
@@ -267,6 +273,7 @@
 /* Custom form group styling */
 .custom-form-group {
     margin-bottom: 20px;
+    margin-top:20px
 }
 
 /* Custom label styling */

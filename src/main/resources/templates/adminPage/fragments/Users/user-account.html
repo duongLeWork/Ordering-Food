@@ -8,7 +8,7 @@
 <body>
 <div th:fragment="userAccount" th:if="${activePage == 'userAccount'}">
     <div class="container mt-4">
-        <div class="actionBar w-100 d-flex justify-content-between align-items-center" >
+        <div class="actionBar w-100 d-flex align-items-center" >
             <!-- Search Box -->
             <div class="searchbox position-relative">
                 <form th:action="@{/admin/account}" method="get" class="d-flex h-100">
@@ -21,6 +21,16 @@
                     <button type="submit" class="btn position-absolute" style="right: 10px; top: 30%;">
                         <i class="fa-solid fa-magnifying-glass search-icon"></i>
                     </button>
+                </form>
+            </div>
+            <!-- Role Filter Dropdown -->
+            <div class="filterDrop A">
+                <form method="get" th:action="@{/admin/account}" class="filterA">
+                    <select class="custom-dropdown form-select" name="role" onchange="this.form.submit()">
+                        <option value="" th:selected="${role == null}">All Roles</option>
+                        <option value="Customer" th:selected="${role == 'Customer'}">Customer</option>
+                        <option value="Manager" th:selected="${role == 'Manager'}">Manager</option>
+                    </select>
                 </form>
             </div>
         </div>
@@ -43,7 +53,9 @@
                     <td class="tblcell" th:text="${account.email}"></td>
                     <td class="tblcell" th:text="${account.role}"></td>
                     <td class="tblcell">
-                        <a th:href="@{'/admin/account/' + ${account.customer.id}}" class="btn btn-info">View</a>
+                        <a th:href="@{'/admin/account/' + ${account.customer.id}}" class="btn btn-sm btn-outline-primary">
+                            <i class="fa-solid fa-eye"></i> View
+                        </a>
                     </td>
                 </tr>
                 </tbody>

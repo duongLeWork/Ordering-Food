@@ -33,32 +33,34 @@
           <div class="d-flex justify-content-evenly">
             <!-- New Orders Card -->
             <div class="card bg-success text-white m-2 order-card" style="width: 18rem;">
-              <div class="card-body">
-                <h5 class="card-title">New Orders</h5>
-                <p class="card-text" th:text="${newOrders + ' orders'}"></p> <!-- Display new orders count -->
-              </div>
-            </div>
-            <!-- New Sign-ins This Week Card -->
-            <div class="card bg-warning text-white m-2 active-users-card" style="width: 18rem;">
-              <div class="card-body">
-                <h5 class="card-title">Active Users</h5>
-                <p class="card-text" th:text="${activeSignins + ' users active this week'}"></p> <!-- Display new sign-ins count -->
+              <div class="card-body d-flex justify-content-between">
+                <div>
+                  <h5 class="card-title">New Order</h5>
+                  <p class="card-text" th:text="${newOrders + ' orders'}"></p> <!-- Display new orders count -->
+                </div>
+                <div class="icon"><i class="fa-solid fa-cart-shopping"></i></div>
               </div>
             </div>
           </div>
           <div class="d-flex justify-content-evenly">
             <!-- Order Processed Card -->
             <div class="card bg-info text-white m-2 order-processed-card" style="width: 18rem;">
-              <div class="card-body">
-                <h5 class="card-title">Order Processed</h5>
-                <p class="card-text" th:text="${orderProcessed + ' orders'}"></p> <!-- Display processed orders count -->
+              <div class="card-body d-flex justify-content-between">
+                <div>
+                  <h5 class="card-title">Order Processed</h5>
+                  <p class="card-text" th:text="${orderProcessed + ' orders'}"></p> <!-- Display processed orders count -->
+                </div>
+                <div class="icon"><i class="fa-solid fa-tags"></i></div>
               </div>
             </div>
             <!-- New Customers Card -->
             <div class="card bg-danger text-white m-2 new-customers-card" style="width: 18rem;">
-              <div class="card-body">
-                <h5 class="card-title">All Customers</h5>
-                <p class="card-text" th:text="${allCustomers + ' customers'}"></p> <!-- Display all customers count -->
+              <div class="card-body d-flex justify-content-between">
+                <div>
+                  <h5 class="card-title">All Customers</h5>
+                  <p class="card-text" th:text="${allCustomers + ' customers'}"></p> <!-- Display all customers count -->
+                </div>
+                <div class="icon"><i class="fa-solid fa-users-line"></i></div>
               </div>
             </div>
           </div>

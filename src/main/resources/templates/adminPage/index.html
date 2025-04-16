@@ -47,15 +47,13 @@
                  th:replace="~{adminPage/fragments/Order/order-details :: orderDetail}"></div>
             <div th:if="${activePage == 'customers'}"
                  th:replace="~{adminPage/fragments/Customer/customers :: customerList}"></div>
-            <div th:if="${activePage == 'announcement'}"
-                 th:replace="~{adminPage/fragments/Announcement/announcement-form :: announcementForm}"></div>
-
         </div>
     </div>
 </div>
 <script th:inline="javascript">
     var paginationPath = [[${path}]];
-    var totalPages = [[${totalPages}]];  // Passing totalPages from Thymeleaf to JavaScript
+    var totalPages = [[${totalPages}]];
+    const salesData = [[${salesData}]];
 </script>
 <script th:src="@{/admin/js/sidebar.js}"></script>
 <script th:src="@{/admin/js/togglingStatus.js}"></script>

@@ -13,7 +13,7 @@
                 <div class="product-card">
                     <img th:src="@{${food.image}}" alt="Food Image" class="img-fluid">
                     <h5 class="name-text" th:text="${food.name}"></h5>
-                    <p class="price-text" th:text="'$' + ${food.price}"></p>
+                    <p class="price-text" th:text="${food.price}"></p>
                 </div>
             </div>
         </div>

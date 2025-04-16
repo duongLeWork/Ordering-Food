@@ -52,7 +52,8 @@
                   <li th:classappend="${activePage == 'productList' || activePage == 'editFood' || activePage == 'addNewFood' ? ' active' : ''}">
                     <a th:href="@{/admin/product-list}"><i class="fa-solid fa-layer-group"></i>Product</a>
                   </li>
-                  <li th:classappend="${activePage == 'userAccount' || activePage == 'userDetail' ? ' active' : ''}"><a th:href="@{/admin/account}"><i class="fa-solid fa-gear"></i> Users </a></li>
+                  <li th:classappend="${activePage == 'userAccount' || activePage == 'userDetail' ? ' active' : ''}">
+                    <a th:href="@{/admin/account}"><i class="fa-solid fa-users"></i> Users </a></li>
                 </ul>
               </div>
             </div>

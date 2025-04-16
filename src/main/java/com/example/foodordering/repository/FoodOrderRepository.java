@@ -22,7 +22,6 @@ public interface FoodOrderRepository extends JpaRepository<FoodOrder, Integer> {
      */
     List<FoodOrder> findByCustomer_IdAndOrderStatus(int customerId, boolean statusValue);
     List<FoodOrder> findByOrderStatus(boolean statusValue);
-
     // Custom query to fetch FoodOrder and Customer together
     @Query("SELECT o FROM FoodOrder o JOIN FETCH o.customer WHERE o.id = :id")
     FoodOrder findByIdWithCustomer(@Param("id") int id);

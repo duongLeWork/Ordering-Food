@@ -31,7 +31,7 @@ public class MonthlySalesData {
 
     @Override
     public String toString() {
-        return "Month: " + month + ".Revenue: " + revenue;
+        return "Month: " + month + ". Revenue: " + revenue;
     }
 }
 

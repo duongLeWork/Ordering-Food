@@ -8,7 +8,7 @@
 <div th:fragment="customerList" th:if="${activePage == 'customers'}">
   <!-- Customers Page Content -->
   <div class="container mt-4">
-    <div class="actionBar w-100 d-flex justify-content-between align-items-center" >
+    <div class="actionBar w-100 d-flex align-items-center" >
       <!-- Search Box -->
       <div class="searchbox position-relative">
         <form th:action="@{/admin/customers}" method="get" class="d-flex h-100">
@@ -23,8 +23,8 @@
         </form>
       </div>
       <!-- Filter Dropdown -->
-      <div class="filterDrop">
-        <div class="filter dropdown">
+      <div class="filterDrop A">
+        <div class="filterA filter dropdown">
           <button class="h-100 w-100 btn btn-outline-secondary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
             Filter
           </button>
@@ -63,8 +63,8 @@
         <td class="tblcell" th:text="${customer.phoneNumber}">-</td>
         <td class="tblcell" th:text="${customer.address}">-</td>
         <td class="tblcell">
-          <span th:text="${customer.totalSpent}">-</span><br>
-          <span class="small-text" th:text="${customer.totalItems + ' Total Items'}">-</span>
+          <span th:text="${customerSummaries[iterStat.index].totalSpent}">-</span><br>
+          <span class="small-text" th:text="${customerSummaries[iterStat.index].totalItems + ' Total Items'}">-</span>
         </td>
       </tr>
       </tbody>

@@ -20,6 +20,6 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
 
     Page<Account> findByUsernameContainingIgnoreCase(String username, Pageable pageable);
-
+    Page<Account> findByRole(String role, Pageable pageable);
     Account findByAccountId(Long accountId);
 }

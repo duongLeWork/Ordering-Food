@@ -42,20 +42,39 @@ function goRightPage() {
 }
 
 function updatePaginationButtons() {
-    const currentPage = parseInt(document.getElementById('pageInput').value);
+    // Safely access the page input value
+    const pageInputElement = document.getElementById('pageInput');
 
-    // Hide "Previous" button if on the first page
-    if (currentPage === 1) {
-        document.getElementById('prevPageBtn').style.display = 'none';
-    } else {
-        document.getElementById('prevPageBtn').style.display = 'inline';
+    // Check if the element exists and has a valid value
+    let currentPage = 1;  // Default value if the input doesn't exist or is invalid
+
+    if (pageInputElement && pageInputElement.value) {
+        currentPage = parseInt(pageInputElement.value);  // Parse the value as an integer
     }
 
-    // Hide "Next" button if on the last page
-    if (currentPage === totalPages) {
-        document.getElementById('nextPageBtn').style.display = 'none';
-    } else {
-        document.getElementById('nextPageBtn').style.display = 'inline';
+    const prevPageBtn = document.getElementById('prevPageBtn');
+    const nextPageBtn = document.getElementById('nextPageBtn');
+
+    // Check if totalPages is a valid number (in case it's not set or is incorrect)
+    if (isNaN(totalPages) || totalPages <= 0) {
+        totalPages = 1;  // Reset to 1 if invalid
+    }
+
+    // Hide "Previous" button if on the first page and the button exists
+    if (prevPageBtn) {
+        if (currentPage === 1) {
+            prevPageBtn.style.display = 'none';
+        } else {
+            prevPageBtn.style.display = 'inline';
+        }
+    }
+    // Hide "Next" button if on the last page and the button exists
+    if (nextPageBtn) {
+        if (currentPage === totalPages) {
+            nextPageBtn.style.display = 'none';
+        } else {
+            nextPageBtn.style.display = 'inline';
+        }
     }
 }
 window.onload = updatePaginationButtons;

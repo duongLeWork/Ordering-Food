@@ -1,5 +1,6 @@
 package com.example.foodordering.controller.admin;
 
+import com.example.foodordering.config.CustomUserDetails;
 import com.example.foodordering.dto.response.CustomerSummary;
 import com.example.foodordering.dto.response.MonthlySalesData;
 import com.example.foodordering.entity.*;
@@ -18,6 +19,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -50,10 +53,15 @@ public class AdminController {
         List<Customer> customers = customerRepository.findAll();
         List<FoodOrder> orders = foodOrderRepository.findAll();
         List<Food> foods = foodRepository.findAll();
+        String adminName = "Admin";
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
+            adminName = userDetails.getUsername();
+        }
         // Create a map to store food IDs and their corresponding order count
         Map<Food, Long> foodOrderCountMap = new HashMap<>();
-
+        
         // Count how many times each food item has been ordered
         for (FoodOrder order : orders) {
             // Filter out processing orders and only consider completed orders
@@ -85,6 +93,8 @@ public class AdminController {
                 .sum();
 
         // Add all necessary attributes to the model
+
+        model.addAttribute("username", adminName);
         model.addAttribute("revenue", totalRevenue);
         model.addAttribute("salesData", salesData);
         model.addAttribute("newOrders", newOrders);
@@ -216,11 +226,12 @@ public class AdminController {
         Page<Customer> customersPage;
 
         // Apply sorting based on 'sortOrder'
-        if (sortOrder.equalsIgnoreCase("ASC")) {
-            customersPage = customerRepository.findCustomersSortedByTotalSpentAsc(pageable);
-        } else {
-            customersPage = customerRepository.findCustomersSortedByTotalSpentDesc(pageable);
-        }
+        // if (sortOrder.equalsIgnoreCase("ASC")) {
+        //     customersPage = customerRepository.findCustomersSortedByTotalSpentAsc(pageable);
+        // } else {
+        //     customersPage = customerRepository.findCustomersSortedByTotalSpentDesc(pageable);
+        // }
+        customersPage = customerRepository.findAllCustomers(pageable);
 
         // If a search term is provided, filter customers based on firstname or lastname
         if (searchTerm != null && !searchTerm.trim().isEmpty()) {

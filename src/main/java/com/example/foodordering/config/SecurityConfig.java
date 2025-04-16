@@ -21,7 +21,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
     @Autowired
     CustomUserDetailsService userService;
 
@@ -46,10 +45,10 @@ public class SecurityConfig {
                         // Public URLs
                         .requestMatchers("/", "/home", "/registers", "/login").permitAll()
                         // Manager-only endpoints
-                        .requestMatchers("/manager/**").hasRole("MANAGER")
-                        .requestMatchers(HttpMethod.POST, "/manager/**").hasRole("MANAGER")
-                        .requestMatchers(HttpMethod.PUT, "/manager/**").hasRole("MANAGER")
-                        .requestMatchers(HttpMethod.DELETE, "/manager/**").hasRole("MANAGER")
+                        .requestMatchers("/manager/**", "/admin/**").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.POST, "/manager/**", "/admin/**").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.PUT, "/manager/**", "/admin/**").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.DELETE, "/manager/**", "/admin/**").hasRole("MANAGER")
                         // All other endpoints require CUSTOMER role
                         .anyRequest().hasRole("CUSTOMER")
                 )

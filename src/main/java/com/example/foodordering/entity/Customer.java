@@ -4,6 +4,11 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Date;
+import java.util.stream.Collectors;
+
 @Data
 @Entity
 @NoArgsConstructor
@@ -18,8 +23,13 @@ public class Customer {
     String firstname;
     String lastname;
     String phoneNumber;
+    String address;
 
     @OneToOne
     @JoinColumn(name = "account_id")
     Account account;
+
+    @OneToMany(mappedBy = "customer")
+    List<FoodOrder> foodOrders;
+
 }

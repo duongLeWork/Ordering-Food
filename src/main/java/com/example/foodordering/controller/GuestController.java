@@ -47,10 +47,10 @@ public class GuestController {
                 return "home"; // Trả về home.html
             }
 
-            if (Objects.equals(userDetails.get().getRole(), "manager")) {
+            if (Objects.equals(userDetails.get().getRole(), "manager") || Objects.equals(userDetails.get().getRole(), "admin")) {
                 model.addAttribute("username", userDetails.get().getUsername());
                 model.addAttribute("password", userDetails.get().getPassword());
-                return "manager/dashboard";
+                return "redirect:/admin/dashboard";
             }
 
         }

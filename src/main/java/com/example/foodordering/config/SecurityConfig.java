@@ -44,6 +44,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Public URLs
                         .requestMatchers("/", "/home", "/registers", "/login").permitAll()
+                        // Tài nguyên tĩnh (images, css, js)
+                        .requestMatchers("/images/**", "/css/**", "/js/**").permitAll()
                         // Manager-only endpoints
                         .requestMatchers("/manager/**", "/admin/**").hasRole("MANAGER")
                         .requestMatchers(HttpMethod.POST, "/manager/**", "/admin/**").hasRole("MANAGER")

@@ -45,10 +45,7 @@ public class GuestController {
         Optional<CustomUserDetails> userDetails = UserDetailsHelper.getUserDetails();
         if (userDetails.isPresent()) {
             if (Objects.equals(userDetails.get().getRole(), "customer")) {
-                // Truyền thông tin username vào model để hiển thị trên home.html
-                model.addAttribute("username", userDetails.get().getUsername());
-                model.addAttribute("password", userDetails.get().getPassword());
-                return "home"; // Trả về home.html
+                return "redirect:/home"; // Trả về home.html
             }
 
             if (Objects.equals(userDetails.get().getRole(), "manager") || Objects.equals(userDetails.get().getRole(), "admin")) {
@@ -59,7 +56,7 @@ public class GuestController {
 
         }
         // Nếu chưa đăng nhập, chuyển hướng về trang login
-        return "redirect:/login";
+        return "guest";
 
     }
 

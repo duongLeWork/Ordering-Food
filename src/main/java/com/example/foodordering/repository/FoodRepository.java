@@ -1,5 +1,7 @@
 package com.example.foodordering.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import com.example.foodordering.entity.Food;
@@ -16,7 +18,6 @@ public interface FoodRepository extends JpaRepository<Food, Integer> {
      * @return Danh sách các món ăn phù hợp.
      */
     List<Food> findByNameContainingIgnoreCase(String name);
-
 
     /**
      * Tìm tất cả các món ăn có sẵn và sắp xếp theo giá tăng dần hoặc giảm dần.
@@ -42,4 +43,8 @@ public interface FoodRepository extends JpaRepository<Food, Integer> {
      */
     List<Food> findByIsAvailableTrue();
 
+
+    Page<Food> findByIsAvailable(Boolean isAvailable, Pageable pageable);
+    Page<Food> findByNameContainingIgnoreCaseAndIsAvailable(String name, Boolean isAvailable, Pageable pageable);
+    Page<Food> findByNameContainingIgnoreCase(String name, Pageable pageable);
 }

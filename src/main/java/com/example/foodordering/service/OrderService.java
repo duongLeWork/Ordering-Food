@@ -1,6 +1,7 @@
 package com.example.foodordering.service;
 
 import com.example.foodordering.dto.response.ApiResponse;
+import com.example.foodordering.dto.response.MonthlySalesData;
 import com.example.foodordering.entity.Customer;
 import com.example.foodordering.entity.FoodOrder;
 import com.example.foodordering.entity.OrderMenuItem;
@@ -13,8 +14,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.swing.text.html.Option;
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,6 +26,14 @@ public class OrderService {
 
     public OrderService(FoodOrderRepository foodOrderRepository, CartService cartService, CustomerRepository customerRepository) {
         this.foodOrderRepository = foodOrderRepository;
+    }
+    /**
+     * Check if an order exists by order ID.
+     * @param orderId ID of the order.
+     * @return true if the order exists, false otherwise.
+     */
+    public boolean orderExists(int orderId) {
+        return foodOrderRepository.findById(orderId).isPresent();
     }
 
     /**
@@ -39,10 +49,10 @@ public class OrderService {
             // Cập nhật orderStatus thành true để đánh dấu đơn hàng đã được tạo
             FoodOrder order = cartOrder.get();
             order.setOrderStatus(true);
-
+            // Get and set the current date
+            order.setOrderDate(LocalDate.now());
             // Lưu lại đơn hàng với status đã cập nhật
             foodOrderRepository.save(order);
-
             // Trả về đơn hàng đã được cập nhật
             return order;
         }
@@ -77,5 +87,45 @@ public class OrderService {
             return ApiResponse.build(1403, "Access denied. Order does not belong to this customer.", null);
         }
         return ApiResponse.build(1000, "Success", order.get());
+    }
+
+    public List<MonthlySalesData> getMonthlySalesData() {
+        // Fetch all placed orders
+        List<FoodOrder> placedOrders = foodOrderRepository.findByOrderStatus(true);
+
+        // Group orders by year and month
+        Map<String, List<FoodOrder>> ordersByMonth = placedOrders.stream()
+                .collect(Collectors.groupingBy(order -> {
+                    LocalDate orderDate = order.getOrderDate();
+                    return orderDate.getYear() + "-" + String.format("%02d", orderDate.getMonthValue());
+                }));
+
+        List<MonthlySalesData> monthlySalesDataList = new ArrayList<>();
+
+        // Calculate total sales amount and revenue for each month
+        for (Map.Entry<String, List<FoodOrder>> entry : ordersByMonth.entrySet()) {
+            String yearMonth = entry.getKey();
+            List<FoodOrder> ordersInMonth = entry.getValue();
+
+            double totalRevenue = ordersInMonth.stream()
+                    .map(FoodOrder::getPrice)
+                    .filter(Objects::nonNull)
+                    .mapToDouble(BigDecimal::doubleValue)
+                    .sum();
+
+            // Extract month name from yearMonth string
+            String[] parts = yearMonth.split("-");
+            int monthValue = Integer.parseInt(parts[1]);
+            Month month = Month.of(monthValue);
+            String monthName = month.getDisplayName(java.time.format.TextStyle.FULL, java.util.Locale.getDefault());
+
+            MonthlySalesData monthlySalesData = new MonthlySalesData();
+            monthlySalesData.setMonth(monthName);
+            monthlySalesData.setRevenue(totalRevenue);
+
+            monthlySalesDataList.add(monthlySalesData);
+        }
+
+        return monthlySalesDataList;
     }
 }

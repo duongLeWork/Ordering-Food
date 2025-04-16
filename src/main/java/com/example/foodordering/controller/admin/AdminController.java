@@ -3,35 +3,28 @@ package com.example.foodordering.controller.admin;
 import com.example.foodordering.dto.response.MonthlySalesData;
 import com.example.foodordering.entity.*;
 import com.example.foodordering.repository.OrderMenuItemRepository;
-import com.example.foodordering.repository.OrderStatusRepository;
 import com.example.foodordering.repository.FoodOrderRepository;
 import com.example.foodordering.repository.FoodRepository;
 import com.example.foodordering.repository.intf.AccountRepository;
 import com.example.foodordering.repository.intf.CustomerRepository;
 import com.example.foodordering.service.OrderService;
-import com.example.foodordering.service.SalesService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.List;
-import java.math.BigDecimal;
 import java.util.Date;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin")
@@ -43,16 +36,11 @@ public class AdminController {
     @Autowired
     private FoodOrderRepository foodOrderRepository;
     @Autowired
-    private OrderStatusRepository orderStatusRepository;
-    @Autowired
     private OrderMenuItemRepository orderMenuItemRepository;
     @Autowired
     private AccountRepository accountRepository;
     @Autowired
     private OrderService orderService;
-    @Autowired
-    private SalesService salesService;
-
 
     @GetMapping("/dashboard")
     public String dashboardPage(Model model) {

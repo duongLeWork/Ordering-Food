@@ -23,11 +23,9 @@ import java.util.stream.Collectors;
 public class GuestService {
 
     private final FoodRepository foodRepository;
-    private final FoodResponseMapper foodResponseMapper;
 
-    public GuestService(FoodRepository foodRepository, FoodResponseMapper foodResponseMapper) {
+    public GuestService(FoodRepository foodRepository) {
         this.foodRepository = foodRepository;
-        this.foodResponseMapper = foodResponseMapper;
     }
 
     /**

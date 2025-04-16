@@ -55,6 +55,9 @@ public class GuestController {
             }
 
         }
+        List<Food> dishes = guestService.getAvailableDishes();
+        model.addAttribute("dishes", dishes);
+
         // Nếu chưa đăng nhập, chuyển hướng về trang login
         return "guest";
 

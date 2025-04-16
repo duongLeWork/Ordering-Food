@@ -68,6 +68,7 @@ public class AccountManagementService {
         accountResponse.setFirstname(account.getCustomer().getFirstname());
         accountResponse.setLastname(account.getCustomer().getLastname());
         accountResponse.setPhoneNumber(account.getCustomer().getPhoneNumber());
+        accountResponse.setEmail(account.getEmail());
 
         return accountResponse;
     }

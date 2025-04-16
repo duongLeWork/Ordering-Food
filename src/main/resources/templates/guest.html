@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=ADLaM+Display&family=Lobster&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/stylesLogin.css}">
+    <link rel="stylesheet" th:href="@{/css/styles-2.css}">
     <style>
         /* Cart Icon Button */
         .cart-btn {
@@ -97,6 +97,27 @@
         <img th:src="@{/images/backpizza.png}" alt="Background Pizza" class="back-pizza">
         <img th:src="@{/images/pizza.png}" alt="Napoletane Pizza" class="front-pizza">
         <img th:src="@{/images/leaf1.png}" alt="Basil Leaf 1" class="basil-1">
+    </div>
+</section>
+<!-- Menu Section -->
+<section id="menu" class="menu">
+    <h2>Menu</h2>
+    <p>Khám phá những chiếc pizza đặc sắc, nóng hổi vừa ra lò!</p>
+    <div class="menu-grid">
+        <div class="menu-item" th:each="food : ${dishes}">
+            <img th:src="@{/images/pizza.png}" alt="Pizza">
+            <h3 th:text="${food.name}">Pizza Name</h3>
+            <p th:text="${#numbers.formatCurrency(food.price)}">$14.99</p>
+            <form th:action="@{/cart/items/add}" method="post">
+                <div class="quantity-wrapper">
+                    <button type="button" class="quantity-btn minus" id ="numberMenu" aria-label="Decrease quantity">−</button>
+                    <input type="number" name="quantity" value="1" min="1" />
+                    <button type="button" class="quantity-btn plus" id ="numberMenu2"  aria-label="Increase quantity">+</button>
+                </div>
+                <input type="hidden" name="foodId" th:value="${food.id}" />
+                <button type="submit" class="add-to-cart">Add to Cart</button>
+            </form>
+        </div>
     </div>
 </section>
 
